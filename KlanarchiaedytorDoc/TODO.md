@@ -5,7 +5,7 @@ Stan: 2026-11-09. Jedna lista zadań projektu; szczegóły wymagań pozostają w
 ## Już działa lokalnie
 
 - Edytor React we wtyczce WordPressa, menu, Witaj i pełny ekran; dostęp administratora.
-- Szablony talentów z zapisem wersji w bazie, dwa warianty graficzne, wspólne style i kolory.
+- Szablony talentów z zapisem wersji w bazie, dwa warianty graficzne, wspólne style i kolory oraz pozycjonowany numer wersji talentu w podglądzie/PDF.
 - Grupy/podgrupy, biblioteka, tworzenie i edycja talentu, zapis/otwieranie, historia kto/kiedy/co oraz liczniki talentów. Stałe kody XXXX-XXXX i oznaczenia wersji z datą oraz licznikiem dziennym.
 - Oznaczenia tekstu mechaniki, symbole, koszt, użycia, ograniczenie dostępności i indywidualne odstępy liter/interlinia.
 - Własne fonty Linux Libertine, wspólne dzielenie PL/EN-US i gotowy skład SVG; ostrzeganie o przepełnieniu.

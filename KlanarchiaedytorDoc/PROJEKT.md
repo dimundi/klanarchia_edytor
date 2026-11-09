@@ -119,3 +119,5 @@ Zbiorcza lista zadań, w tym Asystent Klanarchii i korekta podręcznika: [TODO
 ## Identyfikatory talentów i wersji
 
 2026-11-09: talent identyfikuje stały kod XXXX-XXXX, np. A7K2-M9B4; zastąpił UUID talentu w API i bazie. Wersja ma format A7K2-M9B4-091126-01 (ddmmyy i kolejny zapis tego talentu w danym dniu, czas Europe/Warsaw). Do przyszłego Roll20 sam kod bazowy. Przenumerowano 81 talentów z zachowaniem historii/powiązań; kopia i mapa identyfikatorów poza Gitem. Szczegóły: [Baza danych](Baza%20danych.md).
+
+W szablonie talentu działa niezależny element Numer wersji, pozycjonowany i stylowany jak inne pola; eksport używa rzeczywistego oznaczenia talentu. Talent podstawowy / 45 ma pole włączone przy dolnej lewej krawędzi. Istniejące przypięcia talentów do 44 zachowano.

@@ -219,3 +219,11 @@ Zapis elements.cost, graphicColourIds.cost, costValue i costTextColourId. Warto�
 - Paleta: Atrament zastąpiony Czarnym, Fiolet opowieści zastąpiony Błękitem Zmroku. Stare kolory wycofane z wyboru; dawne ID/HEX kierują do zastępników. Historia dokumentów zachowana bez przepisywania. Nowe style korzystają z czerni i Błękitu Zmroku.
 
 - Warianty graficzne: jeden wybór całego kompletu grafik, z ramką i symbolem kosztu. Jedno pole graphicVariant; stare osobne ustawienia tylko do odczytu zgodności. Każdy wariant w osobnym katalogu z tymi samymi 13 nazwami SVG. Aktualny wybór: Tuszowy (ink). Szczegóły: [Warianty graficzne](Warianty%20graficzne.md).
+
+## Numer wersji na karcie
+
+Element Numer wersji (elements.version, styles.version) jest osobną warstwą tekstową: wybór i zaznaczanie po lewej, geometria oraz styl po prawej, przeciąganie, wyrównanie, blokada i oczko jak dla pozostałych elementów. Domyślnie mały tekst 5 pt przy dolnej lewej krawędzi (X=7, Y=wysokość−9, szerokość min(90, szerokość−14), wysokość 6 pt). Nie rezerwuje miejsca w mechanice.
+
+Kreator i miniatury szablonów pokazują przykład A7K2-M9B4-091126-01. Zapisany talent i jego PDF używają rzeczywistego versionCode. Nowy niezapisany talent oraz niezapisane zmiany nie mają oznaczenia na karcie ani w nazwie PDF, aby nie przypisać szkicowi wcześniejszej wersji. Przykład nie jest zapisywany jako treść szablonu.
+
+Zapisano nową wersję 45 szablonu Talent podstawowy z włączonym polem. Starsze dokumenty otrzymują przy odczycie pole ukryte; wcześniejsze wersje szablonów i przypięcia 81 talentów do wersji 44 pozostają bez zmian. Aby istniejący talent korzystał z pola, wybierz w jego edytorze nową wersję szablonu i zapisz talent. Oczko steruje obecnością pola zarówno w podglądzie, jak i eksporcie.

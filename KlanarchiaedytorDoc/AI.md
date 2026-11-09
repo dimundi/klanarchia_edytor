@@ -912,3 +912,14 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 - Usunięto datę aktualizacji z metadanych wiersza listy; pozostają podgrupa i pełne oznaczenie wersji zawierające datę. Daty w historii i bazie zachowane.
 - Weryfikacja: kontrola zmienionego JSX i git diff --check. Zmiana wyłącznie prezentacji.
+
+## 2026-11-10 — Pole numeru wersji w szablonie talentu
+
+- Dodano elements.version i styles.version, osobną pozycję Numer wersji po lewej, pełną geometrię/skalowanie/tekst/kolor palety po prawej, zaznaczanie, wyrównanie, blokadę i oczko. Domyślnie X7, Y=wysokość−9, szerokość do 90, wysokość 6 pt, Libertine 5 pt. Warstwa nie zmienia pola mechaniki, rysowana po ograniczeniu.
+- TemplateVersion wspólny dla kreatora/miniatur i karty talentu; w kreatorze przykład, na zapisanej karcie rzeczywisty versionCode. Wersja obecna również w bezpośrednim PDF, gdy element widoczny. Niezapisany szkic/zmiany nie mają kodu na karcie ani starego kodu w nazwie PDF.
+- Parser i PHP walidują/zapisują nowe pole i styl. Starsze dokumenty dostają pole ukryte bez zmiany surowej historii. W nowym szablonie element włączony. Ochrona kolorów palety obejmuje styles.version. Bez nowych tabel i migracji schematu.
+- Po kopii database.sql/template.json w wtf_www/backups/klanarchia-editor/20261109/before-template-version-label zapisano Talent podstawowy / 45 z włączonym polem. 81 rzeczywistych talentów pozostało przypiętych do 44; nie przenoszono ich automatycznie.
+- Dodano version_overflow do wspólnej diagnostyki i raportów serwera (do 5 kodów renderowania). Uzupełniono automatyczne sprawdzanie również po pierwszym zapisie nowego talentu: ref zapisanego rekordu zamiast wymagania initial, gdy nadany właśnie kod dopiero pojawia się w podglądzie. Recheck nie tworzy nowej wersji.
+- Weryfikacja: TS/Vite, PHP lint validation/api/talent-checks i git diff --check poprawne. UI: pozycja, styl 5 pt, oczko, kłódka, undo, za wąskie pole i PDF kreatora. Poprawiono selektor QA obejmujący również ukryty panel stylów. W talencie rzeczywisty kod i PDF, brak przykładu w szkicu, ukrycie przy niezapisanych zmianach; serwer przyjmuje zapis version_overflow. Brak błędów JS. Zrzut kreatora sprawdzony wizualnie.
+- Osobny test utworzył tymczasowy szablon o polu szerokości 1 pt i nowy talent przez UI: po pierwszym zapisie automatycznie utrwalił przepełnienie faktycznie nadanego kodu, zachowując revision=1. Usunięto 2 utworzone talenty QA (w osobnych przebiegach) i 1 szablon QA wraz z zależnościami. SQL porównał wszystkie 81 talentów, ich wersje/treści/zdarzenia/raporty oraz 44 starsze wersje szablonu — bez zmian. Pozostał 1 szablon z bieżącą wersją 45.
+- Narzędzia/zrzuty/PDF-y w wtf_www/local-scripts/one-off/template-version-label-20261109/, poza Gitem. Dokumentacja kreatora/bazy/błędów/projektu/TODO uaktualniona. Bez zmian starego projektu i wdrożenia.

@@ -139,3 +139,9 @@ Kod i licznik przydzielane w transakcji pod istniejącą blokadą katalogu; un
 Jawna migracja: wp ke talent-codes-init --user=1 --allow-root (także wykonywana przez ke talents-init). Schemat talentów 1 → 2; pozostałe numery schematów bez zmian. Backfill zachowuje kody już nadane w przerwanym przebiegu; daty/liczniki starszych wersji wyznacza kolejność created_at/id. DDL etapowe i powtarzalne; bez automatycznej migracji po wejściu na stronę. Istniejącym 81 talentom przypisano nowe kody i oznaczenia oryginalnego zapisu z PDF; nie utworzono nowych wersji treści.
 
 Kopia w wtf_www/backups/klanarchia-editor/20261109/before-talent-codes/: database.sql, records.json i code-map.json (stary UUID → nowy kod i wewnętrzny ID). Nie przechowujemy aliasów UUID w aktywnej bazie ani API. Mapa służy kontroli migracji i ewentualnemu wycofaniu, poza Gitem. Narzędzia i testy w local-scripts/one-off/talent-codes-20261109/. Stary projekt i jego kody wysyłkowe pozostają nienaruszone; przyszły import takich talentów powinien zachować istniejące kody i sprawdzić konflikty.
+
+## Pole numeru wersji w szablonie
+
+Dokument szablonu 2 obsługuje elements.version (geometria/widoczność/blokada/proporcje) i styles.version (niezależny styl, minimum 5 pt, wyłącznie kolor palety). Zapis i walidacja klient/serwer; kolor pola objęty ochroną przed archiwizacją, również w historycznych szablonach. Brak migracji tabel: starszy dokument otrzymuje ukryty element i styl 5 pt podczas odczytu, bez przepisywania wersji. TemplateVersion renderuje lokalnymi fontami SVG rzeczywisty kod talentu, a w kreatorze przykład.
+
+W szablonie Talent podstawowy zapisano wersję 45 z włączonym polem. Starsze 44 wersje dokumentu i talenty przypięte do 44 zachowane. Kopia sprzed zapisu w wtf_www/backups/klanarchia-editor/20261109/before-template-version-label/: database.sql oraz template.json.

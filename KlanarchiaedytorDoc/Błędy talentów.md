@@ -11,6 +11,7 @@ Pierwsze kontrole:
 | missing_title | Brak tytułu, także tytuł zawierający wyłącznie białe znaki. |
 | body_overflow | Wspólny blok tytułu/fabuły/mechaniki nie mieści się w ramce. |
 | restriction_overflow | Ograniczenie dostępności nie mieści się w swoim polu. |
+| version_overflow | Numer wersji nie mieści się w swoim polu. |
 | nonrenewable_overflow | Napis nieodnawialny nie mieści się w swoim polu. |
 | text_layout_error | Niedostępny/nieobsługiwany font lub brak glifu uniemożliwia skład. |
 | unknown_annotation | Treść zawiera nieznany zamknięty znacznik formatowania. |
@@ -43,3 +44,5 @@ Przy zmianie fontów, wzorców lub algorytmu zwiększać wspólnie CARD_TEXT_ENG
 ## Import PDF
 
 page_reference_missing: zachowane odniesienie (s. xxx) wymaga numeru; ponownie wykrywane w mechanice zarówno w podglądzie, jak i na serwerze. source_review_required: uwaga o niekompletnym źródle pochodzi z historii importu i pozostaje, dopóki mechanika jest identyczna z oznaczoną treścią (SHA-256). Nie znika po samym odświeżeniu kontroli. unknown_annotation obejmuje również jawne, jeszcze nieobsługiwane symbole z importu. [Raport pierwszego importu](Import%20talentów%20z%20PDF.md).
+
+Po pierwszym zapisie nowego talentu kod powstaje dopiero na serwerze. Diagnostyka kontroluje wyrenderowane pole także po tej odpowiedzi i może dopisać raport bez tworzenia kolejnej wersji treści.
