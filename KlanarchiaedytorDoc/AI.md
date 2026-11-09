@@ -666,3 +666,7 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 - Uzupełniono .gitignore: zależności, dist, cache, próbne exports, kopie, sekrety, lokalne .env i pliki robocze. Wzorce .env.example/.sample/.template pozostają do wersjonowania. Rootowe dumpy SQL ignorowane, przyszłe schematy SQL w kodzie nie są blokowane. Źródłowe SVG, fonty, licencja, package-lock.json i dokumentacja pozostają w repozytorium.
 - Dodano .gitattributes: LF dla tekstów/kodu/SVG, CRLF w katalogu roboczym dla bat/cmd/ps1, grafiki rastrowe/fonty/PDF/archiwa jako binarne bez konwersji. Nie zmieniano globalnej konfiguracji Gita ani kodowania istniejących plików.
 - Weryfikacja: 21 sprawdzeń reguł ignore, kontrola atrybutów tekstowych i binarnych, 89 kandydatów do wersjonowania, git add --dry-run poprawny. Potwierdzono brak eksportów, dist i node_modules na liście oraz pusty indeks. Bez zmian aplikacji, bazy i wdrożenia.
+## 2026-11-09 — Podłączenie GitHub i pierwszy push
+
+- Na wskazany przez użytkownika adres ustawiono origin: https://github.com/dimundi/klanarchia_edytor.git. Repozytorium zdalne było puste. Utworzono i wysłano pierwszy commit fcb3efe (Initial Klanarchia editor project), gałąź main śledzi origin/main. Hash zdalnej gałęzi zgodny z lokalnym.
+- Potwierdzono brak node_modules, dist, exports, secrets i .env w śledzonych plikach. Usunięto kilka końcowych spacji i dodatkową pustą linię wykrytych przez git show --check; bez zmiany działania aplikacji. Zaktualizowano opis środowiska. GitHub nie jest wdrożeniem strony — produkcji nie zmieniano.

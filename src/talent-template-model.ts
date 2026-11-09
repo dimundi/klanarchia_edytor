@@ -84,7 +84,7 @@ export function parseTemplate(input: unknown): TalentTemplate {
     };
     const converted: TalentTemplate = { ...base, name: name(v.name), page, background: color(v.background), elements: Object.fromEntries(elementIds.map(id => [id, fitBox(elements[id], page)])) as TalentTemplate['elements'], styles: { restriction: base.styles.restriction, nonRenewable: base.styles.nonRenewable, title: { ...base.styles.title, fontSize, lineHeight, color: textColor }, flavor: { ...base.styles.flavor, fontSize, lineHeight, color: flavorColor }, mechanics: { ...base.styles.mechanics, fontSize, lineHeight, color: textColor } } };
     converted.headerRow={x:elements.gift.x,centerY:elements.gift.y+elements.gift.height/2,gap:4};
-    
+
   for(const added of ['cost','specialRules','play'] as const){const active=headerRowIds.filter(id=>converted.elements[id].visible);if(active.reduce((sum,id)=>sum+converted.elements[id].width,0)+Math.max(0,active.length-1)*converted.headerRow.gap>page.width-converted.headerRow.x)converted.elements[added].visible=false;}
     return layoutHeader(converted);
   }

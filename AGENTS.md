@@ -1,4 +1,4 @@
-﻿# Instrukcje dla AI
+# Instrukcje dla AI
 
 ## Projekt i komunikacja
 
@@ -25,4 +25,3 @@
 - Rozróżniaj stan wdrożony, plan i kwestię do ustalenia. Nie zapisuj nieuruchomionych testów jako wykonanych.
 - Nie umieszczaj sekretów, danych dostępowych ani danych osobowych w dokumentacji i dzienniku.
 - Prace wykonuj lokalnie. Wdrożenie online wymaga wyraźnego polecenia użytkownika.
-
