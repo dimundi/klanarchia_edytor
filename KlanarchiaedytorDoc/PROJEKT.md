@@ -109,3 +109,13 @@ Zbiorcza lista zadań, w tym Asystent Klanarchii i korekta podręcznika: [TODO
 2026-11-09: wdrożono wspólny skład tekstu dla podglądu i PDF. Dołączone fonty Linux Libertine, wzorce dzielenia TeX PL/EN-US, gotowe wiersze i glify SVG zamiast składu przeglądarki. Dotyczy treści oraz napisów dodatkowych. Brak fontu/znaku daje błąd bez systemowego zamiennika. PDF przy Zapisz talentu przejmuje ten sam układ. Szczegóły i ograniczenia: [Skład tekstu i fonty](Skład%20tekstu%20i%20fonty.md).
 
 2026-11-09: oba przyciski PDF (talent i kreator szablonu) eksportują bezpośrednio plik do pobrania, bez okna drukowania. Zachowane wymiary karty 1:1 na A4. Aktualne szczegóły: Skład tekstu i fonty.md.
+
+2026-11-09: błędy talentów są zapamiętywane dla wersji i języka oraz pokazywane na liście. Działają kody błędów, licznik przy talencie i rozróżnienie sprawdzone/niesprawdzone/nieaktualne. Szkic bez tytułu i z przepełnieniem można zapisać; uszkodzona struktura nadal jest odrzucana. Szczegóły: [Błędy talentów](Błędy%20talentów.md). Zbiorcze liczniki/filtry pozostają w TODO.
+
+## Import talentów archetypów
+
+2026-11-09: na polecenie użytkownika zastąpiono lokalne talenty 81 talentami PL z PDF, po 9 w każdej z 9 podgrup. Pominięto puste karty; zachowano historię pochodzenia i zapisano błędy do korekty. [Zakres, raport i kopie](Import%20talentów%20z%20PDF.md).
+
+## Identyfikatory talentów i wersji
+
+2026-11-09: talent identyfikuje stały kod XXXX-XXXX, np. A7K2-M9B4; zastąpił UUID talentu w API i bazie. Wersja ma format A7K2-M9B4-091126-01 (ddmmyy i kolejny zapis tego talentu w danym dniu, czas Europe/Warsaw). Do przyszłego Roll20 sam kod bazowy. Przenumerowano 81 talentów z zachowaniem historii/powiązań; kopia i mapa identyfikatorów poza Gitem. Szczegóły: [Baza danych](Baza%20danych.md).

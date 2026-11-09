@@ -1,0 +1,40 @@
+<?php
+if(!defined('ABSPATH'))exit;
+const KE_CARD_TEXT_ENGINE_VERSION=1; // Keep in sync with CARD_TEXT_ENGINE_VERSION in card-text-engine.ts.
+function ke_checks_ready(){return get_option('ke_talent_checks_schema_version')==='1';}
+function ke_migrate_talent_checks(){
+ global $wpdb;if(ke_checks_ready())return;ke_talents_ready();require_once ABSPATH.'wp-admin/includes/upgrade.php';$charset=$wpdb->get_charset_collate();
+ $schemas=['talent_checks'=>"id bigint unsigned NOT NULL AUTO_INCREMENT, talent_version_id bigint unsigned NOT NULL, language varchar(2) NOT NULL, complete tinyint unsigned NOT NULL DEFAULT 0, engine_version int unsigned NOT NULL, catalogue_revision bigint unsigned NOT NULL, checked_at datetime NOT NULL, checked_by bigint unsigned NOT NULL, PRIMARY KEY  (id), KEY version_language (talent_version_id,language,id)",'talent_issues'=>"check_id bigint unsigned NOT NULL, code varchar(48) NOT NULL, details longtext NOT NULL, PRIMARY KEY  (check_id,code), KEY code_check (code,check_id)"];
+ foreach($schemas as $table=>$body){$body=str_replace(', ',",\n",$body);dbDelta('CREATE TABLE '.ke_table($table)." (\n$body\n) ENGINE=InnoDB $charset;");if($wpdb->last_error)throw new RuntimeException('Checks schema failed');}
+ foreach([['talent_checks','talent_version_id','talent_versions'],['talent_issues','check_id','talent_checks']]as[$table,$column,$target]){$name='ke_'.substr(md5(ke_table($table).$column),0,20);if(!$wpdb->get_var($wpdb->prepare('SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME=%s AND CONSTRAINT_NAME=%s',ke_table($table),$name)))ke_db_query('ALTER TABLE '.ke_table($table).' ADD CONSTRAINT '.$name.' FOREIGN KEY ('.$column.') REFERENCES '.ke_table($target).'(id) ON DELETE RESTRICT');}
+ update_option('ke_talent_checks_schema_version','1',false);
+}
+function ke_talent_reports($versions,$language){
+ global $wpdb;$result=[];foreach($versions as $id)$result[(int)$id]=['status'=>'unchecked','issues'=>[],'errorCount'=>0];if(!$versions||!ke_checks_ready())return $result;
+ $ids=implode(',',array_map('intval',$versions));$revision=(int)$wpdb->get_var('SELECT lock_version FROM '.ke_table('catalogue_state').' WHERE id=1');
+ $checks=$wpdb->get_results($wpdb->prepare('SELECT c.*,i.code,i.details FROM '.ke_table('talent_checks').' c LEFT JOIN '.ke_table('talent_issues').' i ON i.check_id=c.id WHERE c.id IN (SELECT MAX(id) FROM '.ke_table('talent_checks').' WHERE talent_version_id IN ('.$ids.') AND language=%s GROUP BY talent_version_id) ORDER BY c.id,i.code',$language),ARRAY_A);
+ foreach($checks as $check){$id=(int)$check['talent_version_id'];if(!isset($result[$id]['checkedAt']))$result[$id]=['status'=>!(bool)$check['complete']?'unchecked':((int)$check['engine_version']!==KE_CARD_TEXT_ENGINE_VERSION||(int)$check['catalogue_revision']!==$revision?'stale':'checked'),'issues'=>[],'errorCount'=>0,'checkedAt'=>str_replace(' ','T',$check['checked_at']).'Z','engineVersion'=>(int)$check['engine_version'],'catalogueRevision'=>(int)$check['catalogue_revision']];if($check['code']){$result[$id]['issues'][]=['code'=>$check['code'],'details'=>json_decode($check['details'],true)];$result[$id]['errorCount']++;}}
+ return $result;
+}
+function ke_store_talent_check($version,$language,$content,$report){
+ global $wpdb;if(!ke_checks_ready())throw new KE_Request_Error('Run talent checks migration first',503);
+ $complete=false;$engine=0;$catalogue=0;$issues=[];
+ if($report!==null){ke_require_value(is_array($report));$complete=ke_bool($report['complete']??null);$engine=(int)ke_number($report['engineVersion']??null,KE_CARD_TEXT_ENGINE_VERSION,KE_CARD_TEXT_ENGINE_VERSION,true);$catalogue=(int)ke_number($report['catalogueRevision']??null,0,PHP_INT_MAX,true);ke_require_value(isset($report['issues'])&&is_array($report['issues'])&&count($report['issues'])<=5);foreach($report['issues']as$issue){$code=$issue['code']??null;ke_require_value(in_array($code,['body_overflow','restriction_overflow','nonrenewable_overflow','version_overflow','text_layout_error'],true));ke_require_value(!isset($issues[$code]));$issues[$code]=['code'=>$code,'details'=>[]];}}
+ if(preg_match('/\(s\.\s*(?:x{2,}|[?…]+)\.?\s*\)/iu',$content['mechanics']))$issues['page_reference_missing']=['code'=>'page_reference_missing','details'=>[]];
+ // Import notes remain until the affected source passage has been edited.
+ $source=$wpdb->get_var($wpdb->prepare('SELECT e.changes FROM '.ke_table('talent_events').' e JOIN '.ke_table('talent_versions').' v ON v.talent_id=e.talent_id WHERE v.id=%d AND e.action=%s ORDER BY e.id DESC LIMIT 1',$version,'import_pdf'));
+ $review=$source?(json_decode($source,true)['sourceReview']??null):null;
+ if($review&&hash_equals($review['mechanicsSha256'],hash('sha256',$content['mechanics'])))$issues['source_review_required']=['code'=>'source_review_required','details'=>['notes'=>$review['notes']]];
+ if(!preg_match('/[^\p{Z}\s]/u',$content['title']))$issues['missing_title']=['code'=>'missing_title','details'=>[]];
+ preg_match_all('/\[([a-z][a-z0-9_-]*):[^\]]*\]/',$content['mechanics'],$matches);$tags=$wpdb->get_col('SELECT tag FROM '.ke_table('text_annotations').' WHERE archived_at IS NULL');$unknown=array_values(array_unique(array_diff($matches[1],$tags)));if($unknown)$issues['unknown_annotation']=['code'=>'unknown_annotation','details'=>['tags'=>$unknown]];
+ ke_db_write('insert','talent_checks',['talent_version_id'=>$version,'language'=>$language,'complete'=>(int)$complete,'engine_version'=>$engine,'catalogue_revision'=>$catalogue,'checked_at'=>current_time('mysql',true),'checked_by'=>get_current_user_id()]);$check=(int)$wpdb->insert_id;
+ foreach($issues as $issue)ke_db_write('insert','talent_issues',['check_id'=>$check,'code'=>$issue['code'],'details'=>wp_json_encode($issue['details'],JSON_UNESCAPED_UNICODE)]);
+}
+function ke_talent_check_post($r){
+ global $wpdb;$body=$r->get_json_params();$expected=(int)ke_number($body['revision']??null,1,PHP_INT_MAX,true);$language=ke_api_language($r);ke_talents_ready();$code=ke_talent_code($r['code']);
+ ke_db_query('START TRANSACTION');$wpdb->get_var('SELECT id FROM '.ke_table('catalogue_state').' WHERE id=1 FOR UPDATE');$row=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talents').' WHERE code=%s AND archived_at IS NULL FOR UPDATE',$code),ARRAY_A);if(!$row)throw new KE_Request_Error('Talent not found',404);if((int)$row['lock_version']!==$expected)throw new KE_Request_Error('Talent changed; reopen before checking',409);
+ $text=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talent_texts').' WHERE talent_version_id=%d AND language=%s',$row['current_version_id'],$language),ARRAY_A);if(!$text)throw new KE_Request_Error('Translation not found',404);
+ ke_store_talent_check((int)$row['current_version_id'],$language,['title'=>$text['name'],'mechanics'=>$text['description']],$body['validation']??null);$reports=ke_talent_reports([(int)$row['current_version_id']],$language);ke_db_query('COMMIT');return $reports[(int)$row['current_version_id']];
+}
+add_action('rest_api_init',function(){register_rest_route('klanarchia-editor/v1','/talents/(?P<code>'.KE_TALENT_CODE_PATTERN.')/check',['methods'=>'POST','permission_callback'=>'ke_can_access','callback'=>function($r){return ke_api_run('ke_talent_check_post',$r);}]);});
+if(defined('WP_CLI')&&WP_CLI)WP_CLI::add_command('ke talent-checks-init',function(){if(!ke_can_access())WP_CLI::error('Administrator required');try{ke_migrate_talent_checks();WP_CLI::success('Talent validation tables ready.');}catch(Throwable $e){WP_CLI::error($e->getMessage());}});

@@ -1,6 +1,6 @@
 # Baza danych edytora
 
-Stan lokalny, 2026-11-07. Wspólna baza WordPressa, osobne tabele edytora. Bez zmian w produkcji i starym projekcie. Model pozostałych modułów: [Projekt bazy danych](Projekt%20bazy%20danych.md).
+Stan lokalny, 2026-11-09. Wspólna baza WordPressa, osobne tabele edytora. Bez zmian w produkcji i starym projekcie. Model pozostałych modułów: [Projekt bazy danych](Projekt%20bazy%20danych.md).
 
 ## Utworzone tabele
 
@@ -96,16 +96,16 @@ Koszt: elements.cost i graphicColourIds.cost oraz costValue (liczba całkowita 0
 
 ## Zapis talentów — wdrożony lokalnie 2026-11-09
 
-Jawna migracja `wp ke talents-init --user=1 --allow-root`, po wcześniejszej inicjalizacji katalogu i biblioteki. Oddzielna opcja ke_talents_schema_version=1; wersji katalogu i biblioteki nie zmieniono. Migracja jest powtarzalna, bez seedowania talentów i bez automatycznego wykonania na stronie.
+Jawna migracja `wp ke talents-init --user=1 --allow-root`, po wcześniejszej inicjalizacji katalogu i biblioteki. Oddzielna opcja ke_talents_schema_version=2 (od migracji kodów); wersji katalogu i biblioteki nie zmieniono. Migracja jest powtarzalna, bez seedowania talentów i bez automatycznego wykonania na stronie.
 
 Cztery nowe tabele z prefiksem WordPressa, InnoDB:
 
 | Tabela | Bieżąca zawartość |
 | --- | --- |
-| ke_talents | UUID, podgrupa, wskaźnik aktualnej wersji, lock_version, daty i autorzy utworzenia/zmiany, archived_at |
-| ke_talent_versions | Talent, numer wersji, FK konkretnej wersji szablonu, schema_version=1, dokument ustawień, data i autor; unikalne talent_id/version_no |
+| ke_talents | Unikalny stały code CHAR(9) w formacie XXXX-XXXX (zastępuje UUID), podgrupa, wskaźnik aktualnej wersji, lock_version, daty i autorzy utworzenia/zmiany, archived_at |
+| ke_talent_versions | Talent, wewnętrzny numer rewizji, version_day DATE i day_serial, FK konkretnej wersji szablonu, schema_version=1, dokument ustawień, data i autor; unikalne talent_id/version_no i talent_id/version_day/day_serial |
 | ke_talent_texts | Wersja, język PL/EN, tytuł, fabuła, mechanika ze znacznikami, ograniczenie dostępności; unikalne version/language |
-| ke_talent_events | Talent, autor/czas, create/save, wersja przed/po, lista zmienionych pól i podgrupa |
+| ke_talent_events | Talent, autor/czas, create/save/import_pdf, wersja przed/po, lista zmienionych pól i podgrupa |
 
 Dokument ustawień przechowuje templateId/templateRevision, flags (hexMark/cost/play/gift/specialRules/nonRenewable), action, usage (none/mission-one/mission-three/once), cost 0–9, letterSpacing (tytuł/fabuła/mechanika, null lub -2…10), lineHeight (fabuła/mechanika, null lub .75…3). To dokument w bazie, bez osobnych plików JSON. W tym pierwszym zapisie parametry mechaniczne również są w dokumencie; ewentualne wydzielenie do kolumn na potrzeby filtrowania pozostaje dalszym etapem projektu danych.
 
@@ -114,10 +114,28 @@ Wersje i zdarzenia są dopisywane atomowo w jednej transakcji. Treści pozosta
 API pod klanarchia-editor/v1, wyłącznie manage_options i nonce:
 
 - GET talents?category=UUID&language=pl&page=1 — podgrupa lub grupa z potomkami, stronicowanie po 100.
-- GET talents/UUID?language=pl — dane i przypięty szablon. Brak tłumaczenia zwraca puste treści, bez kopiowania fallbacku.
+- GET talents/{code}?language=pl — dane i przypięty szablon. Brak tłumaczenia zwraca puste treści, bez kopiowania fallbacku.
 - PUT talents/UUID?language=pl — oczekiwana revision, categoryId, content, settings.
 - GET talents/UUID/history?page=1 — wersje, autorzy, czasy i zmienione pola, po 100.
 
 Kategorie zwracają rzeczywiste talentCount, z sumą podgrup dla rodzica. Walidowane są długości, typy, zakresy, istnienie podgrupy/wersji szablonu oraz znane znaczniki mechaniki. Brak edycji historii i publikacji w tym etapie. Preferencje płótna nie są danymi talentu.
 
 Kopia bazy przed zmianą: wtf_www/backups/klanarchia-editor/20261109/before-talent-save/database.sql. Testy zapisu/otwierania, konfliktów, błędów sieci, historii, języków i uprawnień przeszły. Usunięto wyłącznie rekord QA; brak zaimportowanych talentów. Produkcja i stary projekt bez zmian.
+
+## Raporty błędów talentów — 2026-11-09
+
+Dodano ke_talent_checks i ke_talent_issues z dwoma FK, bez zmiany istniejących wersji treści. Jawna inicjalizacja `wp ke talent-checks-init --user=1 --allow-root`, osobna wersja schematu 1. Raport wersja/język ma stan kontroli, rewizję katalogu/silnika i indeksowane kody błędów. Opis tabel, API i unieważniania wyników: [Błędy talentów](Błędy%20talentów.md). Kopia bazy przed zmianą: wtf_www/backups/klanarchia-editor/20261109/before-talent-errors/database.sql.
+
+Korekta wcześniejszej walidacji: brak tytułu i nieznany znacznik są błędami redakcyjnymi zapisywanego szkicu. Nie blokują zapisu. Typy, zakresy, powiązania i kontrola rewizji nadal walidowane rygorystycznie.
+
+## Stałe kody i datowane wersje — 2026-11-09
+
+Talent ma jeden publiczny identyfikator, np. A7K2-M9B4. Osiem losowych znaków z ABCDEFGHJKLMNPQRSTUVWXYZ23456789, rozdzielonych po czterech; bez I/O/0/1. Kod nadawany na serwerze raz i niezmieniany po edycji, zmianie nazwy ani podgrupy. Unikalny indeks obejmuje także archiwalne talenty; archiwizacja zachowuje rezerwację kodu. Nie ma już kolumny UUID talentu. Numeryczne klucze techniczne i FK pozostają, a UUID innych typów danych są niezależne od tej zmiany.
+
+Oznaczenie wersji: A7K2-M9B4-091126-01. Data ddmmyy i kolejny zapis tego talentu danego dnia; minimum dwie cyfry licznika (po 99: 100), reset na 01 nowego dnia. Wspólne dla zapisów PL/EN talentu. Datę wyznacza serwer ze znacznika UTC w strefie Europe/Warsaw, niezależnie od przeglądarki i języka. W bazie osobno version_day YYYY-MM-DD i day_serial; versionCode składa API. Zachowany version_no/revision służy kolejności historii i ochronie przed nadpisaniem, nie jest drugim publicznym kodem. Kontrola błędów bez zmiany treści nie przydziela nowego oznaczenia.
+
+Kod i licznik przydzielane w transakcji pod istniejącą blokadą katalogu; unikalne indeksy chronią przed kolizjami. Odczyt, zapis, historia i kontrola błędów adresują kod bazowy. Do przyszłej integracji Roll20 przekazujemy sam kod XXXX-XXXX; integracji jeszcze nie wdrożono. Lista, edytor, historia i nazwa eksportowanego PDF pokazują pełne oznaczenie wersji.
+
+Jawna migracja: wp ke talent-codes-init --user=1 --allow-root (także wykonywana przez ke talents-init). Schemat talentów 1 → 2; pozostałe numery schematów bez zmian. Backfill zachowuje kody już nadane w przerwanym przebiegu; daty/liczniki starszych wersji wyznacza kolejność created_at/id. DDL etapowe i powtarzalne; bez automatycznej migracji po wejściu na stronę. Istniejącym 81 talentom przypisano nowe kody i oznaczenia oryginalnego zapisu z PDF; nie utworzono nowych wersji treści.
+
+Kopia w wtf_www/backups/klanarchia-editor/20261109/before-talent-codes/: database.sql, records.json i code-map.json (stary UUID → nowy kod i wewnętrzny ID). Nie przechowujemy aliasów UUID w aktywnej bazie ani API. Mapa służy kontroli migracji i ewentualnemu wycofaniu, poza Gitem. Narzędzia i testy w local-scripts/one-off/talent-codes-20261109/. Stary projekt i jego kody wysyłkowe pozostają nienaruszone; przyszły import takich talentów powinien zachować istniejące kody i sprawdzić konflikty.

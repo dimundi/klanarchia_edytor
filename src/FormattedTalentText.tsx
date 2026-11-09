@@ -28,12 +28,13 @@ export function parseTalentText(text: string, tags: Set<string>, depth = 0): Tex
  flush(); return result;
 }
 export function annotationStyle(a:Annotation,colours:Colour[]):CSSProperties {return { fontWeight:a.tag==='*'&&a.weight===400?undefined:a.weight, fontStyle:a.tag==='**'&&!a.italic?undefined:a.italic?'italic':'normal', fontVariant:a.smallCaps?'small-caps':'normal', textDecoration:a.underline?'underline':undefined, color:colours.find(c=>c.id===canonicalColourId(a.colourId))?.value, backgroundColor:colours.find(c=>c.id===canonicalColourId(a.backgroundId))?.value };}
+export function annotationUiStyle(a:Annotation,colours:Colour[]):CSSProperties {return {...annotationStyle(a,colours),...(a.tag==='aspekt'?{color:'#202420'}:{})};}
 export default function FormattedTalentText({ text, annotations, colours }: { text: string; annotations: Annotation[]; colours: Colour[] }) {
  const tags = new Map(annotations.map(a => [a.tag, a]));
  function render(nodes: TextFragment[]): ReactNode { return nodes.map((node, index) => {
   if (typeof node === 'string') return node;
   const a = tags.get(node.tag)!;
-  const style = annotationStyle(a,colours);
+  const style = annotationUiStyle(a,colours);
   return <span key={index} data-annotation={node.tag} style={style}>{render(node.children)}</span>;
  }); }
  return <>{render(parseTalentText(text, new Set(tags.keys())))}</>;

@@ -79,3 +79,8 @@
 #klanarchia-editor .ke-inline-spacing>span:first-child {color:#cbb47a;font-size:13px;}
 #klanarchia-editor .ke-talent-columns .ke-text-formatting input.ke-inline-spacing-input {width:72px;min-width:0;font-size:14px;line-height:1.2;padding:4px 5px;border-radius:3px;}
 #klanarchia-editor .ke-inline-spacing-unit {opacity:.65;font-size:11px;}
+#klanarchia-editor .ke-talent-validation-errors {margin:10px 0 0;padding:9px 12px 9px 28px;border-left:3px solid #dd9a56;background:#dd9a5612;color:#f0bb88;font-size:14px;line-height:1.4;}
+#klanarchia-editor .ke-talent-validation-errors .ke-talent-overflow-warning {margin:0;padding:0;border:0;background:none;}
+#klanarchia-editor .ke-talent-error-badge {display:inline-block;margin-top:8px;padding:3px 9px;border:1px solid #dd9a5670;border-radius:4px;color:#f0bb88;background:#dd9a5612;font-size:13px;cursor:pointer;}
+#klanarchia-editor .ke-talent-list-validation ul {font-size:13px;color:#f0bb88;margin:8px 0;}
+#klanarchia-editor .ke-talent-list-validation .ke-talent-check-pending {display:block;margin-top:7px;color:#cbb47a;opacity:1;}

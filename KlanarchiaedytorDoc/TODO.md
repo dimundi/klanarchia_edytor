@@ -6,12 +6,14 @@ Stan: 2026-11-09. Jedna lista zadań projektu; szczegóły wymagań pozostają w
 
 - Edytor React we wtyczce WordPressa, menu, Witaj i pełny ekran; dostęp administratora.
 - Szablony talentów z zapisem wersji w bazie, dwa warianty graficzne, wspólne style i kolory.
-- Grupy/podgrupy, biblioteka, tworzenie i edycja talentu, zapis/otwieranie, historia kto/kiedy/co oraz liczniki talentów.
+- Grupy/podgrupy, biblioteka, tworzenie i edycja talentu, zapis/otwieranie, historia kto/kiedy/co oraz liczniki talentów. Stałe kody XXXX-XXXX i oznaczenia wersji z datą oraz licznikiem dziennym.
 - Oznaczenia tekstu mechaniki, symbole, koszt, użycia, ograniczenie dostępności i indywidualne odstępy liter/interlinia.
 - Własne fonty Linux Libertine, wspólne dzielenie PL/EN-US i gotowy skład SVG; ostrzeganie o przepełnieniu.
 - Bezpośredni eksport pojedynczej karty do PDF z edytora talentu i kreatora szablonu. Obecny PDF zawiera tekst jako krzywe; na razie tak zostaje.
 
-Działające fundamenty nie oznaczają ukończenia całych modułów. Dane starego edytora nie zostały zaimportowane; brak wdrożenia na produkcję.
+Działające fundamenty nie oznaczają ukończenia całych modułów. Dane starego edytora nie zostały zaimportowane. Osobno wykonano [import 81 talentów archetypów z PDF](Import%20talentów%20z%20PDF.md); brak wdrożenia na produkcję.
+
+Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentów](Błędy%20talentów.md).
 
 ## Proponowana kolejność
 
@@ -26,10 +28,10 @@ Działające fundamenty nie oznaczają ukończenia całych modułów. Dane stare
 ### 1. Redakcja talentów — najbliższy etap
 
 - [ ] T-01 Doprecyzować ekran biblioteki i miejsce Utwórz talent; obecne umiejscowienie pozostaje do poprawy.
-- [ ] T-02 Zaprojektować przeglądanie dużej liczby talentów: lista/karty, szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
+- [ ] T-02 Obecna lista pokazuje już pełne treści/oznaczenia i otwiera edycję kliknięciem tytułu. Doprecyzować przeglądanie dużej liczby talentów (także zbiorcze liczniki i filtrowanie po zapisanych kodach błędów): lista/karty, szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
 - [ ] T-03 Zaprojektować zaznaczanie talentów i działania na zaznaczeniu, także w kontekście grup/podgrup.
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
-- [ ] T-05 Wstawić symbol kosztu do treści mechaniki przez edytor; obecnie istnieje osobna grafika/komponent, ale brak obsługi wstawiania.
+- [ ] T-05 Wstawić symbol kosztu do treści mechaniki przez edytor; obecnie istnieje osobna grafika/komponent, ale brak obsługi wstawiania. Importowany talent Zatuszowanie sprawy ma z tego powodu jawny znacznik i błąd.
 - [ ] T-06 Wrócić do zgłoszonych poprawek ramki i ikony kosztu. Zachować wariant Oryginalny i Tuszowy oraz możliwość powrotu do wcześniejszych grafik.
 
 Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentach, nie tylko edycja pojedynczej karty. Rozbudowę eksportu zaznaczenia połączyć z etapem arkuszy.
@@ -38,9 +40,9 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 
 - [ ] D-01 Dokończyć projekt bazy pod uzgodnione filtry, publikację, talenty prywatne/ograniczone i prawa do edycji. Ocenić, które parametry obecnego dokumentu ustawień wymagają osobnych kolumn oraz indeksów.
 - [ ] D-02 Ustalić obieg treści PL/EN: brak tłumaczenia, gotowość do publikacji i odpowiedzialność za zatwierdzanie. Nie utożsamiać angielskiego interfejsu z gotowymi tłumaczeniami materiałów.
-- [ ] D-03 Ustalić zakres kopiowania ze starego projektu: talenty, grupy, szablony i powiązania. Bez automatycznego przenoszenia wszystkich dawnych funkcji/danych.
-- [ ] D-04 Przygotować mapowanie identyfikatorów, podgląd importu i raport różnic/błędów; próbnie zaimportować uzgodnioną małą partię.
-- [ ] D-05 Po ocenie próby przenieść uzgodniony zakres z kontrolą duplikatów, zachowaniem lokalnych poprawek i możliwością wycofania importu. Stary projekt pozostaje 1:1.
+- [ ] D-03 Ustalić zakres kopiowania ze starego projektu: talenty, grupy, szablony i powiązania. Zachować nadane wcześniej kody wysyłkowe XXXX-XXXX i sprawdzić ich konflikty. Bez automatycznego przenoszenia wszystkich dawnych funkcji/danych.
+- [x] D-04 Pierwszy uzgodniony import: manifest 81 talentów archetypów z PDF, mapowanie podgrup/UUID, próba z wycofaniem i raport błędów. [Wynik i kopia](Import%20talentów%20z%20PDF.md). Kolejne źródła wymagają osobnego zakresu.
+- [x] D-05 Zapisano zatwierdzony zakres PDF: 81 talentów, po 9 w podgrupie, historia Import z PDF i raporty błędów. Dotychczasowe talenty zastąpiono na wyraźne polecenie po kopii bazy. Kolejne importy osobno; stary projekt pozostaje 1:1.
 
 ### 3. Zestawy talentów i arkusze
 

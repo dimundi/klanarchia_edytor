@@ -1,3 +1,4 @@
+export const CARD_TEXT_ENGINE_VERSION=1; // Keep in sync with the validation API.
 ﻿import type { Font, Glyph } from 'opentype.js';
 import type { CardFonts } from './card-fonts';
 import { hyphenPoints } from './hyphenation';

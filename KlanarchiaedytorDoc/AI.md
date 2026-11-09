@@ -859,3 +859,56 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 - Usunięto sekcję Odstępy między liniami i jej pomoc z edytora talentu. Zachowano odczyt/stosowanie/zapis dotychczasowych nadpisań, aby kolejny zapis nie kasował wcześniejszych ustawień. Brak nowych kontrolek interlinii.
 - Weryfikacja: kompilacja TS/Vite poprawna. Bez zmian danych.
+
+## 2026-11-09 — Zapamiętywane błędy talentów
+
+- Dodano raporty dla wersji/języka: ke_talent_checks i ke_talent_issues, 2 FK i indeksy do przyszłego filtrowania/liczenia. Jawna migracja ke talent-checks-init, kopia bazy w wtf_www/backups/klanarchia-editor/20261109/before-talent-errors/database.sql. Raporty dopisywane, kompletne/niepełne i nieaktualne rozróżnione; rewizja wspólnych stylów i wersja silnika zapisane.
+- Błędy: brak tytułu, przepełnienie treści/ograniczenia/nieodnawialnego, brak fontu/glifu i nieznany znacznik. Brak tytułu (także białe znaki Unicode) i nieznane oznaczenia nie blokują już szkicu. Typy/zakresy/relacje nadal blokują uszkodzone dane. Raport układu z przeglądarki walidowany strukturalnie, kontrole tytułu/znaczników po stronie serwera; diagnostyka nie jest uprawnieniem/publikacją.
+- Przy zapisie raport atomowo powiązany z nową wersją. POST talents/UUID/check z oczekiwaną rewizją odświeża diagnostykę bez nowej wersji treści. Niezmieniony zapis ponownie sprawdzany przy otwarciu po unieważnieniu raportu lub zmianie aktualnych błędów (np. ustąpienie błędu fontu). Niezapisany szkic nie nadpisuje raportu wcześniejszej wersji.
+- Lista pokazuje Błędy: N z rozwijanymi komunikatami, Jeszcze niesprawdzony lub Wymaga ponownego sprawdzenia. Błędy pod podglądem pochodzą ze wspólnej walidacji. Usunięto stary samotny hook przepełnienia. Liczniki zbiorcze/filtry dopisane do T-02, bez ich wdrażania teraz.
+- Weryfikacja: PHP lint i TS/Vite poprawne. Test przeglądarkowy: przepełnienie zapisane/widoczne po odświeżeniu, poprawka usuwa bieżący badge, brak tytułu zapisuje szkic, nieznane oznaczenie zapamiętane, unchecked/checked/stale, ponowna kontrola bez zmiany wersji, 409/400 i odmowa anonimowi, brak błędów JS. SQL potwierdził dawne raporty po kolejnych poprawkach. Osobne testy sprawdziły Unicode blank title i font error (wycofana transakcja) oraz ustąpienie błędu fontu przy otwarciu.
+- Usunięto wyłącznie 2 talenty QA wraz z ich wersjami i raportami; pozostał 1 rzeczywisty talent. Sprawdzono go i zapisano raport checked/0 błędów bez zmiany treści, ustawień ani rewizji. Ponowna inicjalizacja bez duplikatów. Stary projekt i produkcja bez zmian. Dokumentacja: Błędy talentów.md; aktualizowano TODO.
+
+## 2026-11-09 — Import 81 talentów archetypów z PDF
+
+- Zgodnie z poleceniem zastąpiono 1 dotychczasowy talent 81 talentami PL: po 9 na podgrupę, w kolejności bloków PDF Egzorcysta, Szabrownik, Wiedźmiarz, Siepacz, Rzecznik, Kronikarz, Żerca, Żarmistrz, Inkwizytor. Puste strony co 10 pominięto. Szablon Talent podstawowy / 44; grupy, paleta, style i szablony bez zmian. Źródłowy PDF i stary projekt bez zmian.
+- Ekstrakcja PDFJS z oryginalnymi nazwami fontów, kolorami i geometrią podświetleń; przegląd arkuszy wszystkich 81 kart. Przeniesiono treść, pogrubienia/cechy/aspekty/stany, akcje i użycia; usunięto łamanie wyrazów ze składu PDF. Jedno pole użycia wyświetlane po prawej, raz na scenę rozpoznane jako ikona.
+- Każdy talent ma wersję 1 i historię Import z PDF, z nazwą pliku, SHA-256 i stroną w metadanych zdarzenia. Etykieta importu widoczna w historii. Dodano trwały page_reference_missing w serwerowej i klienckiej kontroli treści. source_review_required odtwarzany z uwagi importu, dopóki nie zmieni się mechanika oznaczona hashem.
+- Zapisano 8 błędów na 8 talentach: 5 brakujących numerów stron (także czarne odniesienie), 1 przepełnienie Tezy omni-maszyny, 1 urwany fragment Skryby nekrorytów i 1 nieobsługiwany symbol kosztu w tekście Zatuszowania sprawy. Pozostawiono jawny znacznik ikona-kosztu z błędem unknown_annotation; właściwa grafika w tekście nadal T-05. Bez zgadywania treści i pomniejszania fontu.
+- Świeża kopia pełnej bazy i rekordów: wtf_www/backups/klanarchia-editor/20261109/before-pdf-import/. WP-CLI db export nie miał mysqldump w kontenerze PHP; poprawna pełna kopia wykonana w kontenerze Percony (28 085 573 B). Narzędzia/manifest/arkusze/QA w ignorowanym local-scripts/one-off/talent-pdf-import-20261109/. Potwierdzono ignorowanie danych i kopii przez Git.
+- Import transakcyjny z kontrolą stanu przed usunięciem. Próba z rollbackiem, potem commit; 81 pełnych odczytów porównanych w transakcji, 9 na każdą podgrupę, 81 zdarzeń/wersji/tekstów/raportów, brak zmian 9 tabel niezwiązanych z talentami. Pierwsza próba QA odrzucona na kolejności kluczy ustawień w PHP; transakcja wycofana, porównanie map poprawiono, ponowna próba przeszła.
+- Weryfikacja: PHP lint i TS/Vite poprawne, 6 testów silnika składu poprawnych. API: wszystkie 81 raportów, liczniki 9/81, kolejność, 17 reprezentatywnych pełnych treści/ustawień/historii. UI: otwarcie stron źródłowych 2/23/49/54/75, formatowanie, błędy, powrót do listy, historia importu; zrzut 23 sprawdzony wizualnie, brak błędów JS. Poprawiono wyłącznie selektor testu obejmujący ukryty podgląd kreatora. SQL QA na 6 talentach potwierdził zachowanie błędów po ponownej kontroli i ich usunięcie po korekcie; wszystkie te testowe raporty wycofano. Ponowna kontrola rzeczywistego talentu nie zmieniła treści ani wersji.
+- Dokumentacja: Import talentów z PDF.md, PROJEKT, Błędy talentów i statusy D-04/D-05 w TODO; D-03 nadal dotyczy osobnej migracji starego projektu. Bez wdrożenia na produkcję.
+
+## 2026-11-09 — Pełna treść na liście talentów
+
+- Usunięto dodatkowy rząd przycisków podgrup w treści biblioteki; drzewo po lewej zachowane. Tytuł jest dostępnym klawiaturą przyciskiem otwierającym ten sam edytor co Otwórz; wspólna blokada/kręciołek i obsługa błędów. Powrót z talentu grupy nadrzędnej zachowuje jej kontekst, bez przełączania na podgrupę.
+- Lista pokazuje pełną fabułę, mechanikę ze wspólnymi stylami, aktywne oznaczenia, koszt, akcję, użycia, ograniczenie dostępności, podgrupę, datę, wersję i raport błędów. Osobny TalentListContent, ikony wariantu tuszowego jako standard oznaczeń listy. Treść bez przycinania, responsywne wiersze.
+- API listy pobiera treść i ustawienia wspólnym zapytaniem z wersji bieżącej, zachowując limit/paginację i sprawdzanie uprawnień. Bez dodatkowego odczytu każdego talentu. Brak tłumaczenia: fallback PL wszystkich pól z widoczną informacją; edytor nadal nie kopiuje tłumaczeń. Bez migracji i zmian treści w bazie.
+- Weryfikacja: PHP lint, TS/Vite i git diff --check poprawne. Test przeglądarkowy porównał pełne treści/ustawienia 81 odpowiedzi listy, potwierdził formatowanie, brak przycisków folderów, otwarcie przez tytuł i Otwórz, zachowanie kontekstu nadrzędnego i 9 elementów podgrupy, fallback EN oraz 390 px bez poziomego przepełnienia. Brak błędów JS; desktop sprawdzony wizualnie. Bez zapisów talentów i wdrożenia. Zaktualizowano opis Biblioteki i bieżący stan T-02.
+
+## 2026-11-09 — Zwarta lista talentów w dwóch kolumnach
+
+- Po lewej wiersza tytuł, metadane, symbole i błędy; po prawej pełna fabuła, mechanika i ograniczenie. Przycisk Otwórz nadal na końcu. Zmniejszono odstępy, na wąskim ekranie kolumny układają się pionowo.
+- Użycia pokazują wyłącznie symbole: bez napisów Raz/Trzy razy na misję i Raz na scenę. Opis pozostaje w title i aria-label.
+- Weryfikacja: TS/Vite poprawne; przeglądarka potwierdziła dwie kolumny, brak widocznych podpisów użyć, 121 px wysokości pierwszego wiersza przy 1600 px, 390 px bez poziomego przepełnienia i brak błędów JS. Bez zmian danych i wdrożenia.
+
+## 2026-11-09 — Aspekty na liście jak w pasku formatowania
+
+- Lista i przycisk Aspekt korzystają ze wspólnego annotationUiStyle: ciemny tekst #202420 na skonfigurowanym tle aspektu. Ujednolicono czytelność w ciemnym interfejsie. Styl składu kart/PDF nadal pochodzi z annotationStyle i palety.
+- Weryfikacja: kompilacja TS/Vite poprawna. Zmiana prezentacji, bez zapisów danych i wdrożenia.
+
+## 2026-11-09 — Kody talentów i wersji z datą/licznikiem
+
+- Na polecenie użytkownika zastąpiono UUID talentów kodem XXXX-XXXX (osiem losowych znaków bez I/O/0/1, jak w dawnej wysyłce). Publiczne id API to kod; usunięto kolumnę UUID talentu. Numeryczne PK/FK i UUID innych modułów zachowane. Nowe talenty tworzy POST /talents z kodem generowanym przez serwer; istniejące GET/PUT/history/check po kodzie. PUT nie tworzy brakującego kodu.
+- Wersje mają version_day DATE i day_serial, unikalne per talent/dzień/licznik. API versionCode np. QH2M-YDUS-091126-01. Strefa Europe/Warsaw, licznik minimum dwie cyfry bez limitu 99; każdy kolejny zapis PL/EN zwiększa go, kolejny dzień zaczyna od 01. Wewnętrzny numer rewizji zachowany do blokad i kolejności, niewidoczny jako osobny identyfikator.
+- Nowy talent-codes.php, jawne ke talent-codes-init i rozszerzone talents-init, schemat talentów 2. Etapowe DDL wznawialne; backfill pod blokadą, usunięcie UUID dopiero po przypisaniu/indeksach. Migracja 81 rekordów bez nowych wersji treści. Kody istniejących zapisów wyliczone z ich pierwotnych dat i kolejności; dotychczasowe daty, autorzy, treści, raporty i powiązania bez zmian.
+- Kody widoczne w liście, edytorze, historii i nazwie eksportu PDF. Stały kod bazowy przeznaczony do Roll20; samej integracji nie wdrażano.
+- Kopia przed zmianą: wtf_www/backups/klanarchia-editor/20261109/before-talent-codes/database.sql i records.json. code-map.json przechowuje stary UUID → nowy kod/PK poza Gitem. Narzędzia QA w local-scripts/one-off/talent-codes-20261109/. Stary projekt bez zmian.
+- Weryfikacja: PHP lint, TS/Vite i git diff --check poprawne. Porównano wszystkie rekordy 15 tabel przed/po migracji (po odjęciu wyłącznie nowych/usuniętych kolumn) oraz po usunięciu QA: dane i FK zachowane, 81 talentów. Ponowna migracja bez zmian kodów. SQL sprawdził odrzucenie duplikatu kodu i duplikatu licznika, przejście daty przy północy zimą/latem, reset licznika i format powyżej 99; dane testowe wycofane.
+- Test przeglądarkowy: 81 nowych id i oznaczeń listy; otwarcie/history importu po kodzie; PDF z kodem w nazwie; utworzenie QA i zapis w UI 01→02; równoległe zapisy jednej rewizji 200/409 i 03, trzy różne oznaczenia historii, kontrola błędów bez zmiany wersji; 404 brakującego kodu, odmowa anonimowi, brak błędów JS. Wyłącznie 1 utworzony talent QA usunięty z jego zależnościami; pozostało 81 rzeczywistych. Dokumentacja bazy/biblioteki/projektu/błędów i TODO zaktualizowana. Bez wdrożenia produkcji.
+
+## 2026-11-09 — Bez osobnej daty na liście talentów
+
+- Usunięto datę aktualizacji z metadanych wiersza listy; pozostają podgrupa i pełne oznaczenie wersji zawierające datę. Daty w historii i bazie zachowane.
+- Weryfikacja: kontrola zmienionego JSX i git diff --check. Zmiana wyłącznie prezentacji.
