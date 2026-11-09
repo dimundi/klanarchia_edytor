@@ -298,3 +298,10 @@ Indeks nazwy pomaga w sortowaniu i wyszukiwaniu po początku nazwy, nie rozwi�
 Najpierw biblioteka talentów: tabela historii `ke_talent_events` oraz pięć tabel `ke_talent_categories`, `ke_talent_category_texts`, `ke_talents`, `ke_talent_versions`, `ke_talent_texts`. Przed podłączeniem renderowania oznaczeń dodamy wspólne słowniki `ke_colours`, `ke_colour_texts`, `ke_text_annotations`, `ke_text_annotation_texts`. Następnie szablony wraz z należącymi do nich definicjami pól. Tabele postaci, zestawów i rozszerzeń wdrażamy dopiero wraz z ich funkcjami.
 
 Przed napisaniem SQL doprecyzujemy przede wszystkim: pola i filtry biblioteki talentów, zasady publikacji PL/EN, zakres historii oraz obsługę talentów prywatnych i ekskluzywnych. Osobnym tematem pozostaje sposób generowania PDF na docelowym hostingu — stary renderer używa Chromium, którego dostępności na hostingu WordPressa nie potwierdzono. Ten projekt bazy nie rozstrzyga wyboru renderera.
+
+## Biblioteka talentów — struktura startowa
+
+Pierwsza grupa: Talenty archetypów. Podgrupy: Egzorcysta, Inkwizytor, Kronikarz, Rzecznik, Siepacz, Szabrownik, Wiedźmiarz, Żarmistrz, Żerca. Hierarchia i sposób pracy zatwierdzone w dokumencie [Biblioteka talentów](Biblioteka%20talentów.md). Zgodnie z poleceniem użytkownika na tym etapie bez kodowania i bez tworzenia tabel lub rekordów grup.
+## Aktualizacja implementacji — 2026-11-09
+
+Uruchomiono lokalnie zapis talentów: ke_talents, ke_talent_versions, ke_talent_texts, ke_talent_events. Faktyczny schemat/API i jawna inicjalizacja opisane w [Bazie danych](Baza%20danych.md). To pierwszy zapis redakcyjny: obowiązkowa podgrupa, wersjonowane treści PL/EN i parametry w dokumencie ustawień, przypięta konkretna wersja szablonu, kontrola konfliktów, kto/kiedy/zmienione pola. Obecne usage dopuszcza wyłącznie brak/raz na misję/trzy razy na misję/raz na scenę. Nie wdrożono jeszcze projektowanych owner/visibility/published_version ani osobnych kolumn parametrów mechanicznych. Nie zmieniano zakresu przyszłych zestawów i nie utworzono ich tabel.

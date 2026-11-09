@@ -9,6 +9,8 @@ if (!defined('ABSPATH')) exit;
 require_once __DIR__.'/includes/database.php';
 require_once __DIR__.'/includes/validation.php';
 require_once __DIR__.'/includes/api.php';
+require_once __DIR__.'/includes/library.php';
+require_once __DIR__.'/includes/talents.php';
 
 function ke_can_access() { return is_user_logged_in() && current_user_can('manage_options'); }
 function ke_is_page() { return is_page() && get_page_uri(get_queried_object_id()) === 'klanarchia/edytor'; }

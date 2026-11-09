@@ -1,0 +1,79 @@
+#klanarchia-editor .ke-talent-columns {display:grid;grid-template-columns:minmax(340px,1.5fr) minmax(300px,1.6fr) minmax(210px,.8fr);gap:22px;align-items:start;}
+#klanarchia-editor .ke-talent-columns label {display:grid;gap:6px;margin-bottom:14px;font-size:14px;}
+#klanarchia-editor .ke-talent-columns input:not([type=checkbox]),#klanarchia-editor .ke-talent-columns textarea,#klanarchia-editor .ke-talent-columns select {width:100%;box-sizing:border-box;background:#171b1680;color:#e7dfcb;border:1px solid #a58b4c66;border-radius:4px;padding:9px;font:inherit;}
+#klanarchia-editor .ke-talent-columns textarea {resize:vertical;}
+#klanarchia-editor .ke-talent-columns h4 {margin:0 0 16px;color:#d1b572;font-size:14px;}
+#klanarchia-editor .ke-talent-heading {display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+#klanarchia-editor .ke-talent-heading h3 {margin:0;}
+#klanarchia-editor .ke-talent-heading small,#klanarchia-editor .ke-talent-draft {font-size:12px;opacity:.7;}
+#klanarchia-editor .ke-talent-stage {padding:18px;background:linear-gradient(145deg,#b6aa91,#9c907a);min-height:200px;display:flex;align-items:center;}
+#klanarchia-editor .ke-talent-stage .kt-thumbnail {max-width:none;max-height:none;width:100%;}
+#klanarchia-editor .ke-talent-columns .ke-talent-flags label {display:flex;align-items:center;gap:8px;}
+#klanarchia-editor .ke-talent-flags input {accent-color:#c3a65e;}
+#klanarchia-editor .ke-talent-editor button {background:transparent;border:1px solid #a58b4c66;border-radius:4px;color:#e7dfcb;padding:7px 12px;cursor:pointer;}
+@media(max-width:1000px){#klanarchia-editor .ke-talent-columns{grid-template-columns:1fr 1fr;}#klanarchia-editor .ke-talent-preview{grid-column:1/-1;grid-row:1;}}
+@media(max-width:600px){#klanarchia-editor .ke-talent-columns{grid-template-columns:1fr;}#klanarchia-editor .ke-talent-editor>.ke-library-tools{flex-wrap:wrap;}}
+#klanarchia-editor .ke-talent-preview-heading {display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+#klanarchia-editor .ke-talent-preview-heading h4 {margin:0;}
+#klanarchia-editor .ke-talent-editor .kt-preview-config {border:0;background:transparent;}
+#klanarchia-editor .ke-talent-editor .kt-preview-config > summary {border:1px solid transparent;box-shadow:none;}
+#klanarchia-editor .ke-talent-editor .kt-preview-config > summary:hover {background:#c4a66a16;border-color:transparent;}
+#klanarchia-editor .ke-talent-editor .kt-preview-config-panel {left:0;max-width:calc(100vw - 60px);box-sizing:border-box;}
+#klanarchia-editor .ke-talent-columns .ke-preview-background-toggle {display:flex;align-items:center;gap:8px;margin-top:14px;}
+#klanarchia-editor .ke-preview-background-toggle input {accent-color:#c3a65e;}
+#klanarchia-editor .ke-talent-columns input.ke-talent-cost-input {width:68px;flex:none;padding:5px 7px;}
+#klanarchia-editor .ke-talent-cost-input:disabled {opacity:.4;}
+#klanarchia-editor .ke-talent-usage {border:0;padding:0;margin:18px 0;min-width:0;}
+#klanarchia-editor .ke-talent-usage legend {font-size:14px;margin-bottom:8px;}
+
+#klanarchia-editor .ke-talent-usage-buttons {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
+#klanarchia-editor .ke-talent-usage-buttons button {height:48px;padding:6px 3px;display:flex;align-items:center;justify-content:center;color:#ccb579;border-color:#a58b4c44;}
+#klanarchia-editor .ke-talent-usage-buttons button:hover {background:#c3a65e12;border-color:#c3a65e;}
+#klanarchia-editor .ke-talent-usage-buttons button[aria-pressed=true] {background:#c3a65e22;border-color:#d4b66e;box-shadow:inset 0 -2px #d4b66e;}
+#klanarchia-editor .ke-talent-usage-buttons button:focus-visible {outline:2px solid #d4b66e;outline-offset:2px;}
+#klanarchia-editor .ke-talent-usage-buttons svg {width:24px;height:24px;}
+#klanarchia-editor .ke-usage-symbols {display:flex;align-items:center;justify-content:center;gap:3px;}
+#klanarchia-editor .ke-usage-symbols>span {display:block;background:currentColor;mask-repeat:no-repeat;mask-size:contain;mask-position:center;}
+#klanarchia-editor .ke-usage-square {width:11px;height:16px;}
+#klanarchia-editor .ke-usage-once {width:28px;height:30px;}
+
+#klanarchia-editor .ke-talent-icon-flags {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:16px 0;}
+#klanarchia-editor .ke-talent-flag-control {display:flex;align-items:center;gap:6px;min-width:0;}
+#klanarchia-editor .ke-talent-flag-control.is-cost,#klanarchia-editor .ke-talent-flag-control.is-text {grid-column:span 2;}
+#klanarchia-editor .ke-talent-flag-control button {width:100%;height:48px;display:flex;align-items:center;justify-content:center;padding:6px;color:#ccb579;border-color:#a58b4c44;}
+#klanarchia-editor .ke-talent-flag-control.is-cost button {flex:1;min-width:36px;}
+#klanarchia-editor .ke-talent-columns .ke-talent-cost-input {width:54px;flex:none;padding:7px 4px;}
+#klanarchia-editor .ke-talent-flag-control button:hover {background:#c3a65e12;border-color:#c3a65e;}
+#klanarchia-editor .ke-talent-flag-control button[aria-pressed=true] {background:#c3a65e22;border-color:#d4b66e;box-shadow:inset 0 -2px #d4b66e;}
+#klanarchia-editor .ke-talent-flag-control button:focus-visible {outline:2px solid #d4b66e;outline-offset:2px;}
+#klanarchia-editor .ke-flag-symbol {display:block;width:28px;height:30px;background:currentColor;mask-repeat:no-repeat;mask-size:contain;mask-position:center;}
+#klanarchia-editor .ke-nonrenewable-label {font-family:Georgia,serif;font-style:italic;font-weight:bold;font-size:12px;}
+#klanarchia-editor .ke-action-label {font-size:13px;}
+#klanarchia-editor .ke-talent-text-field {margin-bottom:14px;}
+#klanarchia-editor .ke-talent-columns .ke-talent-text-field>label {margin-bottom:6px;}
+#klanarchia-editor .ke-text-formatting {display:flex;flex-wrap:wrap;gap:4px;padding:5px;background:#171b1640;border:1px solid #a58b4c44;border-bottom:0;border-radius:4px 4px 0 0;}
+#klanarchia-editor .ke-text-formatting button {padding:3px 7px;min-width:28px;font-size:12px;border-color:transparent;}
+#klanarchia-editor .ke-text-formatting button:hover {background:#c3a65e22;border-color:#a58b4c66;}
+#klanarchia-editor .ke-text-formatting button:focus-visible {outline:2px solid #d4b66e;outline-offset:1px;}
+#klanarchia-editor .ke-talent-text-field textarea,#klanarchia-editor .ke-talent-text-field input {border-top-left-radius:0;border-top-right-radius:0;}
+
+#klanarchia-editor .ke-talent-columns .ke-talent-text-field input,
+#klanarchia-editor .ke-talent-columns .ke-talent-text-field textarea {font-size:18px;line-height:1.5;padding:11px 12px;}
+#klanarchia-editor .ke-talent-columns .ke-talent-text-field>label {font-size:16px;}
+#klanarchia-editor .ke-talent-text-field .ke-text-formatting button {font-size:14px;padding:4px 8px;}#klanarchia-editor .ke-talent-overflow-warning {margin:10px 0 0;padding:9px 12px;border-left:3px solid #dd9a56;background:#dd9a5612;color:#f0bb88;font-size:14px;line-height:1.4;}
+#klanarchia-editor .ke-talent-letter-spacing {border:0;padding:0;margin:20px 0;min-width:0;}
+#klanarchia-editor .ke-talent-letter-spacing legend {color:#d1b572;font-size:14px;margin-bottom:12px;}
+#klanarchia-editor .ke-talent-columns .ke-talent-letter-spacing label {display:grid;grid-template-columns:1fr 88px;align-items:center;gap:8px;margin-bottom:8px;}
+#klanarchia-editor .ke-talent-editable {border:0;padding:0;margin:0;min-width:0;}
+#klanarchia-editor .ke-talent-save-tools {display:flex;align-items:center;gap:12px;}
+#klanarchia-editor .ke-saving-spinner {display:inline-block;width:12px;height:12px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:middle;animation:ke-talent-spin .7s linear infinite;}
+@keyframes ke-talent-spin {to{transform:rotate(360deg);}}
+#klanarchia-editor .ke-talent-save-error {color:#f0bb88;}
+#klanarchia-editor .ke-talent-history {margin:0 0 16px;font-size:13px;}
+#klanarchia-editor .ke-talent-history summary {cursor:pointer;color:#cbb47a;}
+#klanarchia-editor .ke-talent-history small {display:block;opacity:.7;}
+#klanarchia-editor .ke-talent-history li {margin-bottom:8px;}
+#klanarchia-editor .ke-talent-list article {display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid #a58b4c44;}
+#klanarchia-editor .ke-talent-list h4 {font:22px Georgia,serif;margin:0 0 6px;color:#e7dfcb;overflow-wrap:anywhere;}
+#klanarchia-editor .ke-talent-list small {opacity:.65;}
+@media(prefers-reduced-motion:reduce){#klanarchia-editor .ke-saving-spinner{animation:none;}}

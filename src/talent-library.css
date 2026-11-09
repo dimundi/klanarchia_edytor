@@ -1,0 +1,32 @@
+#klanarchia-editor .ke-library { display:grid; grid-template-columns:300px minmax(0,1fr); gap:24px; min-height:520px; text-align:left; }
+#klanarchia-editor .ke-library-sidebar { border-right:1px solid #c3a65e40; padding-right:20px; }
+#klanarchia-editor .ke-library-tools { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; }
+#klanarchia-editor .ke-library h3 { margin:0; font-size:25px; }
+#klanarchia-editor .ke-library button { cursor:pointer; }
+#klanarchia-editor .ke-library-row { display:flex; align-items:center; gap:6px; min-height:38px; border-radius:3px; }
+#klanarchia-editor .ke-library-row.is-child { padding-left:26px; }
+#klanarchia-editor .ke-library-row.is-current { background:#c3a65e20; }
+#klanarchia-editor .ke-library-row input { width:16px; height:16px; flex:none; margin:0 4px; accent-color:#c3a65e; }
+#klanarchia-editor .ke-library .ke-library-name,#klanarchia-editor .ke-library .ke-library-disclosure { border:0; background:none; padding:6px 2px; box-shadow:none; }
+#klanarchia-editor .ke-library-name { flex:1; text-align:left; font-size:14px; }
+#klanarchia-editor .ke-library-count { opacity:.5; padding-right:8px; font-size:12px; }
+#klanarchia-editor .ke-library-all { width:100%; text-align:left; margin-bottom:12px; }
+#klanarchia-editor .ke-library-selection { display:flex; justify-content:space-between; align-items:center; margin:20px 0 10px; font-size:13px; }
+#klanarchia-editor .ke-library-folders { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:24px; }
+#klanarchia-editor .ke-library-folders button { display:flex; align-items:center; gap:10px; padding:12px 18px; background:#c3a65e0c; }
+#klanarchia-editor .ke-library-empty { padding:50px 16px; text-align:center; opacity:.8; }
+#klanarchia-editor .ke-library-empty h4 { margin:0 0 10px; font-size:23px; }
+#klanarchia-editor .ke-library-empty p { max-width:560px; margin:auto; }
+#klanarchia-editor .ke-library-form { display:flex; flex-wrap:wrap; align-items:end; gap:12px; padding:20px; border:1px solid #c3a65e40; }
+#klanarchia-editor .ke-library-form label { display:grid; gap:8px; flex:1; min-width:180px; }
+@media(max-width:760px) { #klanarchia-editor .ke-library { grid-template-columns:1fr; } #klanarchia-editor .ke-library-sidebar { border-right:0; border-bottom:1px solid #c3a65e40; padding:0 0 20px; } }
+#klanarchia-editor .ke-library button { font:inherit; color:#ded5bd; background:transparent; border:1px solid #a58b4c66; border-radius:4px; padding:7px 11px; line-height:1.4; transition:background .15s,border-color .15s; }
+#klanarchia-editor .ke-library button:hover { background:#c3a65e18; border-color:#c3a65e; }
+#klanarchia-editor .ke-library button:focus-visible { outline:2px solid #c3a65e; outline-offset:2px; }
+#klanarchia-editor .ke-library button:disabled { opacity:.4; cursor:default; }
+#klanarchia-editor .ke-library input:not([type=checkbox]) { box-sizing:border-box; border:1px solid #a58b4c66; border-radius:4px; padding:9px 11px; font:inherit; color:#eee6d1; background:#171b1670; }
+#klanarchia-editor .ke-library button.ke-library-name,#klanarchia-editor .ke-library button.ke-library-disclosure { border:0; background:none; padding:6px 2px; }
+#klanarchia-editor .ke-library button.ke-library-name:hover { color:#e6c77c; }
+#klanarchia-editor .ke-library-tools strong { font-size:14px; letter-spacing:.03em; }
+#klanarchia-editor .ke-library-tools button { font-size:13px; }
+#klanarchia-editor .ke-library-content h3 { font-family:Georgia,serif; font-weight:400; color:#e8ddbc; }

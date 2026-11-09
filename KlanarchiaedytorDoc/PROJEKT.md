@@ -88,3 +88,20 @@ Kreator ma ekran wyboru wielu szablonów z miniaturami, otwieraniem i duplikow
 - Warianty graficzne: jeden wybór całego kompletu grafik, z ramką i symbolem kosztu. Jedno pole graphicVariant; stare osobne ustawienia tylko do odczytu zgodności. Każdy wariant w osobnym katalogu z tymi samymi 13 nazwami SVG. Aktualny wybór: Tuszowy (ink). Szczegóły: [Warianty graficzne](Warianty%20graficzne.md).
 
 - Dostępne są tylko dwa warianty graficzne i katalogi: Oryginalny (original) i Tuszowy (ink). Wycofane tuszowe odmiany odczytujemy jako ink.
+
+## Biblioteka talentów — struktura startowa
+
+Pierwsza grupa: Talenty archetypów. Podgrupy: Egzorcysta, Inkwizytor, Kronikarz, Rzecznik, Siepacz, Szabrownik, Wiedźmiarz, Żarmistrz, Żerca. Hierarchia i sposób pracy zatwierdzone w dokumencie [Biblioteka talentów](Biblioteka%20talentów.md). Zgodnie z poleceniem użytkownika na tym etapie bez kodowania i bez tworzenia tabel lub rekordów grup.
+2026-11-09: uruchomiono bibliotekę grup w module Talenty. Drzewo, tworzenie grup/podgrup, zaznaczanie i eksport struktury zapisanej w dwóch nowych tabelach. Dodano Talenty archetypów z dziewięcioma podgrupami. Bez importu treści talentów; ich kreator, historia i eksport kart pozostają kolejnym etapem.
+
+2026-11-09: uruchomiono trwały zapis talentów w bazie WordPressa z wersjami i historią autor/data/zmienione pola. Biblioteka pokazuje zapisane talenty, otwiera je ponownie i zlicza w grupach. Zapamiętywane są treści, oznaczenia, typografia i konkretna wersja szablonu. Bez zmian danych starego edytora, importu i wdrożenia produkcyjnego. Szczegóły: Biblioteka talentów.md oraz Baza danych.md.
+
+## TODO — Asystent Klanarchii
+
+- [ ] Zbudować asystenta AI dla wybranych użytkowników, pomagającego w opracowaniu talentów oraz w korekcie tekstu podręcznika Klanarchii.
+- Zakres korekty podręcznika: ortografia, gramatyka, interpunkcja, styl oraz spójność terminologii i zapisów zasad. Wątpliwości dotyczące mechaniki zgłaszać osobno, bez samodzielnego zmieniania reguł.
+- Wspólna wiedza asystenta: zatwierdzone materiały, słownik terminów, zasady redakcyjne i przykłady poprawnych talentów oraz korekt. Materiały wersjonowane i uzupełniane świadomie; zatwierdzenie odpowiedzi nie oznacza automatycznego uczenia modelu.
+- Propozycje zmian do porównania i zatwierdzenia przez człowieka, z zachowaniem oryginalnego tekstu.
+- Planowana integracja przez API, z uprawnieniami wybranych kont WordPressa, kluczem po stronie serwera i limitami użycia. Wybór modelu, koszty oraz sposób pracy nad rozdziałami podręcznika do ustalenia. Historia tej rozmowy nie jest automatycznie dostępna asystentowi w edytorze.
+
+Status: pomysł do realizacji w kolejnym etapie; integracji AI jeszcze nie wdrożono. To osobny zakres od bieżącego sprawdzania pisowni przez przeglądarkę.

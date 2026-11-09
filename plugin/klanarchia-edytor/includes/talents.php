@@ -1,0 +1,75 @@
+<?php
+if (!defined('ABSPATH')) exit;
+function ke_migrate_talents() {
+ global $wpdb;
+ if(get_option('ke_talents_schema_version')==='1')return;
+ if(get_option('ke_library_schema_version')!=='1')throw new RuntimeException('Initialize library first');
+ require_once ABSPATH.'wp-admin/includes/upgrade.php';$charset=$wpdb->get_charset_collate();
+ $schemas=[
+ 'talents'=>"id bigint unsigned NOT NULL AUTO_INCREMENT, uuid char(36) NOT NULL, category_id bigint unsigned NOT NULL, current_version_id bigint unsigned NULL, lock_version bigint unsigned NOT NULL DEFAULT 0, created_at datetime NOT NULL, created_by bigint unsigned NOT NULL, updated_at datetime NOT NULL, updated_by bigint unsigned NOT NULL, archived_at datetime NULL, PRIMARY KEY  (id), UNIQUE KEY uuid (uuid), KEY category_archived (category_id,archived_at,id)",
+ 'talent_versions'=>"id bigint unsigned NOT NULL AUTO_INCREMENT, talent_id bigint unsigned NOT NULL, version_no bigint unsigned NOT NULL, template_version_id bigint unsigned NOT NULL, schema_version int unsigned NOT NULL, document longtext NOT NULL, created_at datetime NOT NULL, created_by bigint unsigned NOT NULL, PRIMARY KEY  (id), UNIQUE KEY talent_version (talent_id,version_no), KEY template_version_id (template_version_id)",
+ 'talent_texts'=>"talent_version_id bigint unsigned NOT NULL, language varchar(2) NOT NULL, name varchar(200) NOT NULL, flavor_description longtext NOT NULL, description longtext NOT NULL, restriction_text varchar(200) NOT NULL, PRIMARY KEY  (talent_version_id,language), KEY language_name (language,name)",
+ 'talent_events'=>"id bigint unsigned NOT NULL AUTO_INCREMENT, talent_id bigint unsigned NOT NULL, actor_user_id bigint unsigned NOT NULL, occurred_at datetime NOT NULL, action varchar(20) NOT NULL, from_version_id bigint unsigned NULL, to_version_id bigint unsigned NOT NULL, changes longtext NOT NULL, PRIMARY KEY  (id), KEY talent_time (talent_id,occurred_at,id), KEY from_version_id (from_version_id), KEY to_version_id (to_version_id)"
+ ];
+ foreach($schemas as $table=>$body){$body=str_replace(', ',",\n",$body);dbDelta('CREATE TABLE '.ke_table($table)." (\n$body\n) ENGINE=InnoDB $charset;");if($wpdb->last_error)throw new RuntimeException('Talent schema failed');}
+ foreach([['talents','category_id','talent_categories'],['talent_versions','talent_id','talents'],['talent_versions','template_version_id','template_versions'],['talent_texts','talent_version_id','talent_versions'],['talent_events','talent_id','talents'],['talent_events','from_version_id','talent_versions'],['talent_events','to_version_id','talent_versions']] as [$table,$column,$target]){
+ $name='ke_'.substr(md5(ke_table($table).$column),0,20);
+ if(!$wpdb->get_var($wpdb->prepare('SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME=%s AND CONSTRAINT_NAME=%s',ke_table($table),$name)))ke_db_query('ALTER TABLE '.ke_table($table).' ADD CONSTRAINT '.$name.' FOREIGN KEY ('.$column.') REFERENCES '.ke_table($target).'(id) ON DELETE RESTRICT');
+ }
+ update_option('ke_talents_schema_version','1',false);
+}
+function ke_talents_ready(){if(get_option('ke_talents_schema_version')!=='1')throw new KE_Request_Error('Run talents migration first',503);}
+function ke_talent_plain($v,$max,$required=false){ke_require_value(is_string($v)&&mb_strlen($v)<=$max&&!preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f]/',$v));if($required)ke_require_value(trim($v)!=='','Title is required');return $required?trim($v):$v;}
+function ke_validate_talent($b){
+ global $wpdb;ke_require_value(is_array($b));$c=$b['content']??null;$s=$b['settings']??null;ke_require_value(is_array($c)&&is_array($s));
+ $content=['title'=>ke_talent_plain($c['title']??null,200,true),'flavor'=>ke_talent_plain($c['flavor']??null,10000),'mechanics'=>ke_talent_plain($c['mechanics']??null,10000),'restriction'=>ke_talent_plain($c['restriction']??null,200)];
+ preg_match_all('/\[([a-z][a-z0-9_-]*):[^\]]*\]/',$content['mechanics'],$matches);$tags=$wpdb->get_col('SELECT tag FROM '.ke_table('text_annotations').' WHERE archived_at IS NULL');foreach($matches[1] as $tag)ke_require_value(in_array($tag,$tags,true),'Unknown text annotation: '.$tag);
+ $flags=[];foreach(['hexMark','cost','play','gift','specialRules','nonRenewable'] as $id)$flags[$id]=ke_bool($s['flags'][$id]??null);
+ $usage=$s['usage']??null;ke_require_value(in_array($usage,['none','mission-one','mission-three','once'],true));$letters=[];$lines=[];
+ foreach(['title','flavor','mechanics'] as $role){ke_require_value(isset($s['letterSpacing'])&&array_key_exists($role,$s['letterSpacing']));$v=$s['letterSpacing'][$role];$letters[$role]=$v===null?null:ke_number($v,-2,10);}
+ foreach(['flavor','mechanics'] as $role){ke_require_value(isset($s['lineHeight'])&&array_key_exists($role,$s['lineHeight']));$v=$s['lineHeight'][$role];$lines[$role]=$v===null?null:ke_number($v,.75,3);}
+ return ['categoryId'=>ke_uuid($b['categoryId']??null),'content'=>$content,'settings'=>['templateId'=>ke_uuid($s['templateId']??null),'templateRevision'=>ke_number($s['templateRevision']??null,1,PHP_INT_MAX,true),'flags'=>$flags,'action'=>ke_bool($s['action']??null),'usage'=>$usage,'cost'=>ke_number($s['cost']??null,0,9,true),'letterSpacing'=>$letters,'lineHeight'=>$lines]];
+}
+function ke_talent_record($uuid,$language){
+ global $wpdb;ke_talents_ready();
+ $row=$wpdb->get_row($wpdb->prepare('SELECT t.*,c.uuid AS category_uuid,v.document,v.created_at AS version_date,v.created_by AS version_author,v.template_version_id FROM '.ke_table('talents').' t JOIN '.ke_table('talent_categories').' c ON c.id=t.category_id JOIN '.ke_table('talent_versions').' v ON v.id=t.current_version_id AND v.talent_id=t.id WHERE t.uuid=%s AND t.archived_at IS NULL',$uuid),ARRAY_A);
+ if(!$row)throw new KE_Request_Error('Talent not found',404);
+ $text=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talent_texts').' WHERE talent_version_id=%d AND language=%s',$row['current_version_id'],$language),ARRAY_A);
+ $template=$wpdb->get_row($wpdb->prepare('SELECT v.*,t.uuid FROM '.ke_table('template_versions').' v JOIN '.ke_table('templates').' t ON t.id=v.template_id WHERE v.id=%d',$row['template_version_id']),ARRAY_A);
+ return ['id'=>$row['uuid'],'revision'=>(int)$row['lock_version'],'categoryId'=>$row['category_uuid'],'content'=>['title'=>$text['name']??'','flavor'=>$text['flavor_description']??'','mechanics'=>$text['description']??'','restriction'=>$text['restriction_text']??''],'hasTranslation'=>(bool)$text,'settings'=>json_decode($row['document'],true),'template'=>['id'=>$template['uuid'],'revision'=>(int)$template['version_no'],'createdAt'=>$template['created_at'].'Z','updatedAt'=>$template['created_at'].'Z','template'=>ke_validate_template(json_decode($template['document'],true))],'updatedAt'=>str_replace(' ','T',$row['updated_at']).'Z'];
+}
+function ke_talent_get($r){global $wpdb;ke_db_query('START TRANSACTION WITH CONSISTENT SNAPSHOT');$result=ke_talent_record(ke_uuid($r['uuid']),ke_api_language($r));ke_db_query('COMMIT');return $result;}
+function ke_talents_list($r){
+ global $wpdb;ke_talents_ready();$category=ke_uuid($r->get_param('category'));$page=max(1,(int)$r->get_param('page'));$offset=($page-1)*100;$lang=ke_api_language($r);
+ $rows=$wpdb->get_results($wpdb->prepare('SELECT t.uuid AS id,t.lock_version AS revision,t.updated_at,c.uuid AS categoryId,COALESCE(x.name,pl.name) AS name FROM '.ke_table('talents').' t JOIN '.ke_table('talent_categories').' c ON c.id=t.category_id LEFT JOIN '.ke_table('talent_categories').' p ON p.id=c.parent_id LEFT JOIN '.ke_table('talent_texts').' x ON x.talent_version_id=t.current_version_id AND x.language=%s LEFT JOIN '.ke_table('talent_texts')." pl ON pl.talent_version_id=t.current_version_id AND pl.language='pl' WHERE t.archived_at IS NULL AND (c.uuid=%s OR p.uuid=%s) ORDER BY t.updated_at DESC,t.id DESC LIMIT 101 OFFSET %d",$lang,$category,$category,$offset),ARRAY_A);
+ return ['items'=>array_map(function($row){$row['revision']=(int)$row['revision'];$row['updatedAt']=str_replace(' ','T',$row['updated_at']).'Z';unset($row['updated_at']);return $row;},array_slice($rows,0,100)),'hasMore'=>count($rows)>100];
+}
+function ke_talent_put($r){
+ global $wpdb;ke_talents_ready();$uuid=ke_uuid($r['uuid']);$body=$r->get_json_params();$expected=(int)ke_number($body['revision']??null,0,PHP_INT_MAX,true);$lang=ke_api_language($r);
+ ke_db_query('START TRANSACTION');$wpdb->get_var('SELECT id FROM '.ke_table('catalogue_state').' WHERE id=1 FOR UPDATE');$data=ke_validate_talent($body);$settings=$data['settings'];
+ $existing=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talents').' WHERE uuid=%s FOR UPDATE',$uuid),ARRAY_A);
+ if(($existing&&(int)$existing['lock_version']!==$expected)||(!$existing&&$expected!==0))throw new KE_Request_Error('Talent changed; reopen before saving',409);
+ if($existing&&$existing['archived_at']!==null)throw new KE_Request_Error('Talent is archived',409);
+ $category=$wpdb->get_row($wpdb->prepare('SELECT id,parent_id FROM '.ke_table('talent_categories').' WHERE uuid=%s AND archived_at IS NULL',$data['categoryId']),ARRAY_A);ke_require_value($category&&$category['parent_id']!==null,'Choose a subgroup');
+ $tv=$wpdb->get_var($wpdb->prepare('SELECT v.id FROM '.ke_table('template_versions').' v JOIN '.ke_table('templates')." t ON t.id=v.template_id WHERE t.uuid=%s AND v.version_no=%d AND t.kind='talent_card'",$settings['templateId'],$settings['templateRevision']));ke_require_value((bool)$tv,'Template version not found');
+ $now=current_time('mysql',true);$actor=get_current_user_id();$revision=$expected+1;
+ if(!$existing){ke_db_write('insert','talents',['uuid'=>$uuid,'category_id'=>(int)$category['id'],'created_at'=>$now,'created_by'=>$actor,'updated_at'=>$now,'updated_by'=>$actor]);$id=(int)$wpdb->insert_id;}else $id=(int)$existing['id'];
+ ke_db_write('insert','talent_versions',['talent_id'=>$id,'version_no'=>$revision,'template_version_id'=>(int)$tv,'schema_version'=>1,'document'=>wp_json_encode($settings,JSON_UNESCAPED_UNICODE),'created_at'=>$now,'created_by'=>$actor]);$version=(int)$wpdb->insert_id;
+ if($existing)ke_db_query($wpdb->prepare('INSERT INTO '.ke_table('talent_texts').' (talent_version_id,language,name,flavor_description,description,restriction_text) SELECT %d,language,name,flavor_description,description,restriction_text FROM '.ke_table('talent_texts').' WHERE talent_version_id=%d AND language<>%s',$version,$existing['current_version_id'],$lang));
+ ke_db_write('insert','talent_texts',['talent_version_id'=>$version,'language'=>$lang,'name'=>$data['content']['title'],'flavor_description'=>$data['content']['flavor'],'description'=>$data['content']['mechanics'],'restriction_text'=>$data['content']['restriction']]);
+ $changes=[];$previous=$existing?json_decode($wpdb->get_var($wpdb->prepare('SELECT document FROM '.ke_table('talent_versions').' WHERE id=%d',$existing['current_version_id'])),true):[];
+ foreach($settings as $key=>$value)if(!array_key_exists($key,$previous)||$previous[$key]!==$value)$changes[]='settings.'.$key;
+ $oldtext=$existing?$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talent_texts').' WHERE talent_version_id=%d AND language=%s',$existing['current_version_id'],$lang),ARRAY_A):null;
+ foreach(['title'=>'name','flavor'=>'flavor_description','mechanics'=>'description','restriction'=>'restriction_text'] as $key=>$column)if(!$oldtext||$oldtext[$column]!==$data['content'][$key])$changes[]=$lang.'.'.$key;
+ if(!$existing||(int)$existing['category_id']!==(int)$category['id'])$changes[]='category';
+ ke_db_write('insert','talent_events',['talent_id'=>$id,'actor_user_id'=>$actor,'occurred_at'=>$now,'action'=>$existing?'save':'create','from_version_id'=>$existing['current_version_id']??null,'to_version_id'=>$version,'changes'=>wp_json_encode(['fields'=>$changes,'categoryId'=>$data['categoryId']],JSON_UNESCAPED_UNICODE)]);
+ ke_db_write('update','talents',['category_id'=>(int)$category['id'],'current_version_id'=>$version,'lock_version'=>$revision,'updated_at'=>$now,'updated_by'=>$actor],['id'=>$id]);
+ $result=ke_talent_record($uuid,$lang);ke_db_query('COMMIT');return $result;
+}
+function ke_talent_history($r){
+ global $wpdb;ke_talents_ready();$uuid=ke_uuid($r['uuid']);$id=$wpdb->get_var($wpdb->prepare('SELECT id FROM '.ke_table('talents').' WHERE uuid=%s AND archived_at IS NULL',$uuid));if(!$id)throw new KE_Request_Error('Talent not found',404);
+ $page=max(1,(int)$r->get_param('page'));$rows=$wpdb->get_results($wpdb->prepare('SELECT e.occurred_at,e.actor_user_id,e.action,e.changes,v.version_no FROM '.ke_table('talent_events').' e JOIN '.ke_table('talent_versions').' v ON v.id=e.to_version_id WHERE e.talent_id=%d ORDER BY e.id DESC LIMIT 101 OFFSET %d',$id,($page-1)*100),ARRAY_A);
+ return ['items'=>array_map(function($row){$user=get_userdata((int)$row['actor_user_id']);return ['revision'=>(int)$row['version_no'],'createdAt'=>str_replace(' ','T',$row['occurred_at']).'Z','author'=>$user?$user->display_name:'#'.$row['actor_user_id'],'action'=>$row['action'],'changes'=>json_decode($row['changes'],true)['fields']??[]];},array_slice($rows,0,100)),'hasMore'=>count($rows)>100];
+}
+add_action('rest_api_init',function(){foreach([['/talents','GET','ke_talents_list'],['/talents/(?P<uuid>[a-f0-9-]{36})','GET','ke_talent_get'],['/talents/(?P<uuid>[a-f0-9-]{36})','PUT','ke_talent_put'],['/talents/(?P<uuid>[a-f0-9-]{36})/history','GET','ke_talent_history']] as [$path,$method,$callback])register_rest_route('klanarchia-editor/v1',$path,['methods'=>$method,'permission_callback'=>'ke_can_access','callback'=>function($r)use($callback){return ke_api_run($callback,$r);}]);});
+if(defined('WP_CLI')&&WP_CLI)WP_CLI::add_command('ke talents-init',function(){if(!ke_can_access())WP_CLI::error('Administrator required');try{ke_migrate_talents();WP_CLI::success('Talent schema ready.');}catch(Throwable $e){WP_CLI::error($e->getMessage());}});

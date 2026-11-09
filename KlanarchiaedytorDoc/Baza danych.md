@@ -93,3 +93,31 @@ Koszt: elements.cost i graphicColourIds.cost oraz costValue (liczba całkowita 0
 - Paleta: Atrament zastąpiony Czarnym, Fiolet opowieści zastąpiony Błękitem Zmroku. Stare kolory wycofane z wyboru; dawne ID/HEX kierują do zastępników. Historia dokumentów zachowana bez przepisywania. Nowe style korzystają z czerni i Błękitu Zmroku.
 
 - Warianty graficzne: jeden wybór całego kompletu grafik, z ramką i symbolem kosztu. Jedno pole graphicVariant; stare osobne ustawienia tylko do odczytu zgodności. Każdy wariant w osobnym katalogu z tymi samymi 13 nazwami SVG. Aktualny wybór: Tuszowy (ink). Szczegóły: [Warianty graficzne](Warianty%20graficzne.md).
+
+## Zapis talentów — wdrożony lokalnie 2026-11-09
+
+Jawna migracja `wp ke talents-init --user=1 --allow-root`, po wcześniejszej inicjalizacji katalogu i biblioteki. Oddzielna opcja ke_talents_schema_version=1; wersji katalogu i biblioteki nie zmieniono. Migracja jest powtarzalna, bez seedowania talentów i bez automatycznego wykonania na stronie.
+
+Cztery nowe tabele z prefiksem WordPressa, InnoDB:
+
+| Tabela | Bieżąca zawartość |
+| --- | --- |
+| ke_talents | UUID, podgrupa, wskaźnik aktualnej wersji, lock_version, daty i autorzy utworzenia/zmiany, archived_at |
+| ke_talent_versions | Talent, numer wersji, FK konkretnej wersji szablonu, schema_version=1, dokument ustawień, data i autor; unikalne talent_id/version_no |
+| ke_talent_texts | Wersja, język PL/EN, tytuł, fabuła, mechanika ze znacznikami, ograniczenie dostępności; unikalne version/language |
+| ke_talent_events | Talent, autor/czas, create/save, wersja przed/po, lista zmienionych pól i podgrupa |
+
+Dokument ustawień przechowuje templateId/templateRevision, flags (hexMark/cost/play/gift/specialRules/nonRenewable), action, usage (none/mission-one/mission-three/once), cost 0–9, letterSpacing (tytuł/fabuła/mechanika, null lub -2…10), lineHeight (fabuła/mechanika, null lub .75…3). To dokument w bazie, bez osobnych plików JSON. W tym pierwszym zapisie parametry mechaniczne również są w dokumencie; ewentualne wydzielenie do kolumn na potrzeby filtrowania pozostaje dalszym etapem projektu danych.
+
+Wersje i zdarzenia są dopisywane atomowo w jednej transakcji. Treści pozostałych języków kopiowane do nowej wersji bez zmian. Autor/czas wyłącznie z serwera i sesji WP. Blokada i oczekiwana rewizja zabezpieczają przed utratą równoczesnych zmian (409). Siedem nowych kluczy obcych chroni odwołania kategorii, talentów, szablonów i historii. Wskaźnik aktualnej wersji utrzymuje kod transakcyjny.
+
+API pod klanarchia-editor/v1, wyłącznie manage_options i nonce:
+
+- GET talents?category=UUID&language=pl&page=1 — podgrupa lub grupa z potomkami, stronicowanie po 100.
+- GET talents/UUID?language=pl — dane i przypięty szablon. Brak tłumaczenia zwraca puste treści, bez kopiowania fallbacku.
+- PUT talents/UUID?language=pl — oczekiwana revision, categoryId, content, settings.
+- GET talents/UUID/history?page=1 — wersje, autorzy, czasy i zmienione pola, po 100.
+
+Kategorie zwracają rzeczywiste talentCount, z sumą podgrup dla rodzica. Walidowane są długości, typy, zakresy, istnienie podgrupy/wersji szablonu oraz znane znaczniki mechaniki. Brak edycji historii i publikacji w tym etapie. Preferencje płótna nie są danymi talentu.
+
+Kopia bazy przed zmianą: wtf_www/backups/klanarchia-editor/20261109/before-talent-save/database.sql. Testy zapisu/otwierania, konfliktów, błędów sieci, historii, języków i uprawnień przeszły. Usunięto wyłącznie rekord QA; brak zaimportowanych talentów. Produkcja i stary projekt bez zmian.

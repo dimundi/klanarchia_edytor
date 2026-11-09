@@ -1,3 +1,4 @@
+import { textRenderScale } from './talent-text-layout';
 import { printTalent } from './print-talent';
 import { polishSpacing } from './polish-typography';
 import TemplateCostValue from './TemplateCostValue';
@@ -199,13 +200,13 @@ export default function TalentTemplateCreator({ language, active, storageKey }: 
   }
   function textStyle(part: TextRole): CSSProperties {
     const style = resolveTextStyle(template, part);
-    return { fontFamily: fontFamilies[style.font], fontSize: style.fontSize, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing, fontWeight: style.bold ? 700 : 400, fontStyle: style.italic ? 'italic' : 'normal', color: textColour(style,palette.colours) };
+    return { fontFamily: fontFamilies[style.font], fontSize: style.fontSize*textRenderScale, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing*textRenderScale, fontWeight: style.bold ? 700 : 400, fontStyle: style.italic ? 'italic' : 'normal', color: textColour(style,palette.colours) };
   }
   function content(part: TextRole) { return printable(part === 'title' ? `${sample.name || t.roleTitle}${sample.action ? ` ${t.actionSuffix}` : ''}:` : part === 'flavor' ? sample.flavor || t.placeholderFlavor : sample.description || t.placeholderDescription); }
   function textBox(id: ElementId) {
     const b = bodyTextBox(template,id), flow = id === 'textFlow';
     return <foreignObject x={b.x} y={b.y} width={b.width} height={b.height}>
-      <div data-text-box={id} className="kt-card-copy" style={{ height: b.height, ...(flow ? textStyle('mechanics') : textStyle(id as TextRole)) }}>
+      <div lang={language} data-text-box={id} className="kt-card-copy" style={{ width:b.width*textRenderScale,height:b.height*textRenderScale,transform:`scale(${1/textRenderScale})`,transformOrigin:'0 0', ...(flow ? textStyle('mechanics') : textStyle(id as TextRole)) }}>
         {flow ? textRoles.filter(part => template.elements[part].visible).map((part, index) => <span key={part} data-text-role={part} style={textStyle(part)}>{content(part)}{index < 2 ? ' ' : ''}</span>) : content(id as TextRole)}
       </div>
     </foreignObject>;

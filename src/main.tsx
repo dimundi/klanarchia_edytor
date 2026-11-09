@@ -1,3 +1,4 @@
+import TalentLibrary from './TalentLibrary';
 import { configureApi } from './editor-api';
 import StylesColours from './StylesColours';
 import { useEffect, useState } from 'react';
@@ -161,14 +162,15 @@ function App({ config }: { config: Config }) {
       </div>}
       </div>
     </header>
-    <section className="ke-workspace" aria-labelledby={view === 'welcome' || view === 'talent-templates' ? undefined : 'ke-view-title'} aria-label={view === 'welcome' || view === 'talent-templates' ? t.views[view] : undefined}>
-      {view !== 'welcome' && view !== 'talent-templates' && <header className="ke-workspace-header"><p className="ke-breadcrumb">{isDesign ? t.design : t.personal}</p><h2 id="ke-view-title">{t.views[view]}</h2></header>}
+    <section className="ke-workspace" aria-labelledby={view === 'welcome' || view === 'talent-templates' || view === 'talents' ? undefined : 'ke-view-title'} aria-label={view === 'welcome' || view === 'talent-templates' || view === 'talents' ? t.views[view] : undefined}>
+      {view !== 'welcome' && view !== 'talent-templates' && view !== 'talents' && <header className="ke-workspace-header"><p className="ke-breadcrumb">{isDesign ? t.design : t.personal}</p><h2 id="ke-view-title">{t.views[view]}</h2></header>}
       <div className="ke-workspace-body">
         {view === 'welcome' && status === 'ready' && <div className="ke-welcome">
           <h2 className="ke-welcome-heading">{t.welcomeHeading}</h2><div className="ke-welcome-intro"><p><strong>{t.welcomeTitle}</strong></p><p>{t.welcomeLead}</p></div>
           <section className="ke-welcome-section" aria-labelledby="ke-personal-title"><h3 id="ke-personal-title">{t.shortcuts}</h3><div className="ke-shortcuts">{shortcuts(userViews)}</div></section>
         </div>}
         {status === 'ready' && canDesign && <div hidden={view !== 'talent-templates'}><TalentTemplateCreator storageKey={`ke:talent-templates:${config.userId}`} language={config.language} active={view === 'talent-templates'} /></div>}
+        {status === 'ready' && canDesign && <div hidden={view !== 'talents'}><TalentLibrary language={config.language} active={view === 'talents'} /></div>}
         {status === 'ready' && canDesign && <div hidden={view !== 'styles-colors'}><StylesColours language={config.language} storageKey={'ke:styles-colors:' + config.userId} /></div>}
         {status === 'loading' && <p className="ke-status" role="status">{t.loading}</p>}
         {(status === 'error' || (status === 'ready' && !allowed)) && <p className="ke-status ke-error" role="alert">{t.error}</p>}

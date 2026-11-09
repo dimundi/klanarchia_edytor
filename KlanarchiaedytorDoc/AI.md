@@ -670,3 +670,154 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 - Na wskazany przez użytkownika adres ustawiono origin: https://github.com/dimundi/klanarchia_edytor.git. Repozytorium zdalne było puste. Utworzono i wysłano pierwszy commit fcb3efe (Initial Klanarchia editor project), gałąź main śledzi origin/main. Hash zdalnej gałęzi zgodny z lokalnym.
 - Potwierdzono brak node_modules, dist, exports, secrets i .env w śledzonych plikach. Usunięto kilka końcowych spacji i dodatkową pustą linię wykrytych przez git show --check; bez zmiany działania aplikacji. Zaktualizowano opis środowiska. GitHub nie jest wdrożeniem strony — produkcji nie zmieniano.
+
+## 2026-11-09 — Pierwsza grupa biblioteki talentów
+
+- Zatwierdzono grupę Talenty archetypów z dziewięcioma podgrupami archetypów. Zapisano drzewo w Biblioteka talentów.md oraz odwołania w projekcie i propozycji bazy.
+- Zachowano wcześniejsze polecenie niekodowania: istniejący projekt tabel kategorii pozostaje projektem, nie tworzono kodu, tabel ani rekordów w bazie. Dokument uwzględnia uzgodnione przeglądanie grup/podgrup, zaznaczanie, eksport/porównanie i wejście do kreatora z podgrupy. Widoki listy/kart nadal do dopracowania.
+- Weryfikacja: jedna grupa i dziewięć nazw zgodnych ze zweryfikowaną listą archetypów; wyłącznie dokumentacja.
+## 2026-11-09 — Uruchomiona biblioteka grup
+
+- Moduł Talenty otwiera bibliotekę: drzewo grup/podgrup, rozwijanie, niezależne zaznaczanie i eksport struktury grup do JSON. Kliknięcie nazwy wybiera zakres. Przejście do innego modułu zachowuje kontekst podczas tej samej sesji aplikacji.
+- Można tworzyć grupy i podgrupy. API zapisuje je w bazie; odrzuca puste/powtórzone nazwy i trzeci poziom. Dostęp nadal tylko dla administratora. PL/EN interfejs, nazwy kategorii mają fallback PL; nie wymyślano tłumaczeń archetypów.
+- Dwie nowe tabele: ke_talent_categories oraz ke_talent_category_texts, klucze obce, UUID, autor/data utworzenia. Oddzielna wersja ke_library_schema_version=1; istniejący schemat palety/szablonów pozostaje w wersji 1. Jawna, powtarzalna inicjalizacja: `wp ke library-init --user=1 --allow-root`. Bez migracji przy odwiedzinach.
+- Utworzono Talenty archetypów i dziewięć podgrup. Nie importowano treści talentów. Kreator talentu, jego zapis/historia, porównywanie, eksport kart i lista/karty pozostają kolejnym etapem. Obecny eksport dotyczy wyłącznie struktury grup.
+- Kopia bazy: wtf_www/backups/klanarchia-editor/20261109/before-library/database.sql. Stary projekt bez zmian.
+- Weryfikacja: PHP lint i build TS/Vite poprawne. Test przeglądarkowy: 10 kategorii, zaznaczanie, pobranie eksportu, zachowanie kontekstu, tworzenie grup/podgrup i odczyt po odświeżeniu, błędy nazw/głębokości, odmowa dostępu anonimowi/klientowi, szerokość mobilna, brak błędów JS. Usunięto wyłącznie dwie grupy QA; pozostało 10 kategorii, 1 szablon i 43 wersje. Ponowna inicjalizacja bez duplikatów. Bez wdrożenia produkcyjnego.
+
+## 2026-11-09 — Uproszczenie biblioteki
+
+- Usunięto nad biblioteką nagłówek Projektowanie / Talenty i eksport struktury grup (wraz z obsługą pobierania JSON). Pozostawiono zaznaczanie grup do przyszłych działań na talentach.
+- Liczniki dotyczą talentów, nie podgrup. Aktualnie wszystkie wynoszą 0, ponieważ nie istnieją jeszcze rekordy talentów; po wdrożeniu ich zapisu należy podłączyć rzeczywiste zliczanie z bazy, z sumą potomków dla grupy nadrzędnej.
+- Weryfikacja: kompilacja TypeScript/Vite i git diff --check poprawne. Bez zmian danych ani wdrożenia.
+
+## 2026-11-09 — Bez widoku całej biblioteki
+
+- Usunięto przycisk Cała biblioteka. Po wczytaniu wybierana jest pierwsza grupa nadrzędna (obecnie Talenty archetypów); dalsze przeglądanie przez grupy i podgrupy.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Bez zmian bazy.
+
+## 2026-11-09 — Usunięcie wyszukiwania z biblioteki
+
+- Na polecenie użytkownika usunięto pole Szukaj talentu, jego stan i nieużywane style. Umiejscowienie i zasady wyszukiwania wymagają osobnego ustalenia.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Bez zmian danych.
+
+## 2026-11-09 — Miejsce przycisku tworzenia talentu
+
+- Dodano + Utwórz talent po prawej stronie nagłówka wybranej podgrupy (PL/EN). W grupie nadrzędnej pozostaje + Podgrupa. To podgląd umiejscowienia: przycisk nieaktywny, z opisem o przygotowywanym edytorze talentu; bez pozornego zapisu i nowych danych.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Bez zmian bazy.
+
+## 2026-11-09 — Roboczy edytor talentu
+
+- Przycisk Utwórz talent otwiera edytor w kontekście podgrupy. Trzy kolumny: treść, podgląd pośrodku, ustawienia. Wybór szablonu z istniejącej bazy, tytuł/fabuła/mechanika/ograniczenie, oznaczenia, koszt 0–9, wykluczające się pola użyć/raz na scenę, indywidualne nadpisanie interlinii fabuły/mechaniki.
+- Podgląd korzysta ze współdzielonego renderera miniatur, rozszerzonego o opcjonalną treść; dotychczasowe miniatury szablonów zachowują przykład. Nie zmienia szablonów w bazie. Powrót wymaga potwierdzenia odrzucenia zmienionego szkicu; odświeżenie ostrzega przed utratą. Przejście do innego modułu zachowuje otwarty szkic w pamięci.
+- Jawnie oznaczony szkic bez zapisu do bazy. Nie utworzono tabel/wersji talentów ani historii. Formatowania oznaczeń i zmienna liczba pól użyć pozostają do podłączenia; obecne pola użyć odtwarzają szablon. Brak importu talentów. Zapis i historia wymagają osobnego etapu.
+- Weryfikacja: build TypeScript/Vite poprawny.
+- Test przeglądarkowy przeszedł: wejście z podgrupy, podgląd szablonu z bazy, aktualizacja tekstu i kosztu SVG, tryby użyć, ograniczenie, potwierdzenie odrzucenia i powrót do tej samej podgrupy; brak błędów JS i zapisów do bazy. Dodano jednoznaczne etykiety dostępności pól wyboru.
+
+## 2026-11-09 — Konfiguracja podglądu talentu
+
+- Obok Podgląd dodano obrysową zębatkę zgodną z kreatorem szablonu. Panel: szachownica, biały, szary, ciemny, przygaszony beż z gradientem i własny kolor. Domyślnie beż; klik poza panelem i Escape zamykają ustawienia.
+- Przełącznik Pokaż tło ramki dotyczy wyłącznie kopii do renderowania podglądu. Nie zmienia szablonu ani treści i nie oznacza talentu jako zmienionego. Domyślnie respektuje widoczność tła szablonu, ale pozwala ją nadpisać w obu kierunkach.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna; bez zmian bazy.
+
+## 2026-11-09 — Koszt i użycia pod ręką
+
+- Wartość kosztu przeniesiono do wiersza Koszt; pole 0–9 stale widoczne, aktywne po włączeniu kosztu. Zachowuje wartość po wyłączeniu symbolu.
+- Listę rozwijaną użyć zastąpiono trzema widocznymi opcjami radiowymi z klikalnym całym wierszem: Brak, Pola użyć, Raz na scenę. Wybór nadal wzajemnie wykluczający.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Bez zmian bazy.
+
+## 2026-11-09 — Cztery tryby użyć talentu
+
+- Użycia: Brak, Raz na misję (1 kwadrat), Trzy razy na misję (3 kwadraty), Raz na scenę. Jeden wybór radiowy, bez możliwości łączenia trybów.
+- Renderer podglądu przyjmuje liczbę pól 1 lub 3; pojedynczy kwadrat zachowuje rozmiar i pozycję pierwszego pola szablonu. Miniatury szablonów nadal domyślnie pokazują trzy pola.
+- Weryfikacja: TypeScript/Vite poprawne. Test przeglądarkowy potwierdził przełączanie czterech opcji i odpowiednią liczbę grafik (0/1/3/1), podgląd tekstu/kosztu, powrót z potwierdzeniem i brak błędów JS. Bez zmian bazy.
+
+## 2026-11-09 — Ikony użyć w jednym rzędzie
+
+- Zastąpiono kolumnę radio czterema przyciskami ikon: brak, 1 kwadrat, 3 kwadraty, raz na scenę. Symbole z bieżącego wariantu graficznego; nazwy w tooltipach i etykietach dostępności, aktywny tryb wyróżniony oraz aria-pressed.
+- Raz na misję renderuje trzeci (prawy) kwadrat w jego pozycji szablonu, bez zmiany rozmiaru. Trzy razy na misję pozostawia wszystkie trzy pola.
+- Weryfikacja: kompilacja TS/Vite i test przeglądarkowy czterech przycisków oraz liczby symboli poprawne, bez błędów JS i bez zapisów do bazy.
+
+## 2026-11-09 — Pozostałe oznaczenia jako ikony
+
+- Checkboxy oznaczeń zastąpiono przyciskami ikon z aktywnym stanem, tooltipem i etykietą dostępności. Grafiki pochodzą z wybranego wariantu szablonu. Koszt ma pole wartości bezpośrednio przy monetach. Nieodnawialny zachowuje tekst jako swoje właściwe oznaczenie.
+- Spójna siatka przycisków o wysokości 48 px, zgodna z użyciami. Usunięto nieużywane style dawnych wierszy checkboxów.
+- Weryfikacja: kompilacja TypeScript/Vite i test przeglądarkowy edytora (koszt, tekst, cztery tryby użyć, powrót) poprawne. Bez błędów JS i zmian bazy.
+
+## 2026-11-09 — Podpis i prawa kolumna
+
+- Podpis przycisku nieodnawialny zaczyna się małą literą. Pole Ograniczenie dostępności przeniesiono z kolumny treści do prawej kolumny ustawień, przed interlinią.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Bez zmian danych.
+
+## 2026-11-09 — Akcja i początkowa treść przykładowa
+
+- Dodano przełącznik akcja w ustawieniach oznaczeń, dopisujący (akcja) przy tytule w podglądzie tak jak w kreatorze szablonów. Domyślnie wyłączony, bez przypisywania przykładowemu talentowi niezatwierdzonej cechy.
+- Nowy szkic PL rozpoczyna się zatwierdzonym tytułem, fabułą i mechaniką Prymatu potępieńca ze współdzielonego example-talent.ts. Bez wymyślania tłumaczenia EN i bez tworzenia rekordu w bazie. Treść można od razu zmieniać.
+- Dodano jawne etykiety dostępności pól fabuły/mechaniki, niezależne od ich wypełnionej treści.
+- Weryfikacja: build TS/Vite poprawny; test przeglądarkowy potwierdził przykład oraz włączenie/wyłączenie (akcja), edycję treści, koszt/użycia i powrót; brak błędów JS i zapisów bazy.
+
+## 2026-11-09 — Formatowanie treści talentu
+
+- Sprawdzono odczytem stary TalentLibrary.tsx: prototyp używa **tekst**, *tekst*, [cecha: tekst], [aspekt: tekst], [stan: tekst]. Zachowano tę notację, bez zmian starego projektu.
+- Wprowadzono wspólny komponent pola z paskiem B/I/Cecha/Aspekt/Stan przy tytule, fabule i mechanice. Przyciski formatują zaznaczenie, bez zaznaczenia wstawiają parę znaczników; ponowne kliknięcie po objęciu zaznaczenia zdejmuje oznaczenie. Zachowanie fokusu/karetki, limity długości; Ctrl/Cmd+B/I w polach wielowierszowych.
+- Podgląd renderuje znaczniki z paletą i definicjami oznaczeń pobranymi przez usePalette ze wspólnego katalogu. Obsługuje kolory, tła, wagę, kursywę, podkreślenie, kapitaliki; rozmiar dziedziczy z szablonu. Odświeża po zapisaniu wspólnych stylów i po powrocie fokusu. Obsługiwane też własne znaczniki katalogu.
+- Parser bez HTML, z limitem zagnieżdżenia; nieznane/niedomknięte oznaczenia pozostają widoczne. Łączenie oznaczeń i pogrubienia z kursywą działa. Miniatury szablonów bez treści talentu zachowują poprzedni sposób wyświetlania.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Test przeglądarkowy sprawdził 5 znaczników, otaczanie/zdejmowanie zaznaczeń, skrót B, style z bazy, zagnieżdżenia, jednoczesne bold/italic, błędne znaczniki i dosłowne HTML bez wykonania; brak błędów JS. Bez zmian bazy.
+
+## 2026-11-09 — Białe znaki i style na pasku
+
+- Formatowanie zawęża zaznaczenie do tekstu bez skrajnych białych znaków (także NBSP/tab/nowa linia). Zachowuje separatory poza znacznikami, aby nie sklejać wyrazów; samo zaznaczenie białych znaków nic nie wstawia.
+- Nazwy Cecha/Aspekt/Stan na pasku pokazują faktyczny wspólny styl, łącznie z kolorem/tłem i kapitalikami. Współdzielona funkcja annotationStyle dla paska i podglądu, bez niezależnych ustawień.
+- Weryfikacja: TS/Vite poprawne. Test przeglądarkowy potwierdził spacje poza [cecha: Wola], bold italic Cechy, tło Aspektu, small-caps Stanu; wcześniejsze testy parsera/formatowania nadal poprawne. Bez zmian bazy.
+
+## 2026-11-09 — Formatowanie wyłącznie mechaniki
+
+- Usunięto paski formatowania tytułu i fabuły. Znaczniki są interpretowane tylko w mechanice; pozostałe pola wyświetlają zwykły tekst ze stylem szablonu. Skróty formatowania w tych polach nieaktywne.
+- Napis Aspekt na pasku ma ciemny kolor #202420 dla czytelności na tle oznaczenia. To lokalny wygląd przycisku; wspólnego stylu i podglądu talentu nie zmieniano.
+- Weryfikacja: TS/Vite oraz test przeglądarkowy formatowania poprawne; potwierdzono jeden pasek przy mechanice i ciemny tekst Aspektu. Bez zmian danych.
+
+## 2026-11-09 — Większa kolumna treści
+
+- Poszerzono lewą kolumnę z 1fr/min.230 px do 1.5fr/min.340 px, przy podglądzie 1.6fr i ustawieniach .8fr. Zachowano progi responsywne 1000/600 px.
+- Pola tytułu, fabuły i mechaniki: 18 px, interlinia 1.5, większy padding; etykiety 16 px, pasek formatowania 14 px. Bez zmiany typografii samej karty.
+- Weryfikacja: kompilacja TS/Vite poprawna. Zmiana wyłącznie CSS, bez zmian danych.
+
+## 2026-11-09 — Dzielenie wyrazów w ramce
+
+- Włączono hyphens:auto dla tekstu karty, z jawnym lang PL/EN w podglądzie i kreatorze. Długie ciągi bez możliwości podziału mogą awaryjnie łamać się dzięki overflow-wrap:anywhere. Reguły zgodne również w oknie wydruku/PDF.
+- Dzielenie słownikowe zależy od obsługi języka przez przeglądarkę/system; nie dodano własnego słownika ani zmian treści talentu.
+- Weryfikacja: kompilacja TS/Vite poprawna. Bez zmian bazy.
+
+## 2026-11-09 — Ostrzeżenie przepełnienia pod podglądem
+
+- Dodano komunikat Tekst nie mieści się w ramce pod podglądem talentu, tylko po wykryciu przepełnienia pola treści. Pomiar scrollHeight/clientHeight i scrollWidth/clientWidth z tolerancją 1 px; bez automatycznego zmniejszania pisma.
+- Pomiar odświeżany po zmianach DOM treści/stylów, zmianie rozmiaru i załadowaniu fontów. Kontrola obejmuje wspólny blok tytuł/fabuła/mechanika; celowe nakładanie ograniczenia dostępności nadal wymaga oceny człowieka. Niewidoczny blok nie zgłasza przepełnienia.
+- Weryfikacja: TS/Vite poprawne. Test przeglądarkowy potwierdził komunikat dla długiej treści, jego usunięcie po skróceniu/wyczyszczeniu, pozycję pod podglądem oraz działanie przy szerokości mobilnej; bez błędów JS i zmian bazy.
+
+## 2026-11-09 — Niezależne odstępy liter talentu
+
+- Prawa kolumna: trzy pola Odstępy między literami (pt) — Tytuł, Fabuła, Mechanika. Niezależne lokalne nadpisania stylów kopii podglądu, bez zmiany szablonu; puste pole dziedziczy jego wartość. Zakres -2 do 10, krok .05 jak w kreatorze.
+- Zmiana aktualizuje podgląd i pomiar przepełnienia; traktowana jako edycja szkicu. Zapis talentów do bazy pozostaje niewdrożony.
+- Weryfikacja: kompilacja TS/Vite oraz test przeglądarkowy poprawne: niezależność trzech ról, wartości dodatnie/ujemne/0, powrót do szablonu po wyczyszczeniu. Bez błędów JS i zapisów bazy.
+
+## 2026-11-09 — Trwały zapis talentów i historia
+
+- Na polecenie użytkownika dodano zapis/otwieranie talentów w bazie WP zamiast szkicu wyłącznie w pamięci. Kopia bazy przed DDL: wtf_www/backups/klanarchia-editor/20261109/before-talent-save/database.sql. Jawna migracja CLI ke talents-init, cztery tabele, niezależna wersja modułu 1, siedem FK. Ponowna inicjalizacja bez zmian danych. Stary projekt nietknięty.
+- API GET lista/rekord/historia i PUT UUID, admin+nonce/no-store, walidacja treści/oznaczeń/zakresów/podgrupy/szablonu. Wersje, teksty i zdarzenia w jednej transakcji; autor/czas z serwera; oczekiwana rewizja i 409 przy konflikcie. Oddzielne teksty PL/EN z zachowaniem innych języków przy każdej nowej wersji. Pola mechaniki i typografii obecnie w dokumencie ustawień; opisano różnicę wobec koncepcji kolumn w projekcie bazy.
+- Przypięcie do template_version_id i odczyt dokładnie tej wersji, nie bieżącej wersji szablonu. Zapis wszystkich dotychczasowych pól/oznaczeń/odstępów; tło podglądu i przełącznik tła ramki nadal wyłącznie podglądowe. Nie zapisuje się wyrenderowanego HTML ani automatycznie wstawionych łączników.
+- Przycisk Zapisz z kręciołkiem i blokadą wielokrotnego kliknięcia, status rewizji/niedopisanych zmian, błędy zachowujące szkic. Biblioteka listuje/otwiera talenty i sumuje rzeczywiste liczniki w grupach. Historia w edytorze: data, autor, wersja, czytelne nazwy zmienionych pól; bez przywracania.
+- Weryfikacja: TS/Vite, PHP lint i diff --check poprawne. Przeglądarka: zapis i spinner, wszystkie pola/flag/odstępy, powrót/odświeżenie/otwarcie, liczniki, historia, odrzucenie starej rewizji i błędnych danych, PL/EN, brak dostępu anonimowi/klientowi, brak błędów JS. Osobny test błędu sieci i konfliktu potwierdził zachowanie szkicu i możliwość ponowienia.
+- Kontrola SQL potwierdziła niezmienione treści wcześniejszych wersji, autorów, komplet języków, atomową historię i wspólną przypiętą wersję szablonu. Usunięto wyłącznie talent QA z 3 wersjami/zdarzeniami; po sprzątaniu 0 talentów. Nie zmieniano szablonów ani ich historii. Nie importowano talentów, nie publikowano produkcji.
+
+## 2026-11-09 — Naprawa przedwczesnego łamania tytułu w Firefoksie
+
+- Odczytano jedyny zapisany talent 80974984-aaa4-4692-85df-77785c3ee387, przypięty do szablonu rewizji 44. Tytuł Prymat potępieńca bez nowych linii i ukrytych łączników. Ujemne odstępy title=-.25, flavor=-.4, mechanics=null. Kopia odczytanego rekordu w wtf_www/backups/klanarchia-editor/20261109/saved-wrapping-record.json.
+- Chrome/Edge nie odtwarzały objawu. Osobny tymczasowy profil Firefox i dokładny SVG zapisanego talentu odtworzyły identyczne złamanie po potępień przy pustej reszcie wiersza. Problem występuje przy hyphens:auto i ujemnym letter-spacing w drobnych jednostkach układu SVG; zerowe odstępy lub wyłączone dzielenie usuwały objaw, ale zmieniałyby zamierzony wygląd. Samo white-space/overflow-wrap nie naprawiało problemu.
+- Dodano wspólny textRenderScale=8: HTML treści układany w 8-krotnie większych jednostkach i jednolicie skalowany z powrotem. Wymiary pola, font i odstępy skalowane razem; wielkość na karcie i parametry zapisane w bazie pozostają te same. Poprawka obejmuje podgląd talentu, miniatury i kreator szablonu, a przez klonowanie SVG także PDF. Dzielenie słownikowe nadal aktywne. Nie zmieniano danych talentu/szablonu ani historii.
+- Weryfikacja: build TS/Vite poprawny. Firefox na rzeczywistym zapisie: pierwszy wiersz zawiera pełny tytuł oraz początek fabuły, bez przedwczesnego urwania; zachowane dalsze dzielenie wyrazów. Testy formatowania i ostrzeżenia przepełnienia desktop/mobile przeszły. Test PDF potwierdził tekst, osadzone fonty/assety, oczyszczony SVG i fizyczny rozmiar 185.67×101.76 pt. Bez zapisów bazy i wdrożenia.
+
+## 2026-11-09 — TODO Asystent Klanarchii
+
+- W PROJEKT.md dodano TODO budowy asystenta dla wybranych użytkowników: pomoc przy talentach oraz korekta tekstu podręcznika, oparta na zatwierdzonych wzorcach i terminologii. Zmiany do zatwierdzenia, bez samowolnej modyfikacji mechaniki.
+- Zapisano plan integracji API i kwestie do ustalenia; bez implementacji, zmian aplikacji lub bazy.
+- Weryfikacja: odczyt dodanej sekcji i git diff --check; zmiana wyłącznie dokumentacji.
