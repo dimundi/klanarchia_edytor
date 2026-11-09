@@ -1,0 +1,95 @@
+# Baza danych edytora
+
+Stan lokalny, 2026-11-07. Wspólna baza WordPressa, osobne tabele edytora. Bez zmian w produkcji i starym projekcie. Model pozostałych modułów: [Projekt bazy danych](Projekt%20bazy%20danych.md).
+
+## Utworzone tabele
+
+Nazwy mają prefiks `$wpdb->prefix`, nie wpisane na stałe `wp_`.
+
+| Tabela | Zawartość |
+| --- | --- |
+| `ke_colours` | UUID, RGB, opcjonalne niezależne CMYK, kolejność, archiwizacja, autorstwo, blokada. |
+| `ke_colour_texts` | Nazwy kolorów PL/EN. |
+| `ke_text_annotations` | UUID, stały unikalny znacznik, dwa odwołania kolorów, grubość, kursywa, podkreślenie, kapitaliki, autorstwo i blokada. |
+| `ke_text_annotation_texts` | Nazwy oznaczeń PL/EN. |
+| `ke_catalogue_state` | Jeden licznik rewizji wspólnej palety i oznaczeń; blokuje równoległe nadpisanie całego katalogu. |
+| `ke_templates` | UUID, rodzaj, nazwa, bieżąca wersja, autorstwo, licznik wersji. Na razie zapisujemy rodzaj `talent_card`. |
+| `ke_template_versions` | Niezmienne wersje dokumentu szablonu z autorem i datą UTC. |
+
+Silnik InnoDB, kodowanie WordPressa. Pięć kluczy obcych chroni nazwy, odwołania kolorów i wersje szablonów. Wskaźnik bieżącej wersji szablonu i jej przynależność ustala API w jednej transakcji. Konta i zasoby WordPressa nie otrzymują dodatkowych kluczy obcych.
+
+Dokument szablonu przechowujemy jako `LONGTEXT` z JSON, walidowanym i normalizowanym przez API. Typografii i współrzędnych nie rozbijamy na kolumny. Numer formatu dokumentu to 2, numer schematu bazy to 1 (`ke_schema_version`). W oznaczeniach nie dublujemy `font_weight` kolumną `bold`; pole kompatybilności wylicza API.
+
+## Migracja i dane początkowe
+
+1. Wykonaj kopię lokalnej bazy.
+2. Uruchom `migrate-db.bat` przy działającym środowisku edytora. Wywołuje jawne `wp ke migrate --allow-root` w lokalnym kontenerze.
+3. Na nowej, pustej bazie uruchom `wp ke seed --user=ID_ADMINA --allow-root` w tym samym kontenerze. Polecenie dodaje znane formatowania i nazwy PL/EN wyłącznie przy niezmienionej, pustej palecie.
+
+Aktywacja wtyczki i wejście na stronę nie tworzą tabel ani nie importują danych. Migracja i inicjalizacja mogą być uruchomione ponownie bez zastąpienia zapisanych materiałów. DDL nie jest transakcyjne; przerwaną migrację należy sprawdzić i ponowić przed użyciem API. Nie ma automatycznej migracji przy uruchamianiu strony.
+
+Kopia sprzed pierwszej migracji: `../../wtf_www/backups/klanarchia-editor/20261107/before-schema.sql` (prywatna, poza Gitem). Wykonana `mysqldump --single-transaction` z kontenera bazy; kontener WordPressa nie zawiera mysqldump. Nie odtwarzać całej bazy jako sposobu cofnięcia pojedynczego rekordu.
+
+## API i panel
+
+Wszystkie trasy pod `/wp-json/klanarchia-editor/v1/` wymagają sesji administratora (`manage_options`) i nonce WordPress REST. Odpowiedzi mają `Cache-Control: no-store, private`. W przeglądarce nie ma danych dostępowych do MySQL.
+
+| Operacja | Trasa |
+| --- | --- |
+| Odczyt wspólnej palety | `GET catalogue?language=pl` lub `en` |
+| Transakcyjny zapis palety | `PUT catalogue?language=pl`, pola `data`, `revision` |
+| Biblioteka szablonów | `GET templates?page=1` (50 dokumentów, `hasMore`; klient pobiera kolejne strony) |
+| Zapis nowej wersji | `PUT templates/{uuid}`, pola `template`, `revision`; 0 tworzy nowy szablon |
+| Zatwierdzony import nowych szablonów | `POST templates/import`, `items` — maks. 50, zapis całej wybranej partii albo żadnego dokumentu |
+
+Konflikt rewizji zwraca 409 i pozostawia szkic w panelu. Błędny dokument nie jest zapisywany. Autorów, czas i numery wersji ustala serwer. Zmiana nazwy oznaczenia nie zmienia znacznika; zapisany znacznik jest niezmienny. Usuwanie oznaczeń oznacza archiwizację; ich znaczenie pozostaje w bazie. Używany kolor, także w zarchiwizowanym oznaczeniu, jest chroniony przed usunięciem.
+
+Paleta i biblioteka szablonów są wspólne, niezależne od konta i komputera. Nazwy palety są przechowywane osobno dla języków; przy braku tłumaczenia API pokazuje dostępną nazwę, bez automatycznego tłumaczenia.
+
+## Dane zapisane wcześniej w przeglądarce
+
+Stare `ke:styles-colors:<userId>` i `ke:talent-templates:<userId>` nie są usuwane ani automatycznie wysyłane. Panel pokazuje opcję podglądu importu.
+
+- Paleta: podgląd nazw, wartości i znaczników; zatwierdzenie scala dane. Zgodna nazwa koloru lub znacznik stylu aktualizuje istniejący wpis, zachowując jego serwerowy UUID. Pozostałe wpisy pozostają bez zmian. Konflikty nazw lub nieaktualna rewizja blokują zapis.
+- Szablony: wybór maks. 50 pozycji, podgląd nazw; UUID już obecne w bazie są zablokowane. Import zachowuje UUID, a autor, daty i wersja 1 należą do nowego zapisu serwerowego. Cała partia jest transakcyjna.
+- Uszkodzony stary zapis nie jest zastępowany. W kreatorze usunięto wczytywanie i pobieranie plików JSON. „Zapisz” wysyła szablon do bazy, pokazując wskaźnik postępu; przycisk jest zablokowany do zakończenia żądania. Import dawnych danych z przeglądarki pozostaje dostępny po podglądzie.
+
+## Weryfikacja
+
+Przeszły: kompilacja TypeScript/Vite, składnia PHP, ponowna migracja i inicjalizacja, zapis/odczyt w dwóch kontekstach przeglądarki, niezależne RGB/CMYK, niezmienność znaczników, walidacja dokumentów, konflikty rewizji, wersje szablonu z autorem i datą, podgląd i import starej palety/szablonów, rollback nieudanej partii, szerokość mobilna i brak błędów JavaScript. Potwierdzono 7 tabel i 5 kluczy obcych.
+
+Gość, sesja klienta z poprawnym nonce i administrator bez nonce nie mają dostępu do danych. Administrator z nonce otrzymuje odpowiedź; sprawdzono również nazwy EN. Narzędzia lokalne: `../../wtf_www/local-scripts/one-off/editor-database-20261107/`. Materiały QA usunięto po sprawdzeniu wersji, paletę przywrócono. Wpisy autorstwa zachowują wykonane zapisy.
+
+Historia wersji jest zapisywana, ale nie ma jeszcze interfejsu porównania/przywracania. Edytor talentów, podłączenie znaczników do jego treści, karty postaci, zestawy i eksport CMYK pozostają na kolejne etapy.
+## Kolory podstawowe i ramka — 2026-11-07
+
+Jawne `wp ke base-colours --user=ID_ADMINA --allow-root` dodaje brakujące kolory: Błękit Zmroku #3e5074, czarny #000000 i biały #ffffff. Ponowienie nie zastępuje danych. Polecenie `ke seed` również uzupełnia te kolory. Błękit ma na razie nieokreślone CMYK; czarny 0/0/0/100, biały 0/0/0/0.
+
+Dokument szablonu ma `frameColourId` wskazujące UUID palety. Starsze dokumenty bez pola dziedziczą stały UUID Błękitu Zmroku (`3e507400-0000-4000-8000-000000000001`). API sprawdza dostępność koloru, a zapis szablonu współdzieli blokadę katalogu, aby nie zapisać odwołania równolegle z archiwizacją koloru. Koloru używanego w jakiejkolwiek wersji szablonu nie można zarchiwizować; obejmuje to domyślny kolor starszych dokumentów. Zmiana RGB nadal aktualizuje wygląd bieżących podglądów. Nie wymagało to dodatkowych tabel ani migracji DDL.
+
+Dokument szablonu zawiera również graphicColourIds: hex, gift, uses, once. Każde pole wskazuje UUID z palety. Brak całego pola w starszym dokumencie oznacza czarny dla Daru Ciemności i Błękit Zmroku dla pozostałych ikon. Serwer waliduje wszystkie odwołania; ochrona archiwizacji koloru obejmuje również te cztery pola i ich historyczne/domniemane wartości. Bez dodatkowych tabel i zmian DDL.
+
+Zaznaczenie heksa jest osobnym obiektem: elements.hexMark (geometria, widoczność, blokada, proporcje) i graphicColourIds.hexMark (UUID palety). Stary zapis hexMark {colourId,size} jest odczytywany i normalizowany do nowego formatu bez przepisywania dawnych wersji; domyślnie środek heksa, czarny i rozmiar 90% krótszego boku. API waliduje kolor i chroni wszystkie historyczne odwołania. Bez nowych tabel i DDL.
+
+Obiekt nonRenewable zapisuje geometrię i widoczność w elements.nonRenewable oraz własny styl w styles.nonRenewable. Walidacja obejmuje typografię i granice karty. Brak pól w dawnym dokumencie uzupełniany jest domyślnym napisem bold italic 9 pt za Darem Ciemności. Bez zmian DDL i nowych tabel.
+
+headerRow w dokumencie szablonu przechowuje x, centerY i gap (0–30 pt). Serwer wylicza X widocznych gift/nonRenewable kolejno od lewej, zachowuje indywidualne Y, pomijając ukryte elementy, i odrzuca rząd wychodzący poza kartę. Bez pola w dawnym zapisie przyjmuje start/środek z geometrii gift i odstęp 4 pt. Rozmiary i pozostałe parametry elementów pozostają niezależne. Heks i hexMark nie uczestniczą w układzie. Bez nowych tabel i DDL.
+
+Widoczność elements.uses i elements.once jest niezależna — oba mogą być true. API i miniatura nie narzucają wykluczania. Indywidualne Y obiektów rzędu jest zapisywane w geometrii bez ponownego centrowania przy odczycie.
+
+Zagrywka zapisuje się jako elements.play oraz graphicColourIds.play. Dołączono ją przed gift do normalizacji rzędu i ochrony kolorów. Starsze dokumenty otrzymują czarny symbol 22,1 × 22,1 pt (dopasowany do strony); przy braku miejsca domyślnie ukryty. Bez nowych tabel i DDL.
+
+Zasady specjalne: elements.specialRules oraz graphicColourIds.specialRules. Normalizacja rzędu: play → gift → specialRules → nonRenewable. Starsze dokumenty bez nowych ikon otrzymują wartości domyślne; przy braku miejsca ukrywane są tylko dodawane domyślnie elementy. Walidacja kolorów i ochrona historycznych odwołań obejmuje specialRules. Bez zmian DDL.
+
+Teksty: styles.title/flavor/mechanics/nonRenewable.colourId jest odwołaniem do palety. styles.*.color służy kompatybilności; dla poprawnego colourId API zwraca aktualne RGB z bazy, ignorując dowolną wartość koloru przesłaną jako cache. Dla dawnego HEX używa ke_legacy_text_colour_map lub dopasowania istniejącego RGB. Brak koloru w palecie blokuje zapis. Ochrona archiwizacji uwzględnia odwołania tekstowe i dawne kolory we wszystkich wersjach.
+
+Jawne wp ke text-colours --user=ID_ADMINA inicjalizuje Atrament #181818, Fiolet opowieści #403466 oraz brakujące odcienie dotychczasowych tekstów; zachowuje istniejące wpisy. ke seed również uruchamia tę inicjalizację. Nie przepisuje wcześniejszych wersji szablonów. Bez nowych tabel i DDL.
+
+Koszt: elements.cost i graphicColourIds.cost oraz costValue (liczba całkowita 0–9, domyślnie 0) i costTextColourId (UUID palety, domyślnie biały). API waliduje zakres/całkowitość, kolory i granice karty; ochrona historii obejmuje oba kolory symbolu. Dawny dokument otrzymuje domyślne ustawienia bez przepisywania wersji. Brak miejsca oznacza ukrycie tylko dodawanego domyślnie kosztu; standardowy dawny obszar Nieodnawialny 80 pt przy 7 pt Libertine bold italic zostaje ograniczony do 50 pt. Bez DDL.
+
+- Ograniczenie dostępności jest osobnym obiektem tekstowym w prawym dolnym rogu (np. „Tylko Mechaniści”), domyślnie 7 pt, pogrubiona kursywa, wyrównanie do prawej, paleta kolorów. Napis jest warstwą nad mechaniką i nie rezerwuje miejsca. Tło pod samym napisem jest zgodne z tłem karty. Brak nachodzenia treści na napis kontrolujemy ręcznie. W szablonie zapisujemy układ i styl, treść próbna nie jest zapisywana jako treść talentu.
+- Koszt jest rozdzielony na costAmount (wartość 0–9) i cost (sam symbol). Oba obiekty mają niezależne parametry, widoczność i kolor palety; X ustala rząd. Bieżący wariant Tuszowy używa dwóch stosów monet o różnej wysokości, bez tła i cyfry. Osobny variants/ink/cost.svg oraz CostIcon/InlineCostIcon umożliwiają przyszłe osadzanie samego symbolu w tekście. Wstawianie do treści talentów pozostaje osobnym etapem. Parser i API odczytują stare dokumenty bez przepisywania historii.
+- Ramka joined (Tuszowa — do łączenia) pozwala składać karty tego samego formatu bez odstępów: góra/dół i lewy/prawy mają wspólne przebiegi. Atramentowe boki pochodzą z oryginalnej ramki, z przejściami przy narożnikach. Kreskę renderujemy inline poza nominalną granicą komórki, aby sąsiednie ramki nakładały się bez podwajania grubości; tło dopasowane do obrysu. Poprzednie warianty zachowane. Próba 2×2: ../exports/ramka-laczona-2x2.svg.
+- Paleta: Atrament zastąpiony Czarnym, Fiolet opowieści zastąpiony Błękitem Zmroku. Stare kolory wycofane z wyboru; dawne ID/HEX kierują do zastępników. Historia dokumentów zachowana bez przepisywania. Nowe style korzystają z czerni i Błękitu Zmroku.
+
+- Warianty graficzne: jeden wybór całego kompletu grafik, z ramką i symbolem kosztu. Jedno pole graphicVariant; stare osobne ustawienia tylko do odczytu zgodności. Każdy wariant w osobnym katalogu z tymi samymi 13 nazwami SVG. Aktualny wybór: Tuszowy (ink). Szczegóły: [Warianty graficzne](Warianty%20graficzne.md).

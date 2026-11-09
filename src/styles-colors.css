@@ -1,0 +1,28 @@
+#klanarchia-editor .ks-toolbar { display:flex;align-items:center;justify-content:space-between;gap:16px; }
+#klanarchia-editor .ks-tabs { display:flex;gap:6px;flex-wrap:wrap; }
+#klanarchia-editor .ks-tabs button, #klanarchia-editor .ks-add, #klanarchia-editor .ks-delete { padding:8px 12px;border:1px solid #bda76b55;border-radius:4px;background:transparent;color:#ddd3bd;cursor:pointer; }
+#klanarchia-editor .ks-tabs button[aria-pressed=true] { background:#b6aa91;color:#30291f; }
+#klanarchia-editor .ks-note { font:12px/1.6 Arial,sans-serif;color:#c5bea9;margin:10px 0; }
+#klanarchia-editor .ks-message { min-height:20px;margin:8px 0;color:#d4b66e;font-size:13px; }
+#klanarchia-editor .ks-layout { display:grid;grid-template-columns:260px minmax(0,600px);gap:22px;align-items:start; }
+#klanarchia-editor .ks-list, #klanarchia-editor .ks-properties { min-width:0;padding:14px;border:1px solid #bda76b35;border-radius:4px; }
+#klanarchia-editor .ks-add { width:100%;margin-bottom:12px; }
+#klanarchia-editor .ks-item { display:flex;align-items:center;gap:10px;width:100%;padding:10px 8px;border:1px solid transparent;background:transparent;color:#e6dcc4;text-align:left;cursor:pointer;overflow-wrap:anywhere; }
+#klanarchia-editor .ks-item[aria-pressed=true] { border-color:#bda76b77;background:#bda76b16;border-radius:3px; }
+#klanarchia-editor .ks-swatch { flex:0 0 22px;height:22px;border-radius:3px;border:1px solid #fff3; }
+#klanarchia-editor .ks-properties > label { margin-bottom:16px; }
+#klanarchia-editor .ks-editor .ks-colour, #klanarchia-editor .ks-editor .ks-flags label { display:flex;flex-direction:row;align-items:center;gap:10px; }
+#klanarchia-editor .ks-colour input { width:48px;height:34px;padding:2px; }
+#klanarchia-editor .ks-flags { display:flex;gap:16px;flex-wrap:wrap;margin:16px 0; }
+#klanarchia-editor .ks-preview { background:#b6aa91;border-radius:4px;padding:18px;color:#30291f;margin:18px 0;overflow-wrap:anywhere; }
+#klanarchia-editor .ks-preview h3 { font:12px Arial,sans-serif;text-transform:uppercase;letter-spacing:.08em;margin:0 0 12px;color:#514735; }
+#klanarchia-editor .ks-preview p { font-family:'KE Libertine',Georgia,serif;line-height:1.5;margin:0; }
+#klanarchia-editor .ks-delete { color:#e0aaa0;margin-top:8px; }
+@media(max-width:650px) { #klanarchia-editor .ks-layout { grid-template-columns:minmax(0,1fr);gap:12px; } }@font-face { font-family: 'KE Libertine'; src: url('./assets/talent-template/LinLibertine_RZ.ttf') format('truetype'); font-weight: 600; font-style: normal; font-display: swap; }
+#klanarchia-editor .ks-channels { display:flex;gap:10px;margin:12px 0; }
+#klanarchia-editor .ks-channels label { flex:1;min-width:0; }
+#klanarchia-editor .ks-colour-values h3 { font:14px Arial,sans-serif;color:#d6d0bf;margin-top:20px; }
+#klanarchia-editor .ks-notation { display:block;margin:8px 0;color:#dfc687; }
+#klanarchia-editor .ks-properties .ks-smallcaps { flex-direction:row;align-items:center;gap:8px;margin-top:16px; }
+#klanarchia-editor .ks-preview span { box-decoration-break:clone;-webkit-box-decoration-break:clone; }
+#klanarchia-editor .ks-fieldset { border:0;padding:0;margin:0;min-width:0; }

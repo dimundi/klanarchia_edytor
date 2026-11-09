@@ -1,0 +1,11 @@
+#klanarchia-editor .kp-select { position:relative;min-width:0;margin:0 0 14px; }
+#klanarchia-editor .kp-label { display:block;margin-bottom:7px;font:12px/1.4 Arial,sans-serif;color:#d6d0bf; }
+#klanarchia-editor .kp-trigger, #klanarchia-editor .kp-options button { display:flex;align-items:center;gap:8px;width:100%;min-width:0;text-align:left;padding:8px;border:1px solid #bda76b60;border-radius:4px;background:#20251e;color:#eee7d7;font:12px/1.4 Arial,sans-serif;cursor:pointer; }
+#klanarchia-editor .kp-trigger:disabled { opacity:.5;cursor:default; }
+#klanarchia-editor .kp-name { flex:1;min-width:0;overflow-wrap:anywhere; }
+#klanarchia-editor .kp-swatch { display:inline-block;flex:0 0 22px;height:22px;border:1px solid #999;border-radius:3px;box-shadow:inset 0 0 0 1px #ffffff22; }
+#klanarchia-editor .kp-hex { font:10px/1.4 monospace;color:#c5bea9;white-space:nowrap; }
+#klanarchia-editor .kp-options { position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:10;padding:4px;border:1px solid #bda76b60;border-radius:4px;background:#292d24;box-shadow:0 6px 18px #0008;max-height:260px;overflow-y:auto; }
+#klanarchia-editor .kp-options button { background:transparent;border-color:transparent; }
+#klanarchia-editor .kp-options button[aria-selected=true], #klanarchia-editor .kp-options button:hover { background:#bda76b22; }
+#klanarchia-editor .kp-trigger:focus-visible, #klanarchia-editor .kp-options button:focus-visible { outline:2px solid #c4a66a;outline-offset:-2px; }

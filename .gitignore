@@ -1,0 +1,39 @@
+# Zależności i wyniki kompilacji
+node_modules/
+/dist/
+/plugin/klanarchia-edytor/dist/
+.vite/
+.cache/
+coverage/
+*.tsbuildinfo
+
+# Konfiguracja lokalna i sekrety
+.env*
+!.env.example
+!.env.sample
+!.env.template
+secrets/
+*.local
+
+# Pliki robocze, eksporty i kopie
+/exports/
+/backups/
+/dumps/
+/artifacts/
+/releases/
+/local-scripts/
+/*.sql
+/*.sql.gz
+*.sqlite
+*.sqlite3
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Pliki systemowe i ustawienia użytkownika
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/

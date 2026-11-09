@@ -1,0 +1,107 @@
+#klanarchia-editor { width: calc(100% - 32px); margin: 24px auto 40px; color: #e9e1d0; font-family: Arial, sans-serif; }
+#klanarchia-editor *, #klanarchia-editor *::before, #klanarchia-editor *::after { box-sizing: border-box; }
+#klanarchia-editor .ke-shell { display: flex; flex-direction: column; min-height: max(620px, calc(100dvh - 240px)); background: transparent; border: 0; border-radius: 0; overflow: hidden; }
+#klanarchia-editor .ke-topbar { display: flex; align-items: center; gap: 20px; padding: 8px 20px; background: #181c1670; border-bottom: 1px solid #c4ae754d; }
+#klanarchia-editor .ke-brand { display: flex; flex-direction: column; align-items: center; flex: 0 0 88px; gap: 2px; margin: 0; }
+#klanarchia-editor .ke-brand img { display: block; width: 88px; height: 55px; object-fit: contain; }
+#klanarchia-editor .ke-brand span { color: #d4b66e; font: 700 9px/1.2 Arial, sans-serif; letter-spacing: .23em; padding-left: .23em; }
+#klanarchia-editor .ke-navigation { display: flex; flex: 1; min-width: 0; align-items: center; gap: 20px; padding: 0; }
+#klanarchia-editor .ke-menu-group { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2px; }
+#klanarchia-editor .ke-menu-group + .ke-menu-group { padding-left: 20px; border-left: 1px solid #c4ae754d; }
+#klanarchia-editor .ke-group-label { width: 100%; margin: 0 10px 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .15em; color: #c3c6b6; }
+#klanarchia-editor .ke-menu-item { display: flex; align-items: center; gap: 8px; min-height: 42px; max-width: 100%; padding: 9px 10px; margin: 0; border: 1px solid transparent; border-radius: 4px; background: transparent; color: #eee9da; text-align: left; font: 12px/1.5 Arial, sans-serif; cursor: pointer; }
+#klanarchia-editor .ke-menu-item svg, #klanarchia-editor .ke-menu-toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
+#klanarchia-editor .ke-menu-item:hover { background: #ffffff0f; color: #f0e8d4; }
+#klanarchia-editor .ke-menu-item[aria-current=page] { color: #e0c78a; background: #c4a66a29; border-color: #c4a66a35; box-shadow: inset 0 -2px #c4a66a; }
+#klanarchia-editor button:focus-visible { outline: 2px solid #e0c78a; outline-offset: 2px; }
+#klanarchia-editor .ke-workspace { flex: 1; width: 100%; min-width: 0; display: flex; flex-direction: column; }
+#klanarchia-editor .ke-workspace-header { padding: 24px 28px; border-bottom: 1px solid #c4ae754d; }
+#klanarchia-editor .ke-breadcrumb { margin: 0 0 8px; font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: #c3c6b6; }
+#klanarchia-editor h2 { margin: 0; color: #e6dcc4; font: 400 clamp(24px, 2.4vw, 34px)/1.3 Georgia, serif; letter-spacing: -.02em; }
+#klanarchia-editor .ke-workspace-body { flex: 1; min-height: 440px; padding: 28px; }
+#klanarchia-editor .ke-status { margin: 0; font-size: 14px; line-height: 1.7; color: #cbd0c6; }
+#klanarchia-editor .ke-error { color: #edb3a6; }
+#klanarchia-editor .ke-menu-toggle { display: none; }
+@media (max-width: 1100px) {
+  #klanarchia-editor .ke-topbar { flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  #klanarchia-editor .ke-menu-toggle { display: flex; align-items: center; gap: 8px; padding: 10px; background: transparent; color: #d4b66e; border: 1px solid #bda76b75; border-radius: 4px; text-align: left; font: 12px Arial, sans-serif; cursor: pointer; }
+  #klanarchia-editor .ke-navigation { display: none; flex: 0 0 100%; padding: 8px 0 4px; }
+  #klanarchia-editor .ke-navigation.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 20px; }
+  #klanarchia-editor .ke-menu-group { display: block; }
+  #klanarchia-editor .ke-menu-group + .ke-menu-group { padding-left: 0; border-left: 0; }
+  #klanarchia-editor .ke-menu-item { width: 100%; }
+}
+@media (max-width: 760px) {
+  #klanarchia-editor { width: calc(100% - 24px); margin-top: 12px; }
+  #klanarchia-editor .ke-shell { min-height: 580px; }
+  #klanarchia-editor .ke-topbar { padding: 8px 12px; }
+  #klanarchia-editor .ke-workspace-header { padding: 24px 20px; }
+  #klanarchia-editor .ke-workspace-body { padding: 24px 20px; min-height: 340px; }
+}
+#klanarchia-editor .ke-expand-toggle { display: grid; place-items: center; flex: 0 0 36px; width: 36px; height: 36px; padding: 8px; color: #d4b66e; border: 1px solid #bda76b75; border-radius: 4px; background: transparent; cursor: pointer; }
+#klanarchia-editor .ke-expand-toggle svg { width: 18px; height: 18px; }
+#klanarchia-editor .ke-expand-toggle:hover, #klanarchia-editor .ke-expand-toggle[aria-pressed=true] { background: #c4a66a29; border-color: #c4a66a75; }
+#klanarchia-editor.ke-expanded { position: fixed; inset: 0; z-index: 2147483647; width: 100%; height: 100dvh; margin: 0; background: #22251f; background-image: radial-gradient(ellipse 85% 620px at 10% 0%, #a58a4930, transparent 75%), radial-gradient(ellipse 70% 900px at 100% 40%, #6674501c, transparent 75%), linear-gradient(180deg, #292c24 0%, #22251f 55%, #20231e 100%); overflow: auto; }
+#klanarchia-editor.ke-expanded .ke-shell { min-height: 100%; border: 0; border-radius: 0; }
+@media (max-width: 1100px) {
+  #klanarchia-editor .ke-navigation { order: 1; }
+  #klanarchia-editor .ke-topbar { column-gap: 8px; }
+  #klanarchia-editor .ke-menu-toggle { margin-left: auto; }
+}
+
+#klanarchia-editor .ke-brand-home { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; border-radius: 3px; }
+#klanarchia-editor .ke-welcome { max-width: 1440px; margin: 0 auto; }
+#klanarchia-editor .ke-welcome-intro { margin-bottom: 28px; padding: 18px 22px; background: transparent; border-radius: 4px; }
+#klanarchia-editor .ke-welcome-intro p { max-width: 980px; margin: 0; color: #d6d9cf; font-size: 14px; line-height: 1.8; }
+#klanarchia-editor .ke-welcome-intro p + p { margin-top: 8px; }
+#klanarchia-editor .ke-welcome-intro strong { color: #e6dcc4; font-weight: 600; }
+#klanarchia-editor .ke-welcome-section + .ke-welcome-section { margin-top: 32px; }
+#klanarchia-editor .ke-welcome-section > h3 { margin: 0 0 14px; color: #e0c78a; font: 700 11px/1.5 Arial, sans-serif; letter-spacing: .14em; text-transform: uppercase; }
+#klanarchia-editor .ke-shortcuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+#klanarchia-editor .ke-shortcut { display: flex; flex-direction: column; align-items: flex-start; padding: 26px; min-width: 0; border: 1px solid #bda76b65; border-radius: 5px; background: linear-gradient(135deg, #b6aa91, #a79b84); text-align: left; color: #30291f; cursor: pointer; box-shadow: 0 3px 10px #00000018; transition: background .15s, border-color .15s; }
+#klanarchia-editor .ke-shortcut:hover { background: #bdb096; border-color: #a99160; }
+#klanarchia-editor .ke-shortcut-icon { display: grid; place-items: center; width: 72px; height: 72px; margin-bottom: 20px; border: 1px solid #8b6b3538; border-radius: 50%; background: #b3975e20; color: #634b28; }
+#klanarchia-editor .ke-shortcut-icon svg { width: 38px; height: 38px; stroke-width: 1.1; }
+#klanarchia-editor .ke-shortcut-title { font: 400 23px/1.3 Georgia, serif; }
+#klanarchia-editor .ke-shortcut-description { margin-top: 10px; color: #3b3329; font: 13px/1.7 Arial, sans-serif; }
+@media (max-width: 900px) { #klanarchia-editor .ke-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 540px) {
+  #klanarchia-editor .ke-shortcuts { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  #klanarchia-editor .ke-shortcut { padding: 20px; }
+  #klanarchia-editor .ke-shortcut-icon { width: 60px; height: 60px; margin-bottom: 16px; }
+  #klanarchia-editor .ke-shortcut-title { font-size: 22px; }
+}
+
+#klanarchia-editor .ke-welcome-heading { margin: 0 0 18px; color: #e6dcc4; font: 400 clamp(20px, 2vw, 26px)/1.4 Georgia, serif; letter-spacing: 0; }
+
+#klanarchia-editor .ke-expand-control { position: relative; flex: 0 0 36px; align-self: center; }
+#klanarchia-editor .ke-expand-hint { position: absolute; top: calc(100% + 22px); right: 0; z-index: 5; width: max-content; max-width: calc(100vw - 48px); padding: 13px 16px; border: 1px solid #aa946b; border-radius: 5px; background: #b6aa91; color: #30291f; box-shadow: 0 5px 18px #00000030; font: 13px/1.6 Arial, sans-serif; pointer-events: none; }
+#klanarchia-editor .ke-hint-arrow { position: absolute; right: 8px; top: -28px; width: 28px; height: 28px; color: #d4b66e; }
+
+#klanarchia-editor .ke-expand-hint { transform-origin: top right; animation: ke-hint-enter .5s cubic-bezier(.2,.8,.2,1) both; }
+#klanarchia-editor .ke-expand-hint.is-leaving { animation: ke-hint-leave .35s ease-in both; }
+#klanarchia-editor .ke-hint-arrow { animation: ke-hint-point 1s ease-in-out .5s 4; }
+#klanarchia-editor .ke-expand-control:has(.ke-expand-hint:not(.is-leaving)) .ke-expand-toggle { animation: ke-hint-ring 1.5s ease-out 3; }
+@keyframes ke-hint-enter {
+  from { opacity: 0; transform: translateY(12px) scale(.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes ke-hint-leave {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(7px); }
+}
+@keyframes ke-hint-point {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes ke-hint-ring {
+  from { box-shadow: 0 0 0 0 #d4b66e65; }
+  to { box-shadow: 0 0 0 9px #d4b66e00; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #klanarchia-editor .ke-expand-hint, #klanarchia-editor .ke-hint-arrow, #klanarchia-editor .ke-expand-control:has(.ke-expand-hint) .ke-expand-toggle { animation: none; }
+}
+#klanarchia-editor .ke-import { margin: 14px 0; padding: 12px; border: 1px solid #bda76b55; border-radius: 4px; font: 13px/1.5 Arial,sans-serif; color: #d8d0bb; }
+#klanarchia-editor .ke-import button { padding: 6px 10px; border: 1px solid #bda76b55; border-radius: 3px; background: #32352d; color: #e6dcc4; cursor: pointer; }
+#klanarchia-editor .ke-import button:disabled { opacity: .5; cursor: default; }
+#klanarchia-editor .ke-import label { display:flex;flex-direction:row;gap:8px;align-items:center;margin:8px 0; }

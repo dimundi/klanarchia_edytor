@@ -1,0 +1,23 @@
+import frame0 from './assets/talent-template/variants/original/frame.svg?raw';
+import contour0 from './assets/talent-template/variants/original/frame-contour.svg?raw';
+import patch0 from './assets/talent-template/variants/original/restriction-background.svg?raw';
+import frame1 from './assets/talent-template/variants/ink/frame.svg?raw';
+import contour1 from './assets/talent-template/variants/ink/frame-contour.svg?raw';
+import patch1 from './assets/talent-template/variants/ink/restriction-background.svg?raw';
+export const graphicVariantIds=['original','ink'] as const;
+export type GraphicVariantId=typeof graphicVariantIds[number];
+export type GraphicAssetId='frame'|'hex'|'hexMark'|'cost'|'play'|'gift'|'specialRules'|'uses'|'once';
+function svgPaths(source:string){return Array.from(source.matchAll(/<path([^>]+)\/>/g)).map(match=>({d:match[1].match(/\sd="([^"]+)"/)![1],transform:match[1].match(/transform="([^"]+)"/)?.[1]}));}
+export const graphicVariants={'original':{label:{pl:"Oryginalny",en:"Original"},frameMode:'image' as const,assets:{frame:new URL('./assets/talent-template/variants/original/frame.svg',import.meta.url).href,hex:new URL('./assets/talent-template/variants/original/hex.svg',import.meta.url).href,hexMark:new URL('./assets/talent-template/variants/original/hex-mark.svg',import.meta.url).href,cost:new URL('./assets/talent-template/variants/original/cost.svg',import.meta.url).href,play:new URL('./assets/talent-template/variants/original/play.svg',import.meta.url).href,gift:new URL('./assets/talent-template/variants/original/dark-gift.svg',import.meta.url).href,specialRules:new URL('./assets/talent-template/variants/original/special-rules.svg',import.meta.url).href,uses:new URL('./assets/talent-template/variants/original/use-1.svg',import.meta.url).href,once:new URL('./assets/talent-template/variants/original/once.svg',import.meta.url).href},useFields:[new URL('./assets/talent-template/variants/original/use-1.svg',import.meta.url).href,new URL('./assets/talent-template/variants/original/use-2.svg',import.meta.url).href,new URL('./assets/talent-template/variants/original/use-3.svg',import.meta.url).href],framePaths:svgPaths(frame0),contour:svgPaths(contour0)[0].d,patch:svgPaths(patch0)[0].d},
+'ink':{label:{pl:"Tuszowy",en:"Ink"},frameMode:'joined' as const,assets:{frame:new URL('./assets/talent-template/variants/ink/frame.svg',import.meta.url).href,hex:new URL('./assets/talent-template/variants/ink/hex.svg',import.meta.url).href,hexMark:new URL('./assets/talent-template/variants/ink/hex-mark.svg',import.meta.url).href,cost:new URL('./assets/talent-template/variants/ink/cost.svg',import.meta.url).href,play:new URL('./assets/talent-template/variants/ink/play.svg',import.meta.url).href,gift:new URL('./assets/talent-template/variants/ink/dark-gift.svg',import.meta.url).href,specialRules:new URL('./assets/talent-template/variants/ink/special-rules.svg',import.meta.url).href,uses:new URL('./assets/talent-template/variants/ink/use-1.svg',import.meta.url).href,once:new URL('./assets/talent-template/variants/ink/once.svg',import.meta.url).href},useFields:[new URL('./assets/talent-template/variants/ink/use-1.svg',import.meta.url).href,new URL('./assets/talent-template/variants/ink/use-2.svg',import.meta.url).href,new URL('./assets/talent-template/variants/ink/use-3.svg',import.meta.url).href],framePaths:svgPaths(frame1),contour:svgPaths(contour1)[0].d,patch:svgPaths(patch1)[0].d}};
+export function resolveGraphicVariant(value:{graphicVariant?:unknown;iconVariant?:unknown;frameVariant?:unknown;costVariant?:unknown}):GraphicVariantId {
+ if(value.graphicVariant==='ink-experimental'||value.graphicVariant==='ink-original-frame')return 'ink';
+ if(value.graphicVariant!==undefined){if(!(graphicVariantIds as readonly unknown[]).includes(value.graphicVariant))throw new Error('graphic-variant');return value.graphicVariant as GraphicVariantId;}
+ if(value.iconVariant!==undefined&&!['original','ink'].includes(String(value.iconVariant)))throw new Error('legacy-icons');
+ if(value.frameVariant!==undefined&&!['original','ink','joined'].includes(String(value.frameVariant)))throw new Error('legacy-frame');
+ if(value.costVariant!==undefined&&!['original','simple','coins'].includes(String(value.costVariant)))throw new Error('legacy-cost');
+ if(value.iconVariant==='original')return 'original';
+ return 'ink';
+}
+export function graphicSource(template:{graphicVariant:GraphicVariantId},id:GraphicAssetId){return graphicVariants[template.graphicVariant].assets[id];}
+export function useFieldSource(template:{graphicVariant:GraphicVariantId},index:number){return graphicVariants[template.graphicVariant].useFields[index%3];}
