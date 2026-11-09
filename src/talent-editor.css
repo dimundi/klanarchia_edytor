@@ -61,9 +61,6 @@
 #klanarchia-editor .ke-talent-columns .ke-talent-text-field textarea {font-size:18px;line-height:1.5;padding:11px 12px;}
 #klanarchia-editor .ke-talent-columns .ke-talent-text-field>label {font-size:16px;}
 #klanarchia-editor .ke-talent-text-field .ke-text-formatting button {font-size:14px;padding:4px 8px;}#klanarchia-editor .ke-talent-overflow-warning {margin:10px 0 0;padding:9px 12px;border-left:3px solid #dd9a56;background:#dd9a5612;color:#f0bb88;font-size:14px;line-height:1.4;}
-#klanarchia-editor .ke-talent-letter-spacing {border:0;padding:0;margin:20px 0;min-width:0;}
-#klanarchia-editor .ke-talent-letter-spacing legend {color:#d1b572;font-size:14px;margin-bottom:12px;}
-#klanarchia-editor .ke-talent-columns .ke-talent-letter-spacing label {display:grid;grid-template-columns:1fr 88px;align-items:center;gap:8px;margin-bottom:8px;}
 #klanarchia-editor .ke-talent-editable {border:0;padding:0;margin:0;min-width:0;}
 #klanarchia-editor .ke-talent-save-tools {display:flex;align-items:center;gap:12px;}
 #klanarchia-editor .ke-saving-spinner {display:inline-block;width:12px;height:12px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:middle;animation:ke-talent-spin .7s linear infinite;}
@@ -77,3 +74,8 @@
 #klanarchia-editor .ke-talent-list h4 {font:22px Georgia,serif;margin:0 0 6px;color:#e7dfcb;overflow-wrap:anywhere;}
 #klanarchia-editor .ke-talent-list small {opacity:.65;}
 @media(prefers-reduced-motion:reduce){#klanarchia-editor .ke-saving-spinner{animation:none;}}
+
+#klanarchia-editor .ke-talent-columns .ke-text-formatting .ke-inline-spacing {display:flex;align-items:center;gap:5px;margin:0 0 0 auto;font-size:12px;white-space:nowrap;}
+#klanarchia-editor .ke-inline-spacing>span:first-child {color:#cbb47a;font-size:13px;}
+#klanarchia-editor .ke-talent-columns .ke-text-formatting input.ke-inline-spacing-input {width:72px;min-width:0;font-size:14px;line-height:1.2;padding:4px 5px;border-radius:3px;}
+#klanarchia-editor .ke-inline-spacing-unit {opacity:.65;font-size:11px;}

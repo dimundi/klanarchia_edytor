@@ -821,3 +821,41 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 - W PROJEKT.md dodano TODO budowy asystenta dla wybranych użytkowników: pomoc przy talentach oraz korekta tekstu podręcznika, oparta na zatwierdzonych wzorcach i terminologii. Zmiany do zatwierdzenia, bez samowolnej modyfikacji mechaniki.
 - Zapisano plan integracji API i kwestie do ustalenia; bez implementacji, zmian aplikacji lub bazy.
 - Weryfikacja: odczyt dodanej sekcji i git diff --check; zmiana wyłącznie dokumentacji.
+
+## 2026-11-09 — Wspólny skład, dzielenie PL/EN i własne fonty
+
+- Zastąpiono tekst HTML w SVG deterministycznym silnikiem: metryki/kerning i kontury dołączonych TTF przez opentype.js 2.0.0, gotowe wiersze i glify jako ścieżki. Fonty regular/bold/italic/boldItalic z repozytorium; bez zamiany na systemowy. Brak glifu/pliku lub dawne Arial/Georgia daje jawny błąd. Nowy wybór systemowych fontów wyłączony. Usunięto niepotrzebne obejście textRenderScale=8.
+- Dodano niezmienione wzorce TeX hyph-pl 3.0a i hyph-en-us 2005-05-30, oryginalne licencje w źródłach oraz public/licenses. Własny algorytm Liang/TeX, minima i wyjątki wzorców, NBSP i nowe linie. Podział wyznaczany w renderowaniu, bez automatycznych łączników w bazie. EN oznacza EN-US. Panel wyjątków Klanarchii pozostaje późniejszym etapem.
+- Wspólny komponent dla talentu, miniatur, kreatora i napisów dodatkowych. Obsługuje znane oznaczenia mechaniki, kolory/tła, wagę, kursywę, kapitaliki, podkreślenie i nadpisania typografii. Kapitaliki: małe litery jako duże w .8 rozmiaru; automatyczne ligatury wyłączone. Ostrzeganie o przepełnieniu oparte o wynik silnika, bez pomiarów przeglądarki.
+- Dodano PDF obok Zapisz w edytorze talentu. Klonuje gotowy SVG z bieżącego szkicu; blokada dla braku fontu/niegotowego tekstu. PDF zawiera krzywe liter, nie tekst do zaznaczania; źródło w edytorze pozostaje zwykłym tekstem. Powtarzalność dotyczy geometrii, nie antyaliasingu pikseli.
+- Weryfikacja: TS/Vite poprawne (ostrzeżenie rozmiaru głównego chunka ok.537 kB; parser fontów ładowany oddzielnie). npm test: 6/6. Test Chrome/Edge/Firefox potwierdził identyczne wyniki PL/EN: linie, metryki i ścieżki, SHA256 617dc9fd5c1d180c6e9a554b7293f1360100c82255b62fa8fea2eb81e2de491e. Test realnego podglądu: pełny tytuł, ścieżki zamiast browser text, poprawne formatowania/napisy i przepełnienie. Test PDF: dokładnie te same linie/ścieżki co w podglądzie, fizyczne wymiary i A4; brak fontu wywołuje błąd, bez zamiennika.
+- Testy przeglądarkowe i próbny PDF w ignorowanym wtf_www/local-scripts/one-off/editor-database-20261107/. Licencje i zachowanie opisano w Skład tekstu i fonty.md. Nie zmieniano bazy ani starego projektu, bez wdrożenia produkcyjnego.
+
+## 2026-11-09 — PDF jako plik do pobrania
+
+- Zgodnie z doprecyzowaniem użytkownika zastąpiono drukowanie bezpośrednim eksportem PDF w edytorze talentu i kreatorze szablonu. Usunięto print-talent.ts i wywołania okien/drukowania; wspólny export-talent-pdf.ts, dynamicznie ładowane jsPDF/svg2pdf.js z przypiętymi wersjami. Licencje w public/licenses. Komunikaty błędów nie odwołują się już do zgody na popup.
+- Plik A4, 10 mm marginesu, bez zmiany rozmiaru karty i ponownego łamania tekstu. Litery i niezamaskowane ścieżki wektorowe. Maski alfa ikon i tła ograniczenia spłaszczane do PNG 600 dpi tylko w kopii eksportowej; wygląd zachowany. Źródło i dane bez zmian.
+- Weryfikacja: TS/Vite poprawne. Test pobrał talent-direct.pdf i template-direct.pdf z obu przycisków, sprawdził nagłówek PDF oraz 0 wywołań window.print/window.open, brak popupów i błędów JS. Niezależne narzędzie pdfjs-dist w ignorowanym one-off potwierdziło prawidłową stronę A4 i wektorowe ścieżki; wyrenderowano i wizualnie sprawdzono oba PDF-y (także wszystkie ikony i ograniczenie). Bez zapisów talentów/szablonów i wdrożenia.
+
+## 2026-11-09 — Nazwa fontu pod podglądem szablonu
+
+- Dodano samą nazwę Linux Libertine w pasku pod podglądem kreatora szablonu talentu, obok wymiarów karty. Bez listy plików i odmian fontu.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Zmiana wyłącznie podpisu w interfejsie.
+
+## 2026-11-09 — Zbiorcze TODO i ramowy plan
+
+- Utworzono TODO.md jako jedną kolejkę: stan już działający, proponowane pięć etapów (redakcja talentów → dane/import → zestawy/arkusze → szablony kart postaci → część użytkownika), zadania ze stałymi ID i odłożone pomysły. Bez ustalania terminów ani automatycznego zlecania implementacji.
+- Przeniesiono szczegóły Asystenta Klanarchii z PROJEKT.md do TODO. Dodano wcześniej odłożony słownik terminów, osobne wyjątki dzielenia i opcjonalny PDF z tekstem; obecny eksport w krzywych pozostaje zaakceptowany. Baza zestawów dopiero przy etapie arkuszy, import dopiero po ustaleniu zakresu, stary projekt 1:1, produkcja na osobne polecenie.
+- PROJEKT.md wskazuje aktualne fundamenty i wspólne TODO; poprawiono mylącą wzmiankę o braku tabel. Biblioteka odsyła do kolejki i rozróżnia działający eksport pojedynczego talentu od przyszłych arkuszy. Starszy dokument kreatora oznaczono jako zawierający wcześniejsze etapy. AGENTS.md nakazuje utrzymywanie jednej kolejki bez duplikowania zadań.
+- Zmiana wyłącznie dokumentacji. Weryfikacja: odczyt TODO i kontrola odnośników/statusów oraz git diff --check; nie uruchamiano testów aplikacji.
+
+## 2026-11-09 — Odstępy liter w paskach pól treści
+
+- Przeniesiono trzy niezależne odstępy liter z prawego panelu na prawy koniec pasków nad Tytułem, Fabułą i Mechaniką w lewej kolumnie. Przy tytule/fabule utworzono paski bez przycisków formatowania. Formatowanie nadal wyłącznie w mechanice.
+- Kompaktowe pola A↔A z jednostką pt, zachowane etykiety dostępności, zakres -2…10, krok .05, dziedziczenie szablonu po wyczyszczeniu i dotychczasowy zapis parametrów. Usunięto starą sekcję i jej style z prawego panelu; interlinia pozostaje po prawej.
+- Weryfikacja: TS/Vite poprawne. Test przeglądarkowy potwierdził 3 paski, wyrównanie kontrolek do prawej, formatowanie tylko w mechanice, brak duplikatów, edycję wartości i szerokość mobilną. Bez zapisów talentów i wdrożenia.
+
+## 2026-11-09 — Ukryta edycja interlinii talentu
+
+- Usunięto sekcję Odstępy między liniami i jej pomoc z edytora talentu. Zachowano odczyt/stosowanie/zapis dotychczasowych nadpisań, aby kolejny zapis nie kasował wcześniejszych ustawień. Brak nowych kontrolek interlinii.
+- Weryfikacja: kompilacja TS/Vite poprawna. Bez zmian danych.

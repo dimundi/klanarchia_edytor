@@ -28,4 +28,4 @@ Dostęp wyłącznie dla administratora. Interfejs PL/EN; brak tłumaczenia nie p
 
 ## Kolejne etapy
 
-Docelowe widoki kart/listy, porównywanie, eksport talentów, działania zbiorcze i publikacja pozostają do opracowania. Nie importowano talentów i nie zmieniano starego projektu. Nie wdrażano na produkcję.
+Bieżące zadania biblioteki i dalsza kolejność: [TODO i ramowy plan](TODO.md). Eksport pojedynczego talentu już działa; otwarty zakres dotyczy m.in. pracy na wielu talentach i arkuszach. Nie importowano talentów i nie zmieniano starego projektu. Nie wdrażano na produkcję.

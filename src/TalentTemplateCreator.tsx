@@ -1,5 +1,6 @@
-import { textRenderScale } from './talent-text-layout';
-import { printTalent } from './print-talent';
+import FixedCardText from './FixedCardText';
+import { loadCardFonts } from './card-fonts';
+import { exportTalentPdf } from './export-talent-pdf';
 import { polishSpacing } from './polish-typography';
 import TemplateCostValue from './TemplateCostValue';
 import { graphicVariants, graphicVariantIds, useFieldSource } from './graphic-variants';
@@ -13,12 +14,12 @@ import { alignElements, moveElements, selectionBounds } from './template-alignme
 import PaletteSelect from './PaletteSelect';
 import TintedGraphic from './TintedGraphic';
 import TemplateFrame from './TemplateFrame';
-import { textColour, usePalette } from './palette';
+import { usePalette } from './palette';
 import { ApiError, request } from './editor-api';
 import ImportPreview from './ImportPreview';
 import TemplateBackground from './TemplateBackground';
-import { CSSProperties, PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from 'react';
-import { bodyTextBox, Box, ColouredGraphic, colouredGraphics, ElementId, TalentTemplate, TextRole, TextStyle, clamp, fitBox, isHeaderRow, layoutHeader, setHeaderCenter, fontFamilies, fonts, newTemplate, parseTemplate, resizeBox, resizePage, resolveTextStyle, textRoles, visibleElements } from './talent-template-model';
+import { PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from 'react';
+import { bodyTextBox, Box, ColouredGraphic, colouredGraphics, ElementId, TalentTemplate, TextRole, TextStyle, clamp, fitBox, isHeaderRow, layoutHeader, setHeaderCenter, fonts, newTemplate, parseTemplate, resizeBox, resizePage, resolveTextStyle, textRoles, visibleElements } from './talent-template-model';
 import { templateStrings } from './talent-template-strings';
 import './talent-template.css';
 import TemplateThumbnail from './TemplateThumbnail';
@@ -127,7 +128,7 @@ export default function TalentTemplateCreator({ language, active, storageKey }: 
   }
   async function printCard() {
     if(printing||!svg.current)return;setPrinting(true);setError('');
-    try{await printTalent(svg.current,sample.name||template.name,language);}catch{setError(language==='pl'?'Nie udało się przygotować wydruku. Sprawdź, czy przeglądarka pozwala otworzyć okno wydruku, i spróbuj ponownie.':'Could not prepare the print. Allow the print window in your browser and try again.');}finally{setPrinting(false);}
+    try{await exportTalentPdf(svg.current,sample.name||template.name,language);}catch{setError(language==='pl'?'Nie udało się wyeksportować PDF. Sprawdź wczytanie fontów i spróbuj ponownie.':'Could not export PDF. Check that fonts have loaded and try again.');}finally{setPrinting(false);}
   }
   async function save() {
     if (saving.current) return;
@@ -149,14 +150,13 @@ export default function TalentTemplateCreator({ language, active, storageKey }: 
     } catch { setError(t.storageError); } finally { saving.current = false; setBusy(false); }
   }  useEffect(() => {
     let alive = true;
-    Promise.all(['', 'bold ', 'italic ', 'bold italic '].map(style => document.fonts.load(`${style}12px "KE Libertine"`))).then(() => { if (alive) setFontReady(true); }).catch(() => { if (alive) setError(t.loadingFont); });
+    loadCardFonts().then(() => { if (alive) setFontReady(true); }).catch(() => { if (alive) setError(t.loadingFont); });
     return () => { alive = false; };
   }, []);
   useEffect(() => {
     if (!active || screen !== 'editor' || !textRoot.current) return;
-    const nodes = Array.from(textRoot.current.querySelectorAll<HTMLElement>('[data-text-box]'));
-    const check = () => { const next = nodes.filter(node => node.scrollHeight > node.clientHeight + 1 || node.scrollWidth > node.clientWidth + 1).map(node => node.dataset.textBox!); setOverflow(previous => previous.join() === next.join() ? previous : next); };
-    const observer = new ResizeObserver(check); nodes.forEach(node => observer.observe(node)); check();
+    const check = () => { const next = Array.from(svg.current?.querySelectorAll<SVGElement>('[data-fixed-text][data-text-overflow=true]')??[]).map(node=>node.dataset.fixedText!); setOverflow(previous => previous.join() === next.join() ? previous : next); };
+    const observer = new MutationObserver(check); observer.observe(textRoot.current,{subtree:true,childList:true,attributes:true});check();
     return () => observer.disconnect();
   }, [template, sample, active, fontReady, screen]);
   useEffect(() => {
@@ -198,19 +198,10 @@ export default function TalentTemplateCreator({ language, active, storageKey }: 
     if (cancel && d.changed) { undoStack.current.pop(); replace(d.snapshot); }
     drag.current = null; if (svg.current?.hasPointerCapture(event.pointerId)) svg.current.releasePointerCapture(event.pointerId);
   }
-  function textStyle(part: TextRole): CSSProperties {
-    const style = resolveTextStyle(template, part);
-    return { fontFamily: fontFamilies[style.font], fontSize: style.fontSize*textRenderScale, lineHeight: style.lineHeight, letterSpacing: style.letterSpacing*textRenderScale, fontWeight: style.bold ? 700 : 400, fontStyle: style.italic ? 'italic' : 'normal', color: textColour(style,palette.colours) };
-  }
   function content(part: TextRole) { return printable(part === 'title' ? `${sample.name || t.roleTitle}${sample.action ? ` ${t.actionSuffix}` : ''}:` : part === 'flavor' ? sample.flavor || t.placeholderFlavor : sample.description || t.placeholderDescription); }
   function textBox(id: ElementId) {
     const b = bodyTextBox(template,id), flow = id === 'textFlow';
-    return <foreignObject x={b.x} y={b.y} width={b.width} height={b.height}>
-      <div lang={language} data-text-box={id} className="kt-card-copy" style={{ width:b.width*textRenderScale,height:b.height*textRenderScale,transform:`scale(${1/textRenderScale})`,transformOrigin:'0 0', ...(flow ? textStyle('mechanics') : textStyle(id as TextRole)) }}>
-        {flow ? textRoles.filter(part => template.elements[part].visible).map((part, index) => <span key={part} data-text-role={part} style={textStyle(part)}>{content(part)}{index < 2 ? ' ' : ''}</span>) : content(id as TextRole)}
-      </div>
-    </foreignObject>;
-  }
+    return <FixedCardText id={id} box={b} language={language} colours={palette.colours} segments={(flow?textRoles.filter(part=>template.elements[part].visible):[id as TextRole]).map(part=>({text:content(part)+' ',style:resolveTextStyle(template,part)}))}/>;}
   function graphic(id: ElementId) {
     if(id==='restriction')return <TemplateRestriction template={template} language={language} colours={palette.colours} text={sample.restriction || undefined}/>;
     if(id==='costAmount')return <TemplateCostValue template={template} colours={palette.colours}/>;
@@ -261,7 +252,7 @@ export default function TalentTemplateCreator({ language, active, storageKey }: 
           <TemplateBackground template={template} /><g ref={textRoot}>{previewIds.filter(id => template.elements[id].visible).map(id => { const b = template.elements[id]; return <g key={id} data-canvas-element={id} onPointerDown={event => {if(!cleanPreview)begin(event, id, 'move');}} className={cleanPreview || b.locked ? 'kt-locked' : 'kt-movable'}>{graphic(id)}<rect x={b.x} y={b.y} width={b.width} height={b.height} fill="transparent" pointerEvents={id === 'textFlow' || textRoles.includes(id as TextRole) ? 'none' : 'all'} stroke={cleanPreview ? 'none' : selectedGeometry.includes(id) ? '#b17d25' : outlines ? '#5b718d70' : 'none'} strokeDasharray="2 2" strokeWidth=".5" vectorEffect="non-scaling-stroke" /></g>; })}</g>
           {!cleanPreview && selectedGeometry.length === 1 && selectedBox && effectiveId && selectedBox.visible && previewIds.includes(effectiveId) && <g className="kt-selection"><rect x={selectedBox.x} y={selectedBox.y} width={selectedBox.width} height={selectedBox.height} fill="none" stroke="#b17d25" strokeWidth="1.5" vectorEffect="non-scaling-stroke" pointerEvents="none" />{!selectedBox.locked && <rect data-resize-handle={effectiveId} x={selectedBox.x + selectedBox.width - 4} y={selectedBox.y + selectedBox.height - 4} width={8} height={8} fill="#b17d25" stroke="#ffffff" strokeWidth="1" vectorEffect="non-scaling-stroke" className="kt-resize-handle" onPointerDown={event => begin(event, effectiveId!, 'resize')} />}</g>}
           {!cleanPreview && selectedGeometry.length > 1 && groupBounds && <rect className="kt-group-selection" x={groupBounds.x} y={groupBounds.y} width={groupBounds.width} height={groupBounds.height} fill="none" stroke="#b17d25" strokeWidth="1.5" strokeDasharray="4 3" vectorEffect="non-scaling-stroke" pointerEvents="none" />}
-        </svg></div><div className="kt-preview-options"><span className="kt-help">{(template.page.width * 25.4 / 72).toFixed(1)} × {(template.page.height * 25.4 / 72).toFixed(1)} mm</span></div><p className="kt-help">{t.drag}</p>
+        </svg></div><div className="kt-preview-options"><span className="kt-help">Linux Libertine</span><span className="kt-help">{(template.page.width * 25.4 / 72).toFixed(1)} × {(template.page.height * 25.4 / 72).toFixed(1)} mm</span></div><p className="kt-help">{t.drag}</p>
 
         <details className="kt-sample" open><summary>{t.sample}</summary><div className="kt-fields"><p className="kt-help">{t.sampleHelp}</p><label>{t.roleTitle}<input value={sample.name} placeholder={t.roleTitle} maxLength={200} onChange={event => setSample({ ...sample, name: event.target.value })} /></label><label>{t.roleFlavor}<textarea aria-label={t.roleFlavor} rows={2} maxLength={10000} value={sample.flavor} placeholder={t.placeholderFlavor} onChange={event => setSample({ ...sample, flavor: event.target.value })} /></label><label>{t.roleMechanics}<textarea aria-label={t.roleMechanics} rows={3} maxLength={10000} value={sample.description} placeholder={t.placeholderDescription} onChange={event => setSample({ ...sample, description: event.target.value })} /></label></div></details>
         {!fontReady && <p role="status" className="kt-help">{t.loadingFont}</p>}{overflow.length > 0 && fontReady && <p role="status" className="kt-warning">{t.noFit} {overflow.map(id => t[id as ElementId]).join(', ')}</p>}
@@ -275,7 +266,7 @@ export default function TalentTemplateCreator({ language, active, storageKey }: 
             {role && role !== 'nonRenewable' && role !== 'restriction' && template.textMode === 'flow' && <p className="kt-help">{t.sharedPosition}</p>}
             <div className="kt-geometry-grid">{(['x', 'y', 'width', 'height'] as const).map(key => <label data-geometry={key} key={`${effectiveId}-${key}`}>{t[key]}<NumberInput disabled={selectedBox.locked || (isHeaderRow(effectiveId) && key === 'x')} value={selectedBox[key]} min={key === 'x' || key === 'y' ? 0 : 1} max={key === 'x' ? template.page.width - selectedBox.width : key === 'y' ? template.page.height - selectedBox.height : key === 'width' ? template.page.width - selectedBox.x : template.page.height - selectedBox.y} onValue={value => updateBox(effectiveId, { [key]: value })} /></label>)}<button type="button" className="kt-aspect-toggle" aria-label={t.proportional} aria-pressed={!!selectedBox.proportional} title={selectedBox.proportional ? t.linked : t.unlinked} onClick={() => updateBox(effectiveId, { proportional: !selectedBox.proportional })}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m10 7 2-2a5 5 0 0 1 7 7l-2 2M14 17l-2 2a5 5 0 0 1-7-7l2-2" />{selectedBox.proportional ? <path d="m8 16 8-8" /> : <path d="m3 3 18 18" />}</svg></button></div>
           </>}
-          {role==='restriction' && <><label>{language==='pl'?'Tekst do podglądu':'Preview text'}<input value={sample.restriction} placeholder={language==='pl'?'Tylko Mechaniści':'Mechanists only'} maxLength={200} onChange={event=>setSample({...sample,restriction:event.target.value})}/></label><p className="kt-help">{language==='pl'?'Treść przykładowa, bez zapisu w szablonie. Napis jest warstwą nad mechaniką i nie rezerwuje miejsca. Ręcznie dopilnuj, aby treść nie weszła pod napis.':'Preview only, not saved in the template. The label overlays the rules and reserves no space. Keep the rules clear of the label manually.'}</p></>}{style && role && <><label>{t.font}<select aria-label={t.font} value={style.font} onChange={event => updateStyle({ font: event.target.value as TextStyle['font'] })}>{fonts.map(font => <option value={font} key={font}>{font === 'libertine' ? 'Linux Libertine' : font === 'georgia' ? 'Georgia' : 'Arial'}</option>)}</select></label><div className="kt-pair"><label>{t.fontSize}<NumberInput key={`${role}-fontSize`} value={style.fontSize} min={role === 'nonRenewable' || role === 'restriction' ? 5 : 9} max={48} onValue={value => updateStyle({ fontSize: value })} /></label><label>{t.lineHeight}<NumberInput key={`${role}-lineHeight`} value={style.lineHeight} min={.75} max={3} step={.01} onValue={value => updateStyle({ lineHeight: value })} /></label></div><label>{t.letterSpacing}<NumberInput key={`${role}-letterSpacing`} value={style.letterSpacing} min={-2} max={10} step={.05} onValue={value => updateStyle({ letterSpacing: value })} /></label><PaletteSelect label={t.color} colours={palette.colours} value={style.colourId || palette.colours.find(c=>c.value.toLowerCase()===style.color.toLowerCase())?.id || ''} disabled={palette.error} unavailable={language==='pl'?'Wybierz kolor palety':'Select a palette colour'} onChange={id=>{const colour=palette.colours.find(c=>c.id===id);if(colour)updateStyle({colourId:id,color:colour.value});}} /><div className="kt-inline-checks"><label className="kt-check"><input type="checkbox" checked={style.bold} onChange={event => updateStyle({ bold: event.target.checked })} />{t.bold}</label><label className="kt-check"><input type="checkbox" checked={style.italic} onChange={event => updateStyle({ italic: event.target.checked })} />{t.italic}</label></div>{role !== 'nonRenewable' && role !== 'restriction' && <p className="kt-help">{t.inherited}</p>}</>}
+          {role==='restriction' && <><label>{language==='pl'?'Tekst do podglądu':'Preview text'}<input value={sample.restriction} placeholder={language==='pl'?'Tylko Mechaniści':'Mechanists only'} maxLength={200} onChange={event=>setSample({...sample,restriction:event.target.value})}/></label><p className="kt-help">{language==='pl'?'Treść przykładowa, bez zapisu w szablonie. Napis jest warstwą nad mechaniką i nie rezerwuje miejsca. Ręcznie dopilnuj, aby treść nie weszła pod napis.':'Preview only, not saved in the template. The label overlays the rules and reserves no space. Keep the rules clear of the label manually.'}</p></>}{style && role && <><label>{t.font}<select aria-label={t.font} value={style.font} onChange={event => updateStyle({ font: event.target.value as TextStyle['font'] })}>{fonts.map(font => <option value={font} key={font} disabled={font!=='libertine'}>{font === 'libertine' ? 'Linux Libertine' : font === 'georgia' ? 'Georgia' : 'Arial'}</option>)}</select></label><div className="kt-pair"><label>{t.fontSize}<NumberInput key={`${role}-fontSize`} value={style.fontSize} min={role === 'nonRenewable' || role === 'restriction' ? 5 : 9} max={48} onValue={value => updateStyle({ fontSize: value })} /></label><label>{t.lineHeight}<NumberInput key={`${role}-lineHeight`} value={style.lineHeight} min={.75} max={3} step={.01} onValue={value => updateStyle({ lineHeight: value })} /></label></div><label>{t.letterSpacing}<NumberInput key={`${role}-letterSpacing`} value={style.letterSpacing} min={-2} max={10} step={.05} onValue={value => updateStyle({ letterSpacing: value })} /></label><PaletteSelect label={t.color} colours={palette.colours} value={style.colourId || palette.colours.find(c=>c.value.toLowerCase()===style.color.toLowerCase())?.id || ''} disabled={palette.error} unavailable={language==='pl'?'Wybierz kolor palety':'Select a palette colour'} onChange={id=>{const colour=palette.colours.find(c=>c.id===id);if(colour)updateStyle({colourId:id,color:colour.value});}} /><div className="kt-inline-checks"><label className="kt-check"><input type="checkbox" checked={style.bold} onChange={event => updateStyle({ bold: event.target.checked })} />{t.bold}</label><label className="kt-check"><input type="checkbox" checked={style.italic} onChange={event => updateStyle({ italic: event.target.checked })} />{t.italic}</label></div>{role !== 'nonRenewable' && role !== 'restriction' && <p className="kt-help">{t.inherited}</p>}</>}
         </div></details>
       </aside>
     </div>

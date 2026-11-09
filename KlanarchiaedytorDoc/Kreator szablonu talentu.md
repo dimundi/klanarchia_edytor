@@ -1,5 +1,7 @@
 # Kreator szablonu talentu
 
+Aktualizacja 2026-11-09: dokument zawiera również opisy wcześniejszych etapów. Aktualny zapis i eksport opisują Baza danych.md oraz Skład tekstu i fonty.md; jedna kolejka dalszych prac jest w [TODO.md](TODO.md).
+
 Stan lokalny: 2026-11-06. Wejście: „Projektowanie” → „Kreator szablonów talentów”. Nadal tylko dla administratora WordPressa. Bez bazy i eksportu PDF.
 
 ## Ekran wyboru szablonu
