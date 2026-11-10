@@ -227,3 +227,34 @@ Element Numer wersji (elements.version, styles.version) jest osobną warstwą te
 Kreator i miniatury szablonów pokazują przykład A7K2-M9B4-091126-01. Rzeczywisty versionCode talentu pojawia się na karcie wyłącznie przy eksporcie po zaznaczeniu ID w PDF; wizualizacje w bibliotece i edytorze zawsze go ukrywają. Nowy niezapisany talent oraz niezapisane zmiany nie mają oznaczenia na karcie ani w nazwie PDF, aby nie przypisać szkicowi wcześniejszej wersji. Przykład nie jest zapisywany jako treść szablonu.
 
 Aktualny szablon Talent podstawowy ma włączone pole numeru wersji talentu. Wszystkie przypisane talenty używają aktualnego układu bez ponownego zapisu talentu. Historia szablonu zostaje do audytu; osobny wygląd tworzymy jako nowy szablon. Oczko steruje obecnością pola zarówno w podglądzie, jak i eksporcie.
+
+- Talent ekskluzywny: osobny element tekstowy górnego pasa, bezpośrednio za „nieodnawialny”, z własnym stylem i widocznością. W konkretnych talentach włączany osobnym przełącznikiem. Podgląd wszystkich elementów może wykraczać poza szerokość karty.
+
+Koszt talentu i przykładowy koszt szablonu: liczba całkowita 0–10. Wartość 10 korzysta z tych samych tuszowych cyfr co 0–9.
+
+Wartość kosztu 10 zachowuje wysokość pojedynczej cyfry. Automatyczny pas uwzględnia szerszą liczbę i przesuwa kolejne symbole; nominalne wymiary obiektu szablonu pozostają bez zmian.
+
+
+## Koszt frakcyjny
+
+Osobny obiekt graficzny w automatycznym górnym pasie, po koszcie podstawowym i przed zagrywką. Delikatne nieregularne tło, logo frakcji blisko liczby i monety. Własna pozycja Y, wymiary, widoczność i blokada; kolor dziedziczy po symbolu kosztu. Przykładową frakcję i wartość 0–10 ustawia się we właściwościach obiektu.
+
+W edytorze talentu po włączeniu kosztu dostępne + Koszt frakcyjny. Wybór Soldaci/Mechaniści/Hanza/Rytualiści, wartość 0–10, możliwość usunięcia nadpisania. Obecnie jeden koszt frakcyjny na talent. Bez nadpisania blok nie zajmuje miejsca na karcie. Wyłączenie kosztu podstawowego ukrywa też blok frakcyjny, zachowując roboczą wartość. Dane frakcji i ceny są danymi talentu, geometria i wzorcowy podgląd należą do szablonu.
+
+2026-11-10: koszt frakcyjny wyświetla się niezależnie od podstawowego (obecność settings.factionCost). Grafika bez tła; wybór frakcji ikonami, pod nim osobne przełączniki i wartości obu kosztów.
+
+2026-11-10: w talencie blok frakcyjny wyświetla tylko wybrane niezależnie logotypy oraz opcjonalny drugi koszt. Geometria bloku szablonu stanowi skalę dla automatycznej szerokości zależnej od widocznych elementów. Kontrolki: koszt → ikony frakcji → drugi koszt.
+
+Domyślnie druga ikona monet ma rozmiar i pozycję pionową podstawowej. Po rozdzieleniu obiektów jej geometrię można zmieniać niezależnie.
+
+Domyślnie druga wartość kosztu ma rozmiar i pion pierwszej; jej geometrię można zmieniać osobno. Odstęp do monet uwzględnia szerokość liczby 10.
+
+2026-11-10: usunięto wspólny obiekt frakcji i kosztu. Osobne elementy: factionSymbol (Frakcja — symbol), factionCostAmount (Drugi koszt — wartość), factionCost (Drugi koszt — symbol). Każdy ma własne zaznaczenie, oczko, blokadę, wymiary i Y. X ustala rząd; między cyfrą a monetami 1 pt. Starsze dokumenty są rozdzielane przy odczycie, bez zmiany historii. Brak wspólnego viewBox z pustymi marginesami.
+
+Wyjątek odstępu: logo frakcji → widoczna liczba drugiego kosztu również 1 pt. Jeśli liczba jest ukryta, stosowany jest zwykły odstęp do następnego elementu.
+
+Aktualizacja: odstęp logo frakcji → widoczna liczba drugiego kosztu wynosi 0 pt.
+
+SVG frakcji mają viewBox przycięty do rzeczywistych kształtów. Obiekt frakcji zachowuje proporcje znaku i dopasowuje szerokość do wysokości, bez bocznych pasów przy centrowaniu w stałym polu. Dotyczy każdej frakcji i wielu znaków w rzędzie.
+
+Aktualnie logo frakcji → liczba ma odstęp 1 pt. Wartość drugiego kosztu edytuje się bezpośrednio w lewej kolumnie obok pozycji Drugi koszt — wartość, w zakresie 0–10, tak jak pierwszy koszt.

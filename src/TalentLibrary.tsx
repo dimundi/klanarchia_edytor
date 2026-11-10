@@ -1,5 +1,8 @@
+import EditorialNoteBadge from './EditorialNoteBadge';
+import TalentListRow from './TalentListRow';
+import { emptyTalentSearch } from './TalentSearch';
+import TalentLibraryTools, { type NameAuditReport } from './TalentLibraryTools';
 import CategoryRenameButton from './CategoryRenameButton';
-import TalentListContent, { TalentListSymbols } from './TalentListContent';
 import { issueMessage } from './talent-validation';
 import TalentStatusDot, { talentStatusLabel } from './talent-status';
 import type { LibraryItem } from './talent-template-library';
@@ -8,7 +11,7 @@ import LazyTalentCard from './LazyTalentCard';
 import { usePalette } from './palette';
 import { readTalent, readTalents, TalentListItem, TalentRecord } from './talent-api';
 import TalentEditor from './TalentEditor';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { request, ApiError } from './editor-api';
 import './talent-library.css';
 type EditingTalent = {name:string;categoryId:string;record?:TalentRecord;draftId?:string;template?:LibraryItem};
@@ -17,8 +20,11 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
  const pl = language === 'pl', palette=usePalette(language);
  const [view,setView]=useState<'list'|'tiles'>('list'),[showTileStatuses,setShowTileStatuses]=useState(false);
  const groupsInitialized=useRef(false);
+ const [searchState,setSearchState]=useState(emptyTalentSearch);
+ const [nameReport,setNameReport]=useState<NameAuditReport|null>(null);
  const [editing, setEditing] = useState<EditingTalent | null>(()=>window.location.hash==='#talents'?(window.history.state?.keTalentEditor??null):null);
- const [items, setItems] = useState<Category[]>([]), [loaded, setLoaded] = useState(false), [busy, setBusy] = useState(false);
+ const [categoryItems, setItems] = useState<Category[]>([]), [loaded, setLoaded] = useState(false), [busy, setBusy] = useState(false);
+ const items=useMemo(()=>[...categoryItems].sort((a,b)=>a.name.localeCompare(b.name,language,{sensitivity:'base',numeric:true})),[categoryItems,language]);
  const [error, setError] = useState(''), [current, setCurrent] = useState<string | null>(()=>window.history.state?.keTalentCategory??null), [selected, setSelected] = useState<string[]>([]), [collapsed, setCollapsed] = useState<string[]>([]);
  const [form, setForm] = useState<{ parentId: string | null } | null>(null), [name, setName] = useState('');
  const [talents,setTalents]=useState<TalentListItem[]>([]),[talentsLoading,setTalentsLoading]=useState(false),[talentsError,setTalentsError]=useState(false),[reload,setReload]=useState(0),[openingId,setOpeningId]=useState<string|null>(null);
@@ -39,10 +45,10 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
  }
  useEffect(()=>{
   const openLibrary=(event:Event)=>{
-   if(!editing)return;
+   if(!editing&&!current){setForm(null);return;}
    if(editorBusy||(dirty.current&&!window.confirm(pl?'Odrzucić roboczą treść talentu?':'Discard this talent draft?'))){event.preventDefault();return;}
-   window.history.pushState({...window.history.state,keTalentEditor:null,keTalentDepth:0,keTalentCategory:current},'', '#talents');
-   historyDepth.current=0;dirty.current=false;setEditing(null);
+   window.history.pushState({...window.history.state,keTalentEditor:null,keTalentDepth:0,keTalentCategory:null},'', '#talents');
+   historyDepth.current=0;dirty.current=false;setEditing(null);setCurrent(null);setTalents([]);setForm(null);
   };
   window.addEventListener('ke:open-talent-library',openLibrary);return()=>window.removeEventListener('ke:open-talent-library',openLibrary);
  },[editing,editorBusy,current,pl]);
@@ -52,7 +58,7 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
    if(editing&&dirty.current&&!skipNavigationGuard.current&&!window.confirm(pl?'Odrzucić roboczą treść talentu?':'Discard this talent draft?')){skipNavigationGuard.current=true;window.history.go(Math.sign(historyDepth.current-(window.history.state?.keTalentDepth??0))||1);return;}
    skipNavigationGuard.current=false;dirty.current=false;
    const state=window.history.state;historyDepth.current=state?.keTalentDepth??0;
-   if(state?.keTalentCategory)setCurrent(state.keTalentCategory);
+   setCurrent(state?.keTalentCategory??null);
    setEditing(window.location.hash==='#talents'?(state?.keTalentEditor??null):null);
    if(state?.keTalentEditor)setNavCategory(state.keTalentEditor.categoryId);
    if(!state?.keTalentEditor)restoreScroll.current=state?.keTalentScroll??null;
@@ -64,14 +70,14 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
  const sections = items.map(group => ({group, talents:talents.filter(talent => talent.categoryId===group.id)})).filter(section => section.talents.length>0);
  async function load() {
   setBusy(true); setError('');
-  try { const result = await request<{items: Category[]}>(`talent-categories?language=${language}`); setItems(result.items); if(!groupsInitialized.current){setCollapsed(result.items.filter(item=>!item.parentId).map(item=>item.id));groupsInitialized.current=true;} setCurrent(old => old ?? result.items.find(i => !i.parentId)?.id ?? null); setLoaded(true); }
+  try { const result = await request<{items: Category[]}>(`talent-categories?language=${language}`); setItems(result.items); if(!groupsInitialized.current){setCollapsed(result.items.filter(item=>!item.parentId).map(item=>item.id));groupsInitialized.current=true;}  setLoaded(true); }
   catch { setError(pl ? 'Nie udało się pobrać biblioteki.' : 'Could not load the library.'); }
   finally { setBusy(false); }
  }
  useEffect(()=>{const refresh=()=>setReload(v=>v+1);window.addEventListener('ke:templates-changed',refresh);window.addEventListener('focus',refresh);return()=>{window.removeEventListener('ke:templates-changed',refresh);window.removeEventListener('focus',refresh);};},[]);
  useEffect(() => { if (active && !loaded) void load(); }, [active, loaded]);
  useEffect(()=>{if(!active||editing||!current)return;let alive=true;setTalentsLoading(true);setTalentsError(false);setTalents([]);readTalents(current,language).then(result=>{if(alive)setTalents(result);}).catch(()=>{if(alive)setTalentsError(true);}).finally(()=>{if(alive)setTalentsLoading(false);});return()=>{alive=false;};},[active,editing,current,language,reload]);
- async function openTalent(item:TalentListItem){if(openingId||editorBusy||item.id===editing?.record?.id)return;if(editing&&dirty.current&&!window.confirm(pl?'Odrzucić roboczą treść talentu?':'Discard this talent draft?'))return;setOpeningId(item.id);setError('');try{const record=await readTalent(item.id,language);beginEditing({name:items.find(i=>i.id===record.categoryId)?.name||'',categoryId:record.categoryId,record});}catch{setError(pl?'Nie udało się otworzyć talentu.':'Could not open the talent.');}finally{setOpeningId(null);}}
+ async function openTalent(item:Pick<TalentListItem,'id'>){if(openingId||editorBusy||item.id===editing?.record?.id)return;if(editing&&dirty.current&&!window.confirm(pl?'Odrzucić roboczą treść talentu?':'Discard this talent draft?'))return;setOpeningId(item.id);setError('');try{const record=await readTalent(item.id,language);beginEditing({name:items.find(i=>i.id===record.categoryId)?.name||'',categoryId:record.categoryId,record});}catch{setError(pl?'Nie udało się otworzyć talentu.':'Could not open the talent.');}finally{setOpeningId(null);}}
  function toggle(id: string) {
   const ids = [id, ...items.filter(i => i.parentId === id).map(i => i.id)];
   setSelected(old => ids.every(key => old.includes(key)) ? old.filter(key => !ids.includes(key)) : [...new Set([...old, ...ids])]);
@@ -102,19 +108,20 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
    <div className="ke-library-selection"><span>{pl ? 'Zaznaczono' : 'Selected'}: {selected.length}</span><button type="button" disabled={!selected.length} onClick={() => setSelected([])}>{pl ? 'Odznacz' : 'Clear'}</button></div>
   </aside>
   <section className="ke-library-content" aria-label={pl ? 'Zawartość biblioteki' : 'Library contents'}>
-   <div className="ke-library-tools"><div>{parent && <small>{parent.name} / </small>}<h3>{category?.name || (pl ? 'Biblioteka talentów' : 'Talent library')}</h3></div>
+   {current&&<div className="ke-library-tools"><div>{parent && <small>{parent.name} / </small>}<h3>{category?.name || (pl ? 'Biblioteka talentów' : 'Talent library')}</h3></div>
     <div className="ke-library-view-tools"><div className="ke-library-view-toggle" role="group" aria-label={pl?'Widok talentów':'Talent view'}><button type="button" aria-pressed={view==='list'} onClick={()=>setView('list')}>{pl?'Lista':'List'}</button><button type="button" aria-pressed={view==='tiles'} onClick={()=>setView('tiles')}>{pl?'Kafelki':'Tiles'}</button></div>{view==='tiles'&&<button type="button" className="ke-tile-status-toggle" aria-pressed={showTileStatuses} onClick={()=>setShowTileStatuses(value=>!value)}>{showTileStatuses?(pl?'Ukryj statusy':'Hide statuses'):(pl?'Pokaż statusy':'Show statuses')}</button>}
     {category?.parentId && <button type="button" onClick={() => createTalent(category.id)}>{pl ? '+ Utwórz talent' : '+ Create talent'}</button>}
     {category && !category.parentId && <button type="button" onClick={() => {setForm({parentId: category.id}); setName('');}}>{pl ? '+ Podgrupa' : '+ Subgroup'}</button>}</div>
-   </div>
+   </div>}
    {error && <div role="alert"><p>{error}</p>{!loaded && <button type="button" disabled={busy} onClick={() => void load()}>{pl ? 'Spróbuj ponownie' : 'Retry'}</button>}</div>}
    {form && <form className="ke-library-form" onSubmit={create}>
     <label>{form.parentId ? (pl ? 'Nazwa podgrupy' : 'Subgroup name') : (pl ? 'Nazwa grupy' : 'Group name')}<input autoFocus maxLength={120} required value={name} onChange={e => setName(e.target.value)} /></label>
     <button type="submit" disabled={busy || !name.trim()}>{busy ? (pl ? 'Zapisywanie…' : 'Saving…') : (pl ? 'Utwórz' : 'Create')}</button>
     <button type="button" disabled={busy} onClick={() => setForm(null)}>{pl ? 'Anuluj' : 'Cancel'}</button>
    </form>}
-   {loaded && !form && <>
-    {talentsLoading?<p role="status">{pl?'Wczytywanie talentów…':'Loading talents…'}</p>:talentsError?<div role="alert"><p>{pl?'Nie udało się pobrać talentów.':'Could not load talents.'}</p><button type="button" onClick={()=>setReload(v=>v+1)}>{pl?'Spróbuj ponownie':'Retry'}</button></div>:talents.length?<div className="ke-talent-sections">{sections.map(({group,talents:groupTalents})=><section className="ke-talent-section" key={group.id} aria-labelledby={`talent-section-${group.id}`}><h4 id={`talent-section-${group.id}`} className="ke-talent-section-title">{group.name} <span>{groupTalents.length}</span></h4><div className={'ke-talent-list '+(view==='tiles'?'is-tiles':'is-rows')}>{groupTalents.map(item=><article key={item.id} data-talent-id={item.id} onClick={event=>{if(view==='tiles'&&!(event.target as Element).closest('button,input,details,a,select,textarea'))void openTalent(item);}}>{view==='tiles'?<><LazyTalentCard item={item} language={language} palette={palette} disabled={openingId!==null} onOpen={()=>void openTalent(item)}/>{showTileStatuses&&<div className="ke-tile-info"><code title={item.versionCode}>{item.id}</code><span className="ke-tile-info-status"><TalentStatusDot status={item.status} language={language}/>{talentStatusLabel(item.status,language)}</span><span className={'ke-tile-info-errors'+(item.validation.errorCount?' has-errors':'')} role="img" aria-label={(pl?'Błędy: ':'Errors: ')+item.validation.errorCount} title={item.validation.errorCount?item.validation.issues.map(issue=>issueMessage(issue,language)).join('\n'):(pl?'Brak zapisanych błędów':'No recorded errors')}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5m0 3v1"/></svg>{item.validation.errorCount}</span></div>}</>:<div className="ke-talent-list-body"><div className="ke-talent-list-meta"><h4 className="ke-talent-row-title"><TalentStatusDot status={item.status} language={language}/><button type="button" className="ke-talent-title" disabled={openingId!==null} onClick={()=>void openTalent(item)}>{item.name||(pl?'Bez tytułu':'Untitled')}</button></h4><code className="ke-talent-code">{item.versionCode}</code><TalentListSymbols item={item} language={language}/><div className="ke-talent-list-validation">{item.validation.errorCount>0&&<details><summary className="ke-talent-error-badge">{pl?'Błędy':'Errors'}: {item.validation.errorCount}</summary><ul>{item.validation.issues.map(issue=><li key={issue.code}>{issueMessage(issue,language)}</li>)}</ul></details>}{item.validation.status!=='checked'&&<small className="ke-talent-check-pending">{item.validation.status==='stale'?(pl?'Wymaga ponownego sprawdzenia':'Needs rechecking'):(pl?'Jeszcze niesprawdzony':'Not checked yet')}</small>}</div></div><TalentListContent item={item} language={language} annotations={palette.annotations} colours={palette.colours}/></div>}{openingId===item.id&&<span className={view==='tiles'?'ke-tile-opening':'ke-row-opening'} role="status"><span className="ke-saving-spinner" aria-hidden="true"/>{pl?'Otwieranie…':'Opening…'}</span>}</article>)}</div></section>)}</div>:<div className="ke-library-empty"><h4>{pl?'Nie ma jeszcze talentów':'No talents yet'}</h4><p>{category?.parentId?(pl?'Utwórz pierwszy talent w tej podgrupie.':'Create the first talent in this subgroup.'):(pl?'Wybierz podgrupę, aby utworzyć talent.':'Choose a subgroup to create a talent.')}</p></div>}
+   {loaded&&!form&&!current&&<TalentLibraryTools palette={palette} categories={items} searchState={searchState} onSearchState={setSearchState} language={language} report={nameReport} onReport={setNameReport} onOpen={item=>void openTalent(item)} openingId={openingId}/>}
+   {loaded && !form && current && <>
+    {talentsLoading?<p role="status">{pl?'Wczytywanie talentów…':'Loading talents…'}</p>:talentsError?<div role="alert"><p>{pl?'Nie udało się pobrać talentów.':'Could not load talents.'}</p><button type="button" onClick={()=>setReload(v=>v+1)}>{pl?'Spróbuj ponownie':'Retry'}</button></div>:talents.length?<div className="ke-talent-sections">{sections.map(({group,talents:groupTalents})=><section className="ke-talent-section" key={group.id} aria-labelledby={`talent-section-${group.id}`}><h4 id={`talent-section-${group.id}`} className="ke-talent-section-title">{group.name} <span>{groupTalents.length}</span></h4><div className={'ke-talent-list '+(view==='tiles'?'is-tiles':'is-rows')}>{groupTalents.map(item=><article key={item.id} data-talent-id={item.id} onClick={event=>{if(view==='tiles'&&!(event.target as Element).closest('button,input,details,a,select,textarea'))void openTalent(item);}}>{view==='tiles'?<><LazyTalentCard item={item} language={language} palette={palette} disabled={openingId!==null} onOpen={()=>void openTalent(item)}/>{showTileStatuses&&<div className="ke-tile-info"><code title={item.versionCode}>{item.id}</code><span className="ke-tile-info-status"><TalentStatusDot status={item.status} language={language}/>{talentStatusLabel(item.status,language)}</span><span className={'ke-tile-info-errors'+((item.validation.automaticErrorCount??item.validation.issues.length)?' has-errors':'')} role="img" aria-label={(pl?'Błędy: ':'Errors: ')+item.validation.errorCount} title={item.validation.errorCount?item.validation.issues.map(issue=>issueMessage(issue,language)).join('\n'):(pl?'Brak zapisanych błędów':'No recorded errors')}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5m0 3v1"/></svg>{item.validation.errorCount}</span><EditorialNoteBadge validation={item.validation} language={language}/></div>}</>:<TalentListRow item={item} language={language} annotations={palette.annotations} colours={palette.colours} disabled={openingId!==null} onOpen={()=>void openTalent(item)}/>}{openingId===item.id&&<span className={view==='tiles'?'ke-tile-opening':'ke-row-opening'} role="status"><span className="ke-saving-spinner" aria-hidden="true"/>{pl?'Otwieranie…':'Opening…'}</span>}</article>)}</div></section>)}</div>:<div className="ke-library-empty"><h4>{pl?'Nie ma jeszcze talentów':'No talents yet'}</h4><p>{category?.parentId?(pl?'Utwórz pierwszy talent w tej podgrupie.':'Create the first talent in this subgroup.'):(pl?'Wybierz podgrupę, aby utworzyć talent.':'Choose a subgroup to create a talent.')}</p></div>}
    </>}
   </section>
  </div>;

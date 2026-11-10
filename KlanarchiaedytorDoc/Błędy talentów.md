@@ -50,3 +50,15 @@ Po pierwszym zapisie nowego talentu kod powstaje dopiero na serwerze. Diagnostyk
 Zmiana aktualnego szablonu unieważnia poprzedni raport także bez zmiany treści talentu. Żądanie kontroli przekazuje templateId/templateRevision jako znacznik sprawdzonego podglądu; serwer odrzuca nieaktualny układ 409. To metadane diagnostyki, nie przypięcie talentu do wersji szablonu.
 
 [ikona-kosztu: koszt] jest obsługiwanym wbudowanym symbolem i nie powoduje unknown_annotation. Nieznana zawartość, np. [ikona-kosztu: złoto], nadal zgłasza błąd. Nazwa ikona-kosztu jest zarezerwowana i nie może zostać zajęta przez styl użytkownika.
+
+
+## Notatki redakcyjne i walidacja automatyczna — stan 2026-11-10
+
+- Walidacja automatyczna pozostaje wyliczana: przepełnienia, brak tytułu, nieznane oznaczenia i numery stron. Edytor pokazuje ją oddzielnie; nie edytujemy komunikatów walidatora ręcznie.
+- Notatkę redakcyjną można dodać, zmienić, wyłączyć i ponownie włączyć. Poziomy: Błąd (czerwony), Ostrzeżenie (złoty), Informacja (niebieski). Każda ma stabilne ID, treść i flagę enabled. Pusta nowa notatka ma Anuluj; zapis pustej treści jest blokowany.
+- Zmiany zapisuje przycisk Zapisz talentu; tworzą wersję i historię z autorem/czasem. Ponowne sprawdzenie talentu nie zmienia poziomu, tekstu ani wyłączenia notatek. Wyłączone pozostają zapisane, ale nie są liczone.
+- Uwagi źródłowe PDF są prezentowane jako edytowalne notatki poziomu Błąd. Do pierwszego zapisu pochodzą z historycznego sourceReview, z zachowaniem dotychczasowego warunku zgodności tekstu mechaniki. Po zapisaniu notatek są niezależne od późniejszej edycji mechaniki. Oryginalny import i dawne raporty pozostają bez zmian.
+- Lista, kafelki ze statusami i nawigacja: trójkąt liczy błędy automatyczne, ikona notatki liczy aktywne notatki. Kolor notatek odpowiada najwyższemu aktywnemu poziomowi; tooltip zawiera poziomy i treści.
+- Filtry błędów i ochrona zatwierdzania uwzględniają automatyczne błędy oraz aktywne notatki poziomu Błąd. Ostrzeżenia i informacje nie zwiększają errorCount. Brak aktualnej walidacji nadal nie oznacza braku błędów.
+
+Nieaktywne notatki domyślnie ukryte. Przycisk Pokaż nieaktywne wyświetla je na końcu listy; można je wtedy edytować lub ponownie aktywować. Widoczność nie zmienia zapisanej kolejności ani aktywności.

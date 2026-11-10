@@ -1,6 +1,6 @@
 ﻿# TODO i ramowy plan
 
-Stan: 2026-11-09. Jedna lista zadań projektu; szczegóły wymagań pozostają w dokumentach modułów. Kolejność poniżej jest propozycją do dopracowania, bez ustalonych terminów. Uzgodniony kierunek: najpierw narzędzia wewnętrzne do talentów i kart, potem część dla użytkowników.
+Stan: 2026-11-10. Jedna lista zadań projektu; szczegóły wymagań pozostają w dokumentach modułów. Kolejność poniżej jest propozycją do dopracowania, bez ustalonych terminów. Uzgodniony kierunek: najpierw narzędzia wewnętrzne do talentów i kart, potem część dla użytkowników.
 
 ## Już działa lokalnie
 
@@ -11,7 +11,7 @@ Stan: 2026-11-09. Jedna lista zadań projektu; szczegóły wymagań pozostają w
 - Własne fonty Linux Libertine, wspólne dzielenie PL/EN-US i gotowy skład SVG; ostrzeganie o przepełnieniu.
 - Bezpośredni eksport pojedynczej karty do PDF z edytora talentu i kreatora szablonu. Obecny PDF zawiera tekst jako krzywe; na razie tak zostaje.
 
-Działające fundamenty nie oznaczają ukończenia całych modułów. Dane starego edytora nie zostały zaimportowane. Osobno wykonano [import 81 talentów archetypów i 36 talentów frakcji z PDF](Import%20talentów%20z%20PDF.md); brak wdrożenia na produkcję.
+Działające fundamenty nie oznaczają ukończenia całych modułów. Zaimportowano 228 promocyjnych Darów ze starego edytora oraz [81 talentów archetypów, 36 frakcji, 19 podstawowych Darów i 59 talentów ogólnych z PDF](Import%20talentów%20z%20PDF.md); brak wdrożenia na produkcję.
 
 Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentów](Błędy%20talentów.md).
 
@@ -27,13 +27,15 @@ Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentó
 
 ### 1. Redakcja talentów — najbliższy etap
 
-- [ ] T-01 Doprecyzować ekran biblioteki i miejsce Utwórz talent; obecne umiejscowienie pozostaje do poprawy.
-- [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Doprecyzować przeglądanie dużej liczby talentów (także zbiorcze liczniki i filtrowanie po zapisanych kodach błędów): szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
+- [ ] T-01 Działa ekran Narzędzia po wejściu w Talenty, bez automatycznego wyboru grupy, oraz raport identycznych/podobnych nazw. Doprecyzować pozostałe narzędzia i miejsce Utwórz talent; obecne umiejscowienie pozostaje do poprawy.
+- [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Działa osobne narzędzie wyszukiwania po tytule/kodzie i opcjonalnie treści, z filtrami grup/podgrup i paginacją. Doprecyzować pozostałe przeglądanie dużej liczby talentów: zbiorcze liczniki, filtrowanie po statusach/kodach błędów i sortowanie. Nie przywracać Całej biblioteki bez ustalenia jej roli.
 - [ ] T-03 Zaprojektować zaznaczanie talentów i działania na zaznaczeniu, także w kontekście grup/podgrup.
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
 - [x] T-05 Symbol kosztu w mechanice: [ikona-kosztu: koszt], przycisk wstawiania, pojedynczy element składu, lista/kafelki/PDF i walidacja. Odświeżono raporty trzech importowanych talentów bez zmiany treści.
 - [ ] T-07 Wydzielić archiwum talentów o statusie delete: ukrycie w zwykłej bibliotece, przegląd wycofanych i przywracanie; statusy i historia zmian już działają.
 - [ ] T-06 Wrócić do zgłoszonych poprawek ramki i ikony kosztu. Zachować wariant Oryginalny i Tuszowy oraz możliwość powrotu do wcześniejszych grafik.
+
+- [ ] T-08 Zakres 0–10 i jeden opcjonalny koszt frakcyjny już działają. Ustalić obsługę dalszych równoległych kosztów na jednej karcie, dwóch symboli zagrywki, dwóch pól użyć i dodatkowych znaków graficznych ze źródłowych talentów ogólnych oraz Krwi lodowej zmarzliny. Przypadki zachowane w historii importu i błędach źródła; bez automatycznej zmiany modelu podczas importu.
 
 Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentach, nie tylko edycja pojedynczej karty. Rozbudowę eksportu zaznaczenia połączyć z etapem arkuszy.
 
@@ -48,6 +50,10 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 - [x] D-06 Dopisano drugą partię PDF: 36 talentów frakcji, nowa grupa z 4 podgrupami, po 9 talentów, koszty/użycia/formatowanie i historia importu; pominięte strony 10/20/30/40. Poprzednie 82 talenty zachowane. [Raport](Import%20talentów%20z%20PDF.md).
 
 - [x] D-07 Przeniesiono 228 promocyjnych Darów Ciemności do promki → Zbiórka - Dary Ciemności, szablon Dary Ciemności, wszystkie dotychczasowe kody zachowane. [Raport](Import%20Darów%20Ciemności.md).
+
+- [x] D-08 Import PDF: 19 podstawowych Darów Ciemności i 59 talentów ogólnych, z pominięciem pustych kart, historią, mapowaniem i raportami ograniczeń. [Raport](Import%20talentów%20z%20PDF.md).
+
+- [x] D-09 Import 14 talentów Krwi lodowej zmarzliny do 5 podgrup, automatyczne przypisanie 4 Darów do szablonu Dary Ciemności, historia i raporty nieobsługiwanych liczników. [Raport](Import%20talentów%20z%20PDF.md).
 
 ### 3. Zestawy talentów i arkusze
 

@@ -101,3 +101,98 @@
 #klanarchia-editor .ke-category-rename-dialog form>div button {width:auto;flex:none;padding:7px 12px;border:1px solid #a58b4c66;border-radius:4px;}
 #klanarchia-editor .ke-category-rename-dialog button:disabled {opacity:.4;cursor:default;}
 #klanarchia-editor .ke-category-rename-dialog [role=alert] {font-size:13px;color:#e4a677;}
+#klanarchia-editor .ke-library-toolbox>p{opacity:.75;margin:10px 0 24px}
+#klanarchia-editor .ke-name-audit-tool{display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid #c3a65e40;background:#c3a65e08;padding:18px 20px;border-radius:4px}
+#klanarchia-editor .ke-name-audit-tool h4{margin:0;font-size:20px}
+#klanarchia-editor .ke-name-audit-tool p{margin:5px 0 0;opacity:.7}
+#klanarchia-editor .ke-name-audit-tool>button{display:flex;align-items:center;gap:8px;flex:none}
+#klanarchia-editor .ke-name-audit-report{margin-top:24px}
+#klanarchia-editor .ke-name-audit-report h4{margin:24px 0 12px;font-size:20px}
+#klanarchia-editor .ke-name-audit-report h4>span{font:14px sans-serif;opacity:.65;margin-left:8px}
+#klanarchia-editor .ke-name-audit-help{max-width:850px;font-size:13px;opacity:.65}
+#klanarchia-editor .ke-name-match{padding:12px 16px;margin:0 0 12px;border:1px solid #c3a65e30;border-radius:3px;list-style:none}
+#klanarchia-editor .ke-name-match ul{padding:0;margin:6px 0 0;list-style:none}
+#klanarchia-editor .ke-name-match li{padding:7px 0;list-style:none}
+#klanarchia-editor .ke-name-match li>div{display:flex;align-items:center;gap:8px}
+#klanarchia-editor .ke-name-match small{display:block;opacity:.7;font-size:12px}
+#klanarchia-editor .ke-name-match code{margin-left:10px}
+@media(max-width:600px){#klanarchia-editor .ke-name-audit-tool{align-items:start;flex-direction:column}}
+#klanarchia-editor .ke-talent-search{margin-bottom:16px}
+#klanarchia-editor .ke-search-panel{border:1px solid #c3a65e30;border-top:0;padding:18px 20px}
+#klanarchia-editor .ke-search-query{display:flex;align-items:end;gap:12px}
+#klanarchia-editor .ke-search-query label{flex:1;min-width:0}
+#klanarchia-editor .ke-search-panel form label{font-size:13px}
+#klanarchia-editor .ke-search-query label,#klanarchia-editor .ke-search-filters label{display:grid;gap:6px}
+#klanarchia-editor .ke-search-query input,#klanarchia-editor .ke-search-filters select{width:100%;box-sizing:border-box;padding:9px 10px;background:#171d1780;border:1px solid #c3a65e50;color:inherit;border-radius:3px}
+#klanarchia-editor .ke-search-query>button{display:flex;align-items:center;gap:8px;flex:none}
+#klanarchia-editor .ke-search-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0}
+#klanarchia-editor .ke-search-content{display:flex;align-items:center;gap:8px}
+#klanarchia-editor .ke-search-content input{width:16px;height:16px;accent-color:#c3a65e}
+#klanarchia-editor .ke-search-results{margin-top:20px;border-top:1px solid #c3a65e30}
+#klanarchia-editor .ke-search-results nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;font-size:13px}
+@media(max-width:600px){#klanarchia-editor .ke-search-filters{grid-template-columns:1fr}}
+#klanarchia-editor .ke-library-toolbox>.ke-talent-search{margin-bottom:28px}
+
+#klanarchia-editor .ke-search-group-path{display:block;font-size:12px;opacity:.65;margin:0 0 5px;overflow-wrap:anywhere}
+
+#klanarchia-editor .ke-talent-nav-error{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
+#klanarchia-editor .ke-talent-nav-error svg{flex:none}
+#klanarchia-editor .ke-editorial-notes{margin:12px 0 18px}
+#klanarchia-editor .ke-editorial-notes-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#klanarchia-editor .ke-editorial-notes h5,#klanarchia-editor .ke-talent-overflow-status h5{margin:0 0 8px;font-size:14px}
+#klanarchia-editor .ke-editorial-note{padding:10px;border-left:3px solid #80aeca;background:#80aeca0b;margin:8px 0}
+#klanarchia-editor .ke-editorial-note.is-error{border-color:#d17b66}
+#klanarchia-editor .ke-editorial-note.is-warning{border-color:#cfb269}
+#klanarchia-editor .ke-editorial-note.is-disabled{opacity:.55}
+#klanarchia-editor .ke-editorial-note-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+#klanarchia-editor .ke-editorial-note-controls label{display:flex;align-items:center;gap:6px;font-size:12px}
+#klanarchia-editor .ke-editorial-note textarea{width:100%;box-sizing:border-box;background:#151b1580;color:inherit;border:1px solid #c3a65e40;padding:8px;font:inherit;font-size:14px;resize:vertical}
+#klanarchia-editor .ke-editorial-note-badge{display:inline-flex;align-items:center;gap:4px;color:#80aeca;font-size:12px;flex:none}
+#klanarchia-editor .ke-editorial-note-badge.is-error{color:#df9b83}
+#klanarchia-editor .ke-editorial-note-badge.is-warning{color:#cfb269}
+#klanarchia-editor .ke-talent-overflow-status{margin-top:22px}
+#klanarchia-editor .ke-notes-show-inactive{display:block;margin:10px 0;font-size:12px}
+
+#klanarchia-editor .ke-talent-preview>.ke-talent-settings-panel{margin-top:12px}
+#klanarchia-editor .ke-faction-cost-controls{display:flex;align-items:end;gap:8px;flex-wrap:wrap}
+#klanarchia-editor .ke-faction-cost-controls label{flex:1;min-width:150px}
+#klanarchia-editor .ke-faction-cost-controls input{width:70px;min-width:0}
+
+#klanarchia-editor .ke-cost-settings{display:flex;flex-direction:row;align-items:center;flex-wrap:wrap;gap:12px;margin:4px 0 12px}
+#klanarchia-editor .ke-cost-factions,#klanarchia-editor .ke-cost-options,#klanarchia-editor .ke-cost-option{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+#klanarchia-editor .ke-cost-options{gap:18px}
+#klanarchia-editor .ke-cost-settings button{display:inline-flex;align-items:center;justify-content:center;gap:3px;height:42px;min-width:44px;padding:5px 8px}
+#klanarchia-editor .ke-cost-settings button[aria-pressed=true]{background:#c3a65e30;border-color:#cfb269;box-shadow:inset 0 -2px #cfb269}
+#klanarchia-editor .ke-cost-settings button span{display:block;width:28px;height:28px;background:currentColor;mask-size:contain;mask-position:center;mask-repeat:no-repeat}
+#klanarchia-editor .ke-cost-settings input[type=number]{width:76px;min-width:76px;flex:none;margin:0;height:42px;box-sizing:border-box}
+
+/* Compact search and inline editorial notes. */
+#klanarchia-editor .ke-search-panel{padding:12px 0;border:0}
+#klanarchia-editor .ke-search-query{gap:8px;flex-wrap:wrap}
+#klanarchia-editor .ke-search-query label{flex:1 1 220px}
+#klanarchia-editor .ke-search-query label,#klanarchia-editor .ke-search-filters label{gap:4px}
+#klanarchia-editor .ke-search-query input,#klanarchia-editor .ke-search-filters select{padding:7px 9px;min-width:0;height:36px;font-size:13px}
+#klanarchia-editor .ke-search-query>button{height:36px;padding:6px 12px;font-size:13px}
+#klanarchia-editor .ke-search-reset{opacity:.8}
+#klanarchia-editor .ke-editorial-note-details summary{display:flex;align-items:center;gap:6px;width:fit-content;cursor:pointer;font-size:12px;color:#cbb47a;padding:5px 0}
+#klanarchia-editor .ke-editorial-note-details summary::before{content:'▸'}
+#klanarchia-editor .ke-editorial-note-details[open] summary::before{content:'▾'}
+#klanarchia-editor .ke-editorial-note-details summary:focus-visible{outline:2px solid #c3a65e;outline-offset:3px}
+#klanarchia-editor .ke-editorial-note-details ul{padding:0;list-style:none;max-height:320px;overflow:auto}
+#klanarchia-editor .ke-editorial-note-details li{border-left:2px solid currentColor;padding:6px 10px;margin:6px 0;background:#ffffff05;color:#80aeca}
+#klanarchia-editor .ke-editorial-note-details li.is-error{color:#df9b83}
+#klanarchia-editor .ke-editorial-note-details li.is-warning{color:#cfb269}
+#klanarchia-editor .ke-editorial-note-details li p{white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0 0;color:#e3ddcd;font-size:13px}
+@media(max-width:1000px){#klanarchia-editor .ke-search-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){#klanarchia-editor .ke-search-filters{grid-template-columns:1fr}}
+
+/* Match faction and cost controls to the compact talent icon toolbar. */
+#klanarchia-editor .ke-cost-settings{gap:12px;margin:4px 0 12px}
+#klanarchia-editor .ke-cost-factions,#klanarchia-editor .ke-cost-option{gap:4px}
+#klanarchia-editor .ke-cost-settings button{height:34px;min-width:34px;width:34px;padding:4px;color:#ccb579;border-color:#a58b4c44}
+#klanarchia-editor .ke-cost-settings button span{width:22px;height:24px}
+#klanarchia-editor .ke-cost-settings button:hover{background:#c3a65e12;border-color:#c3a65e}
+#klanarchia-editor .ke-cost-settings button[aria-pressed=true]{background:#c3a65e22;border-color:#d4b66e;box-shadow:inset 0 -2px #d4b66e}
+#klanarchia-editor .ke-cost-settings button:focus-visible{outline:2px solid #d4b66e;outline-offset:2px}
+#klanarchia-editor .ke-cost-settings input[type=number]{width:64px;min-width:64px;height:34px;padding:4px 6px;font-size:14px}
+#klanarchia-editor .ke-cost-settings input:disabled{opacity:.4}

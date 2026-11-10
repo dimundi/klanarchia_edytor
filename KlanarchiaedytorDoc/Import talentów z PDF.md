@@ -45,3 +45,77 @@ Sprawdzono API wszystkich 36 rekordów: treść, ustawienia, koszty, status, rew
 ## Aktualizacja 2026-11-10 — symbole kosztu obsługiwane
 
 Znaczniki w Zatuszowaniu sprawy, Doraźnym wierzchowcu i Prototypowym egzopancerzu renderują już monety. Odświeżono ich raporty bez zmiany treści i rewizji; unknown_annotation zniknął. Zatuszowanie sprawy ma raport bez błędów; pozostałe dwa zachowują page_reference_missing. Doraźny wierzchowiec po zastąpieniu długiego znacznika symbolem mieści się w ramce, więc jego body_overflow również zniknął. Wcześniejsze liczby błędów w rozdziałach importów opisują stan w chwili importowania.
+
+
+## 2026-11-10 — Podstawowe Dary Ciemności
+- Źródło: Talenty_dary ciemnosci_x.pdf, 20 stron. Zaimportowano strony 1–19; ostatni Cyrograf z tekstem zastępczym pominięto. Grupa Dary Ciemności / podgrupa podstawowe, 19 rekordów, status dev, aktualny szablon Dary Ciemności.
+- Przeniesiono tytuły, fabułę, mechanikę i formatowanie stanów, akcje (strony 3, 14, 15, 16), użycia i raz na scenę. Dar Ciemności włączony, ekskluzywność wyłączona, bez ikony kosztu zgodnie z PDF.
+- Nowe kody bazowe, historia import_pdf z plikiem, SHA-256 i stroną źródłową. Zapisano body_overflow dla Prymatu potępieńca; pozostałe 18 bez błędów preflight.
+- Kopia bazy i 15 tabel: wtf_www/backups/klanarchia-editor/20261110/before-dark-basic-import/. Narzędzia, manifest, mapowanie i próba z rollbackiem: local-scripts/one-off/dark-basic-import-20261110/. Istniejące rekordy porównano i zachowano.
+
+
+## 2026-11-10 — Talenty ogólne
+
+Źródło: Talenty_ogolne_.pdf, 110 stron, SHA-256 db8b74e235fd757c78cce729095c7e50cfbf092f1174b304fd61bb3e9ca27dd4. Utworzono grupę „talenty ogólne” i wszystkie 11 podgrup według zakresów użytkownika. Zaimportowano 59 nazwanych talentów; pominięto 51 pustych kart z ogólnymi tytułami i tekstem zastępczym. „Hymn Dawnych Dni” i „Mantra stalowego tańca” zachowane jako nazwane, niedokończone materiały z błędami.
+
+| Podgrupa | Talenty |
+| --- | ---: |
+| Stymulanty | 10 |
+| Implanty i protezy | 1 |
+| Fetysz i tatuaże | 8 |
+| Mantry i pieśni | 4 |
+| Pisma i księgi | 4 |
+| Relikwie | 0 |
+| Techno-sprzęt | 7 |
+| Artefakty | 3 |
+| Egzopancerz Modliszka | 8 |
+| Egzopancerz Kafar | 6 |
+| Egzopancerz Pielgrzym | 8 |
+
+Aktualny szablon Talent podstawowy, status dev, historia Import z PDF z plikiem/stroną/hashem i oryginalnymi wartościami kosztów. Przeniesiono formatowanie, akcje, koszt 0–9, heksy, użycia, nieodnawialność i zasady specjalne.
+
+Ograniczenia zapisane jako source_review_required z notatkami:
+- Proteza egzorękawicy: główny koszt 4; dodatkowy koszt 3 i towarzyszący znak wymagają obsługi.
+- Cesarski dzwon „Karmiciel”: koszt źródłowy 10 przekracza obecne 0–9. Ikonę kosztu wyłączono, źródłowe 10 zachowano w historii i notatce; nie pokazujemy fałszywego kosztu zastępczego. Tekst PDF urwany na „z zamiarem wydarcia jej”; bez dopisywania zakończenia.
+- Dodatkowe znaki w tle na stronach 27, 28, 31, 32, 33, 66, 67 nie zostały przeniesione.
+- Strony 31 i 34 mają brakujące opisy źródłowe; strony 61/62 rozdzieloną ligaturę „fi ltr”, połączoną podczas importu i oznaczoną do kontroli.
+
+17 talentów ma łącznie 19 zapisanych błędów (4 przepełnienia, 3 brakujące numery stron, 12 raportów kontroli źródła):
+- Strona 107: Hak na truchło — page_reference_missing.
+- Strona 101: Egzopancerz Pielgrzym — body_overflow.
+- Strona 73: Cesarski dzwon „Karmiciel” — page_reference_missing, source_review_required.
+- Strona 72: Sztandar Krawędziarzy — body_overflow.
+- Strona 67: Eteryczny nadajnik — source_review_required.
+- Strona 66: Odrutowany — source_review_required.
+- Strona 63: Pyrokapsuła — body_overflow.
+- Strona 62: Kolektor iskrowy — source_review_required.
+- Strona 61: Filtr nosowy — source_review_required.
+- Strona 34: Mantra stalowego tańca — source_review_required.
+- Strona 33: Elegia Uzura — source_review_required.
+- Strona 32: Dumka “Kwiaty we krwi” — source_review_required.
+- Strona 31: Hymn Dawnych Dni — source_review_required.
+- Strona 28: Blizny posiekańca — source_review_required.
+- Strona 27: Tatuaż Turiela — source_review_required.
+- Strona 11: Proteza egzorękawicy — page_reference_missing, source_review_required.
+- Strona 4: Dekokt Dagona — body_overflow.
+
+Kopia pełnej bazy i 15 tabel: wtf_www/backups/klanarchia-editor/20261110/before-general-talents-import/. Po wykryciu nowego zapisu użytkownika pierwszą próbę wycofano; odświeżony snapshot records-current.json uwzględnia ten zapis. Następnie próba rollback i commit z porównaniem wszystkich wcześniejszych wierszy, bez nadpisywania ich. Narzędzia/manifesty/pominięte strony/mapowanie: local-scripts/one-off/general-talents-import-20261110/.
+
+
+## 2026-11-10 — Krew lodowej zmarzliny
+
+Źródło: Talenty_krew_lodowej.pdf, 21 stron, SHA-256 2f2db69ac1cd9a0b52f8e213ab84bd22c5d4d795a3d9be72f54166bd2d674bd0. Nowa grupa Krew lodowej zmarzliny. Import wyłącznie podanych zakresów:
+
+| Podgrupa | Strony | Talenty |
+| --- | --- | ---: |
+| Lewiatan | 1–3 | 3 |
+| Drzewiec | 5–6 | 2 |
+| Szaman Żywicokrwistych | 8–9 | 2 |
+| Ulepiacz | 11–14 | 4 |
+| Sprężysta | 19–21 | 3 |
+
+14 talentów, 7 pustych kart poza zakresami pominięto (4, 7, 10, 15–18). Dar Ciemności na stronach 9, 11, 12, 13: szablon Dary Ciemności; pozostałe 10: Talent podstawowy. Bez ekskluzywności i bez kosztu, zgodnie ze źródłem. Zachowano akcje, pojedynczą zagrywkę, użycia i formatowanie cech/stanów/pogrubień; końcową kropkę fabuły strony 3 przeniesiono z początku mechaniki do fabuły, bez zmiany treści.
+
+Pięć zapisanych source_review_required: strony 1, 6, 8, 9, 12 mają dwa symbole zagrywki, a model pozwala pokazać jeden (zagrywka włączona). Strona 12 ma również dwa pola użyć, których model obecnie nie obsługuje — nie pokazano zastępczej liczby. Faktyczne liczby symboli i pól zachowane w source.symbols historii import_pdf oraz opisane w błędach. Wszystkie 14 tekstów mieści się w aktualnych szablonach.
+
+Kopia SQL i 15 tabel: wtf_www/backups/klanarchia-editor/20261110/before-frozen-blood-import/. Próba rollback, następnie commit z porównaniem wcześniejszych wierszy; poprzednie 424 talenty zachowano, 438 łącznie. Narzędzia, manifest, mapowanie i zrzuty: local-scripts/one-off/frozen-blood-import-20261110/.

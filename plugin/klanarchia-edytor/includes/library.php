@@ -36,7 +36,7 @@ function ke_categories_get($r) {
  if (get_option('ke_library_schema_version')!=='1') throw new KE_Request_Error('Run library migration first',503);
  $rows=$wpdb->get_results($wpdb->prepare('SELECT c.uuid AS id,p.uuid AS parentId,COALESCE(t.name,pl.name) AS name FROM '.ke_table('talent_categories').' c LEFT JOIN '.ke_table('talent_categories').' p ON p.id=c.parent_id LEFT JOIN '.ke_table('talent_category_texts').' t ON t.category_id=c.id AND t.language=%s LEFT JOIN '.ke_table('talent_category_texts')." pl ON pl.category_id=c.id AND pl.language='pl' WHERE c.archived_at IS NULL ORDER BY c.sort_order,c.id",ke_api_language($r)),ARRAY_A);
  $counts=[];
- if(in_array(get_option('ke_talents_schema_version'),['1','2','3','4'],true))foreach($wpdb->get_results('SELECT c.uuid,COUNT(t.id) AS total FROM '.ke_table('talent_categories').' c LEFT JOIN '.ke_table('talents').' t ON t.category_id=c.id AND t.archived_at IS NULL GROUP BY c.id,c.uuid',ARRAY_A) as $count)$counts[$count['uuid']]=(int)$count['total'];
+ if(in_array(get_option('ke_talents_schema_version'),['1','2','3','4','5'],true))foreach($wpdb->get_results('SELECT c.uuid,COUNT(t.id) AS total FROM '.ke_table('talent_categories').' c LEFT JOIN '.ke_table('talents').' t ON t.category_id=c.id AND t.archived_at IS NULL GROUP BY c.id,c.uuid',ARRAY_A) as $count)$counts[$count['uuid']]=(int)$count['total'];
  foreach($rows as &$row){$row['talentCount']=$counts[$row['id']]??0;foreach($rows as $child)if($child['parentId']===$row['id'])$row['talentCount']+=$counts[$child['id']]??0;}unset($row);
  return ['items'=>$rows];
 }
@@ -84,7 +84,7 @@ function ke_category_delete($r){
  if(!$row)throw new KE_Request_Error('Subgroup not found',404);
  if($row['parent_id']===null)throw new KE_Request_Error('Only subgroups can be removed',400);
  if($wpdb->get_var($wpdb->prepare('SELECT id FROM '.ke_table('talent_categories').' WHERE parent_id=%d LIMIT 1',$row['id'])))throw new KE_Request_Error('Subgroup contains subgroups',409);
- if(in_array(get_option('ke_talents_schema_version'),['1','2','3','4'],true)&&$wpdb->get_var($wpdb->prepare('SELECT id FROM '.ke_table('talents').' WHERE category_id=%d LIMIT 1',$row['id'])))throw new KE_Request_Error('Subgroup contains talents',409);
+ if(in_array(get_option('ke_talents_schema_version'),['1','2','3','4','5'],true)&&$wpdb->get_var($wpdb->prepare('SELECT id FROM '.ke_table('talents').' WHERE category_id=%d LIMIT 1',$row['id'])))throw new KE_Request_Error('Subgroup contains talents',409);
  ke_db_write('delete','talent_category_texts',['category_id'=>(int)$row['id']]);ke_db_write('delete','talent_categories',['id'=>(int)$row['id']]);
  ke_db_query('COMMIT');return ['id'=>$uuid,'deleted'=>true];
 }

@@ -1,3 +1,4 @@
+import { factionNames } from './factions';
 import FormattedTalentText from './FormattedTalentText';
 import { graphicVariants } from './graphic-variants';
 import { polishSpacing } from './polish-typography';
@@ -5,12 +6,12 @@ import type { TalentListItem } from './talent-api';
 import type { Annotation, Colour } from './styles-colors-model';
 export function TalentListSymbols({item,language}:{item:TalentListItem;language:'pl'|'en'}){
  const pl=language==='pl',s=item.settings,assets=graphicVariants.ink.assets;
- const names:Record<string,string>=pl?{hexMark:'Zaznaczenie heksa',cost:'Koszt',play:'Zagrywka',gift:'Dar Ciemności',specialRules:'Zasady specjalne',nonRenewable:'nieodnawialny'}:{hexMark:'Hex mark',cost:'Cost',play:'Play',gift:'Dark gift',specialRules:'Special rules',nonRenewable:'Non-renewable'};
+ const names:Record<string,string>=pl?{hexMark:'Zaznaczenie heksa',cost:'Koszt',play:'Zagrywka',play2:'Zagrywka 2',gift:'Dar Ciemności',specialRules:'Zasady specjalne',nonRenewable:'nieodnawialny',exclusive:'talent ekskluzywny'}:{hexMark:'Hex mark',cost:'Cost',play:'Play',play2:'Play 2',gift:'Dark gift',specialRules:'Special rules',nonRenewable:'Non-renewable',exclusive:'exclusive talent'};
  const usage:Record<string,string>=pl?{'mission-one':'Raz na misję','mission-three':'Trzy razy na misję',once:'Raz na scenę'}:{'mission-one':'Once per mission','mission-three':'Three times per mission',once:'Once per scene'};
  return <div className="ke-talent-list-symbols">
    {s.action&&<span className="ke-talent-list-tag">{pl?'akcja':'action'}</span>}
-   {Object.entries(names).filter(([id])=>s.flags[id]).map(([id,label])=><span key={id} className="ke-talent-list-tag" title={label}>{id!=='nonRenewable'&&<span aria-hidden="true" className="ke-talent-list-icon" style={{maskImage:'url("'+assets[id as 'hexMark'|'cost'|'play'|'gift'|'specialRules']+'")'}}/>}{label}{id==='cost'?' '+s.cost:''}</span>)}
-   {usage[s.usage]&&<span className="ke-talent-list-tag" role="img" aria-label={usage[s.usage]} title={usage[s.usage]}>{(s.usage==='mission-three'?[0,1,2]:[s.usage==='mission-one'?2:0]).map(i=><span key={i} aria-hidden="true" className={'ke-talent-list-icon'+(s.usage!=='once'?' is-use':'')} style={{maskImage:'url("'+(s.usage==='once'?assets.once:graphicVariants.ink.useFields[i])+'")'}}/>)}</span>}
+   {Object.entries(names).filter(([id])=>s.flags[id]).map(([id,label])=><span key={id} className="ke-talent-list-tag" title={label}>{id!=='nonRenewable'&&id!=='exclusive'&&<span aria-hidden="true" className="ke-talent-list-icon" style={{maskImage:'url("'+assets[(id==='play2'?'play':id) as 'hexMark'|'cost'|'play'|'gift'|'specialRules']+'")'}}/>}{label}{id==='cost'?' '+s.cost:''}</span>)}
+   {(s.factions??(s.factionCost?[s.factionCost.faction]:[])).map(f=><span key={f} className="ke-talent-list-tag">{factionNames[f]}</span>)}{s.factionCost&&<span className="ke-talent-list-tag">{s.factionCost.cost}</span>}{usage[s.usage]&&<span className="ke-talent-list-tag" role="img" aria-label={usage[s.usage]} title={usage[s.usage]}>{(s.usage==='mission-three'?[0,1,2]:[s.usage==='mission-one'?2:0]).map(i=><span key={i} aria-hidden="true" className={'ke-talent-list-icon'+(s.usage!=='once'?' is-use':'')} style={{maskImage:'url("'+(s.usage==='once'?assets.once:graphicVariants.ink.useFields[i])+'")'}}/>)}</span>}
    {!item.hasTranslation&&<span className="ke-talent-list-tag">{pl?'Brak tłumaczenia — treść PL':'Not translated — PL content'}</span>}
  </div>;
 }

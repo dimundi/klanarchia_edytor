@@ -1,0 +1,7 @@
+﻿import type { TalentValidation } from './talent-validation';
+export default function EditorialNoteBadge({validation,language,expandable=false}:{expandable?:boolean;validation:TalentValidation;language:'pl'|'en'}){
+ const notes=(validation.notes??[]).filter(note=>note.enabled);if(!notes.length)return null;const title=notes.map(note=>(language==='pl'?{error:'Błąd',warning:'Ostrzeżenie',info:'Informacja'}:{error:'Error',warning:'Warning',info:'Information'})[note.level]+': '+note.text).join('\n');
+ const badge=<span className={'ke-editorial-note-badge is-'+(notes.some(n=>n.level==='error')?'error':notes.some(n=>n.level==='warning')?'warning':'info')} title={title} role="img" aria-label={(language==='pl'?'Notatki: ':'Notes: ')+notes.length}><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><path d="M4 3h16v14l-5 4H4Z"/><path d="M8 8h8M8 12h8m-8 4h4m3 5v-4h5"/></svg>{notes.length}</span>;
+ if(!expandable)return badge;
+ return <details className="ke-editorial-note-details"><summary aria-label={(language==='pl'?'Pokaż notatki: ':'Show notes: ')+notes.length}>{badge}<span>{language==='pl'?'Notatki':'Notes'}</span></summary><ul>{notes.map(note=><li key={note.id} className={'is-'+note.level}><strong>{(language==='pl'?{error:'Błąd',warning:'Ostrzeżenie',info:'Informacja'}:{error:'Error',warning:'Warning',info:'Information'})[note.level]}</strong><p>{note.text}</p></li>)}</ul></details>;
+}

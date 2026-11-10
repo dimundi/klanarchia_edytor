@@ -133,3 +133,7 @@ Talent wskazuje szablon, zawsze korzysta z jego aktualnych ustawień. Zapis sza
 2026-11-10: utworzono osobny szablon Dary Ciemności jako kopię aktualnego pierwszego szablonu. Geometria, ramka i typografia zachowane; wszystkie ikony, cyfra kosztu i oznaczenie nieodnawialny ustawione na Czarny ze wspólnej palety. Przed przyszłym importem Darów dla wspierających obowiązuje zachowanie ich dotychczasowych kodów bez zmiany. Import jeszcze niewykonany.
 
 2026-11-10: [przeniesiono 228 promocyjnych Darów Ciemności](Import%20Darów%20Ciemności.md) ze starej biblioteki do promki → Zbiórka - Dary Ciemności. Wszystkie korzystają z szablonu Dary Ciemności, wszystkie źródłowe kody zachowano 1:1. 118 wcześniejszych talentów bez zmian, 346 łącznie; bez modyfikacji starego projektu.
+
+Notatki redakcyjne są oddzielne od automatycznej walidacji. Można je dodawać, edytować i wyłączać, z poziomem Błąd/Ostrzeżenie/Informacja. Zapis i historia razem z wersją talentu; poziom Błąd wpływa na filtrowanie i zatwierdzanie, wyłączone notatki nie są liczone.
+
+2026-11-10: talenty mają trwałą kolejność w podgrupie, numerowaną 1..N bez luk. Odtworzono kolejność plików źródłowych; zwykły zapis nie zmienia pozycji. Ręczna zmiana w edytorze przesuwa pozostałe elementy.

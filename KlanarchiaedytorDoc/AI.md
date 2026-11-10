@@ -1099,3 +1099,219 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 - Dodano ołówek przy nazwach grup i podgrup w bibliotece oraz nawigacji edytora. Okno pozwala zmienić nazwę w bieżącym języku, zapisać lub anulować.
 - PUT talent-categories/{uuid} zachowuje identyfikator, hierarchię i przypisane talenty; blokuje puste nazwy, duplikaty wśród rodzeństwa i zapis nieaktualnej nazwy.
 - Weryfikacja: build TypeScript/Vite i PHP lint poprawne. Test przeglądarkowy na tymczasowej podgrupie potwierdził zapis, trwałość po odświeżeniu, zachowanie ID/rodzica oraz odrzucenie duplikatu, pustej i nieaktualnej nazwy. Dane testowe usunięto; oryginalne kategorie bez zmian.
+
+
+## 2026-11-10 — Oznaczenie talentu ekskluzywnego
+- Dodano osobny tekstowy element „talent ekskluzywny” / „exclusive talent” za nieodnawialnym w automatycznym górnym pasie. Własna widoczność, geometria, styl i kolor palety; przełącznik także w edytorze talentu. Dotychczasowe talenty mają oznaczenie wyłączone.
+- Rozszerzono walidację i zapis szablonu/talentu z kompatybilnymi wartościami domyślnymi. Górny pas może wykraczać poza kartę przy pokazaniu wszystkich elementów; nie zmniejszamy ich automatycznie.
+- Weryfikacja: TS/Vite, PHP lint, 10 testów składu poprawne; Playwright potwierdził wyrenderowanie nowego napisu w kreatorze za nieodnawialnym. Bez zapisu rzeczywistych szablonów/talentów i bez wdrożenia.
+
+
+## 2026-11-10 — Odznaka ekskluzywności
+- Napis zmieniono na dwuwierszową odznakę z ikoną certyfikatu, delikatnym tłem i nieregularnym obrysem. SVG w obu katalogach wariantów; kolor dziedziczony z palety stylu elementu. Rozmiar napisu dopasowuje się do odznaki; zachowano pozycję za nieodnawialnym.
+- Weryfikacja: TS/Vite oraz Playwright poprawne; sprawdzono zrzut odznaki i poprawiono dopasowanie napisu po pierwszej kontroli. Bez zapisywania rzeczywistych szablonów i talentów.
+
+
+## 2026-11-10 — Czysty podgląd i ramka odznaki
+- Czysty podgląd kreatora ukrywa element kodu talentu bez zmiany widoczności zapisanej w szablonie. Skrócono tło i obrys odznaki ekskluzywności do szerokości napisu i certyfikatu.
+- Weryfikacja: TS/Vite oraz Playwright (ukrycie ID po zaznaczeniu czystego podglądu) poprawne, zrzut odznaki. Bez zapisu rzeczywistych danych.
+
+
+## 2026-11-10 — Odznaka bez obrysu
+- Usunięto zewnętrzny obrys odznaki ekskluzywności w obu wariantach SVG; pozostawiono nieregularne delikatne tło, certyfikat i napis.
+- Weryfikacja: kontrola SVG potwierdziła usunięcie ścieżki zewnętrznego obrysu.
+
+
+## 2026-11-10 — Ekskluzywność talentów promocyjnych
+- Włączono settings.flags.exclusive dla wszystkich 228 aktywnych talentów w grupie promki, standardowym zapisem talentu z nową wersją i historią. Kody bazowe, treści, statusy, szablony i przypisania zachowane; automatycznie zmieniły się oznaczenia wersji. Innych grup nie zapisywano.
+- Weryfikacja: porównano wszystkie pola każdego wyniku ze stanem sprzed zapisu (jedyna zmiana ustawień: exclusive=true), ponowny odczyt 228 flag poprawny. Raporty składu wymagają ponownego przeliczenia dla nowych wersji.
+- Kopia rekordów sprzed zmiany: wtf_www/backups/klanarchia-editor/20261110/before-promo-exclusive/records.json. Próba pełnego eksportu przez wp db export nie powiodła się (brak mysqldump); zachowano kompletny snapshot odczytu talentów. Narzędzie lokalne: local-scripts/one-off/promo-exclusive-20261110/apply.php. Bez wdrożenia.
+
+
+## 2026-11-10 — Import podstawowych Darów Ciemności
+- Zaimportowano 19 talentów (strony 1–19) do nowej grupy Dary Ciemności / podstawowe, szablon Dary Ciemności; stronę 20 Cyrograf z placeholderami pominięto. Flaga daru włączona, ekskluzywność wyłączona. Przeniesiono formatowanie stanów, akcje, użycia i raz na scenę. Historię oznaczono import_pdf ze stroną i hashem źródła.
+- PDF SHA-256: 40e2af4874beef7e2e4bf0ed91815fad8cc158b99d0c1b6893e6766376e435f7. Kopia pełnej bazy i 15 tabel przed operacją w wtf_www/backups/klanarchia-editor/20261110/before-dark-basic-import/. Transakcyjna próba z rollbackiem, potem commit; importer porównał wszystkie wcześniejsze wiersze bez zmian. Łącznie 365 talentów.
+- Weryfikacja: preflight składu wszystkich 19; Prymat potępieńca ma zapisany body_overflow, pozostałe 18 bez błędów. Playwright porównał treści, ustawienia, status, kolejność, szablon, raporty i historię wszystkich 19, otworzył podglądy stron 1, 2, 12 i 16. Bez błędów JS; zrzut sprawdzony wizualnie. Nie modyfikowano źródła ani starego projektu, bez wdrożenia.
+
+
+## 2026-11-10 — Import talentów ogólnych
+- Źródło Talenty_ogolne_.pdf (110 stron), SHA-256 db8b74e235fd757c78cce729095c7e50cfbf092f1174b304fd61bb3e9ca27dd4. Utworzono grupę talenty ogólne i 11 podgrup z zakresów stron; 59 nazwanych talentów, 51 pustych kart pominięto. Relikwie puste, nazwane Hymn Dawnych Dni/Mantra stalowego tańca z brakami pozostawiono z błędami.
+- Szablon Talent podstawowy, dev, przeniesione formatowania, koszty 0–9, akcje, heksy, użycia i ikony. Koszt 10 i dodatkowy koszt 3 obok 4 nie mieszczą się w modelu: wartości źródłowe zapisane w historii i notatkach, bez fałszywego kosztu na karcie. Dodatkowe znaki w tle, urwany tekst i brakujące opisy oznaczono source_review_required. Pełny raport w Import talentów z PDF.md; ograniczenia modelu w TODO T-08.
+- Kopia SQL i 15 tabel w wtf_www/backups/klanarchia-editor/20261110/before-general-talents-import/. Pierwsza próba wykryła nowy zapis użytkownika i wycofała transakcję. Świeży snapshot records-current.json uwzględnia ten zapis; następnie dry-run/rollback i commit z kontrolą wszystkich poprzednich wierszy. Bez modyfikacji wcześniejszych 365 talentów, 424 łącznie.
+- Weryfikacja: preflight wszystkich 59; 17 talentów z 19 błędami (4 body_overflow, 3 page_reference_missing, 12 source_review_required). Audyt odczytu treści/ustawień/źródłowych kosztów/notatek/historii wszystkich 59 poprawny; pierwszy audyt skorygowano do kanonicznej kolejności kluczy ustawień API. Playwright sprawdził 11 podgrup, liczby i kolejność, wszystkie rekordy i historię oraz podglądy stron 1, 11, 31, 73 i 101; bez błędów JS. Zrzuty sprawdzono wizualnie. Narzędzia, manifest, pominięcia, mapowanie: local-scripts/one-off/general-talents-import-20261110/. Źródło, stary projekt i produkcja bez zmian.
+
+
+## 2026-11-10 — Import Krwi lodowej zmarzliny
+- Talenty_krew_lodowej.pdf, SHA-256 2f2db69ac1cd9a0b52f8e213ab84bd22c5d4d795a3d9be72f54166bd2d674bd0, 21 stron. Zaimportowano 14 talentów z podanych zakresów do Krew lodowej zmarzliny: Lewiatan 3, Drzewiec 2, Szaman Żywicokrwistych 2, Ulepiacz 4, Sprężysta 3; 7 pustych kart poza zakresami pominięto.
+- Strony 9, 11, 12, 13 mają Dar Ciemności i szablon Dary Ciemności; pozostałe Talent podstawowy. Zachowano treści, akcje, formatowanie cech/stanów/pogrubień i obsługiwane użycia. Bez kosztu/ekskluzywności. Pięć błędów source_review_required opisuje podwójną zagrywkę; strona 12 również dwa użycia. Faktyczne liczby symboli zachowane w source.symbols historii import_pdf; modelu podczas importu nie rozszerzano.
+- Kopia SQL i 15 tabel w wtf_www/backups/klanarchia-editor/20261110/before-frozen-blood-import/. Najpierw próba z rollbackiem, potem transakcyjny commit i porównanie wszystkich poprzednich wierszy bez zmian. 424 poprzednie talenty zachowane, 438 łącznie.
+- Weryfikacja: preflight wszystkich 14 na właściwych szablonach bez przepełnień; audyt treści, ustawień, szablonów, notatek, źródłowych symboli i historii poprawny. Playwright potwierdził wszystkie rekordy, kolejność i liczby 5 podgrup, raporty i historię, oraz podglądy stron 2, 9, 12, 21; bez błędów JS. Zrzut Daru Ciemności sprawdzony wizualnie. Narzędzia/manifest/mapa: local-scripts/one-off/frozen-blood-import-20261110/. Stary projekt, źródło i produkcja bez zmian.
+
+
+## 2026-11-10 — Narzędzia biblioteki i raport nazw
+- Menu Talenty otwiera Narzędzia bez domyślnej grupy i pobierania pierwszej listy. Wybranie grupy pokazuje talenty; menu resetuje wybór z zachowaniem ochrony szkicu. Naturalny Back wraca do poprzedniego widoku.
+- Dodano Waliduj nazwy: chroniony GET talents/name-audit, normalizacja zapisu, identyczne nazwy, drobne różnice pisowni i puste tytuły. Wynik z kodem, ścieżką i statusem; otwieranie tytułem, czas raportu i ponowne sprawdzenie. Bez zmian w bazie i bez automatycznego przypisywania błędów.
+- Weryfikacja: TS/Vite, PHP lint i diff --check poprawne. Sprawdzono normalizację, polskie znaki, literówkę/usunięcie litery i odrzucanie krótkich/niepowiązanych nazw. Audyt 438 talentów wykazał jedną grupę trzech Trybów bojowych; brak innych podobnych i brak pustych nazw. Porównanie sześciu tabel talentów przed/po potwierdziło brak zapisów.
+- Playwright: start bez żądań listy talentów, raport, otwieranie z wyniku, browser Back, ręczny wybór grupy, reset menu, anulowanie/odrzucenie niezapisanego szkicu i odmowa anonimowego API; bez błędów JS, zrzut sprawdzony wizualnie. Narzędzia: wtf_www/local-scripts/one-off/talent-name-audit-20261110/. Bez wdrożenia.
+
+
+## 2026-11-10 — Wyszukiwanie talentów
+- Dodano Szukaj talentów jako pierwsze narzędzie, przed walidacją nazw. Rozwijany formularz: fraza po tytule/kodzie bazowym lub kodzie wersji, opcjonalnie fabuła/mechanika, filtry grupy i podgrupy. Wyniki z kodem, statusem, ścieżką i fragmentem treści, stronicowane po 20.
+- GET talents/search: admin/nonce, literalna fraza do 120 znaków, normalizacja wielkości liter/diakrytyki/spacji, fallback PL, bez zapisów. Znaczniki formatowania usuwane z porównania i fragmentu. Fraza, filtry, strona i wyniki zachowane w stanie biblioteki po powrocie z edytora.
+- Weryfikacja: TS/Vite, PHP lint i diff --check poprawne. Przypadki API: tytuł, kod i pełny kod wersji, zakres podgrupy, opt-in treści, polskie znaki, paginacja bez powtórzeń, pusty wynik i dosłowne wildcardy/tekst SQL. Porównanie sześciu tabel talentów przed/po potwierdziło brak zapisów.
+- Playwright: formularz, wyszukanie trzech Trybów bojowych, ręczne filtry, fragment fabuły, brak wyników, strony 1/2, otwarcie i Back z zachowanymi wynikami/frazą, szerokość mobilna i odmowa anonimowego API; bez błędów JS. Ujednolicono dostępne nazwy filtrów; test dostosowano do aktualnej wielkości liter nazwy grupy po jej zmianie przez użytkownika. Zrzuty desktop/mobile sprawdzone wizualnie. Narzędzia w wtf_www/local-scripts/one-off/talent-search-20261110/. Bez wdrożenia i zmian danych talentów.
+
+
+## 2026-11-10 — Wyszukiwarka od razu widoczna
+- Usunięto przycisk rozwijania/zwijania wyszukiwania. Formularz z frazą i filtrami jest zawsze widoczny na ekranie Narzędzia. Bez automatycznego przejmowania fokusu.
+- Weryfikacja: kompilacja TypeScript/Vite poprawna. Bez zmian API i danych.
+
+
+## 2026-11-10 — Układ wyszukiwania i filtry statusu/błędów
+- Wyszukiwarka na samej górze; nagłówek Narzędzia z opisem przeniesiony przed Waliduj nazwy. Checkbox fabuły/mechaniki domyślnie zaznaczony. Usunięto zbędny stan rozwijania formularza.
+- Dodano status oraz Błędy: Wszystkie / Z błędami / Bez błędów / Wymagają sprawdzenia. API używa zapisanych raportów bieżącej wersji; Bez błędów wymaga aktualnego sprawdzenia. Wyniki pokazują liczbę błędów i nieaktualność raportu. Można wyszukiwać samymi filtrami bez frazy; stan filtrów zachowany po powrocie z edycji.
+- Weryfikacja: TS/Vite, PHP lint, diff --check poprawne. Przypadki API potwierdziły statusy, tak/nie/nieaktualny raport, połączone filtry, puste q i odrzucenie nieznanych wartości; poprzednie przypadki tytułu/kodu/treści/paginacji i kontrola braku zapisów również poprawne. Playwright potwierdził kolejność układu, zaznaczony checkbox, filtrowanie z pustą frazą i zachowanie filtrów po Back; bez błędów JS. Zrzut sprawdzony wizualnie. Bez zmian danych i wdrożenia.
+
+
+## 2026-11-10 — Wyniki wyszukiwania jak lista talentów
+- Wydzielono wspólny TalentListRow używany w bibliotece i wyszukiwarce. Wyniki mają metadane, kod wersji, ikony/użycia i szczegóły błędów po lewej, pełną fabułę, sformatowaną mechanikę i ograniczenia po prawej. Dodatkowo ścieżka grupy. Wspólna paleta bez ponownego pobierania po powrocie z edytora.
+- API wyszukiwania zwraca pełne dane tylko 20 trafień bieżącej strony i deduplikowane dokumenty szablonów, z zachowaniem filtrów i kompatybilnych pól dopasowania. Spójny odczyt transakcyjny, fallback treści PL, bez zapisu do bazy.
+- Weryfikacja: TS/Vite, PHP lint i diff --check poprawne; dotychczasowe przypadki API i kontrola braku zapisów przeszły. Playwright porównał identyczny HTML treści i ikon/użyć w wyniku oraz bibliotece, formatowanie aspektu, otwarcie/Back i szerokość mobilną; bez błędów JS. Pierwsze porównanie wykonano przed załadowaniem palety, następnie użyto wspólnej palety i oczekiwania na oznaczenia. Zrzut sprawdzony wizualnie. Bez wdrożenia.
+
+
+## 2026-11-10 — Alfabetyczne grupy talentów
+- Grupy i podgrupy sortowane alfabetycznie według języka interfejsu, z uwzględnieniem polskich liter i bez rozróżniania wielkości liter. Wspólna kolejność w bibliotece, sekcjach, nawigacji edytora i filtrach. Ponowne sortowanie po dodaniu lub zmianie nazwy; bez zmiany kolejności samych talentów i zapisów w bazie.
+- Weryfikacja: TypeScript/Vite poprawne.
+
+
+## 2026-11-10 — Znikające litery przy ujemnym trackingu
+- Odtworzono brak drugiego y w ryzyko w Cesarskim dzwonie przy letterSpacing=-0.05. Kontur fontu poprawny, lecz opentype.js toPathData generował NaN dla współrzędnych bliskich liczbie całkowitej: roundDecimal doklejał wykładnik do liczby zapisanej już wykładniczo.
+- Dodano glyphPathData: zapis skończonych współrzędnych konturu przez toFixed(4), bez wadliwego zaokrąglania biblioteki. Wspólne dla całego FixedCardText, podglądu i eksportu PDF. Klucz cache kafelków uwzględnia wersję zapisu konturów; układ i raporty przepełnień bez zmiany silnika, dane talentu bez zapisu.
+- Weryfikacja: TS/Vite, 11 testów składu (w tym regresja konturów przy kilku ujemnych odstępach i pozycjach bliskich liczbom całkowitym) poprawne. Poprawiono pierwsze założenie testu o obowiązkowym końcowym Z — kontur fontu może być domykany niejawnie. Playwright potwierdził skończone ścieżki obu y w rzeczywistym rekordzie i pobranie PDF; zrzut podglądu i wyrenderowany PDF sprawdzone wizualnie. Narzędzia w wtf_www/local-scripts/one-off/negative-spacing-20261110/. Bez zmian źródła fontu, treści, ustawień talentu i wdrożenia.
+
+
+## 2026-11-10 — Ikona przy liczbie błędów w nawigacji
+- Licznik błędów na liście talentów w lewej kolumnie poprzedza trójkąt ostrzeżenia. Tooltip i etykieta dostępności podają liczbę błędów.
+- Weryfikacja: kompilacja TypeScript/Vite.
+
+
+## 2026-11-10 — Koszt do 10
+- Rozszerzono zakres kosztu do 0–10 w talentach i kreatorze szablonu, parserze dokumentu oraz obu walidacjach PHP. Dziesiątka składana z istniejących tuszowych cyfr 1 i 0, w granicach pola wartości; 0–9 bez zmiany rysunku.
+- Weryfikacja: TS/Vite, PHP lint; 0/9/10 zaakceptowane, -1/10.5/11 odrzucone dla talentu i szablonu. Playwright potwierdził max=10, render dwóch cyfr w podglądzie i parser szablonu, zrzut sprawdzony wizualnie. Bez zapisu rzeczywistych talentów/szablonów i bez wdrożenia.
+
+
+## 2026-11-10 — Notatki redakcyjne
+- Rozdzielono walidację automatyczną od notatek: dodawanie, edycja, wyłączenie/włączenie, poziomy error/warning/info. Zapis przyciskiem talentu, wersjonowany JSON editorialNotes PL/EN, historia autora/czasu; max 50 na język, 2000 znaków, unikalne ID. Anulowanie pustej nowej notatki. Bez migracji tabel.
+- Uwagi sourceReview PDF odczytywane zgodnie z dotychczasowym warunkiem tekstu jako ręczne notatki error ze stabilnym ID. Oryginalna historia niezmieniona; nowy zapis notatek uniezależnia ich stan od rewalidacji i treści. Starszy klient bez pola nie usuwa istniejących notatek.
+- Osobne ikony/liczniki automatycznych błędów i aktywnych notatek w nawigacji, liście i kafelkach ze statusami; poziom koloru i tooltip treści. errorCount/filter/zatwierdzanie obejmują również aktywne notatki error; warning/info nie zwiększają błędów.
+- Weryfikacja: TS/Vite, PHP lint, diff --check poprawne. Tymczasowy talent: Playwright dodał/edytował/wyłączył notatkę, sprawdził wszystkie poziomy, blokadę pustej treści, zapis/reload i rewalidację, zachowanie EN i osobne liczniki; bez błędów JS. PHP potwierdził ochronę notatek przed starszym klientem, odrzucenie niepoprawnych poziomów/typów/pustych treści/duplikatów oraz rozdzielenie istniejących uwag PDF. Tymczasowy rekord z wersjami/raportami/historią usunięto guarded cleanup; rzeczywistych talentów nie edytowano. Zrzut sprawdzony wizualnie; narzędzia w wtf_www/local-scripts/one-off/editorial-notes-20261110/. Bez wdrożenia.
+
+
+## 2026-11-10 — Ukrywanie nieaktywnych notatek i większy koszt 10
+- Nieaktywne notatki domyślnie ukryte; Pokaż/Ukryj nieaktywne z licznikiem. Po pokazaniu zawsze na końcu, bez zmiany zapisanej kolejności/ID. Pod podglądem dodano 22 px odstępu przed walidacją.
+- Dziesiątka ma wysokość cyfry pojedynczego kosztu; zajmuje szersze miejsce w automatycznym pasie i odsuwa monety. Wspólny koszt szerokości po stronie TS/PHP, bez zmiany zapisanych wymiarów szablonu. Klucz cache kafelków zmieniony.
+- Weryfikacja: TS/Vite i PHP lint poprawne, kontrola zakresu kosztu 0–10 oraz stabilności serwerowego układu i braku kolizji. Playwright sprawdził ukrycie, pokazanie na końcu, ponowne ukrycie, odstęp 22 px i równą wysokość 10/0 (44.288 px). Test wykonano na roboczych notatkach bez zapisu; dostosowano go do natychmiastowego znikania wyłączonego checkboxa. Zrzut podglądu sprawdzony wizualnie. Bez zmiany rzeczywistych danych i wdrożenia.
+
+
+## 2026-11-10 — Pasek ustawień bezpośrednio pod podglądem
+- Przeniesiono ikony, użycia i ograniczenie dostępności bezpośrednio pod kartę, przed walidację automatyczną i notatki. Wybór szablonu pozostał na końcu kolumny.
+- Weryfikacja: TypeScript/Vite poprawne; zmiana wyłącznie układu, bez danych.
+
+
+## 2026-11-10 — Logotypy frakcji i propozycja kosztu
+- Skopiowano 1:1 logo-soldaci.svg, logo-mechanisci.svg, logo-hanza.svg i logo-rytualisci.svg ze starego app/src/assets/clans do src/assets/factions. Zweryfikowano zgodność hashy kopii i brak aktywnych elementów/zewnętrznych odwołań SVG; źródło bez zmian.
+- Przygotowano wyłącznie propozycję grafiki: koszt podstawowy 4, Soldaci 3; wariant A w pasie bez tła i B z delikatnym nieregularnym tłem pod kosztem frakcyjnym. KlanarchiaedytorDoc/grafiki/koszt-frakcyjny-propozycja.svg oraz PNG. Jeszcze bez wdrażania kosztów frakcyjnych w edytorze/bazie.
+- Weryfikacja: render Chrome i kontrola wizualna PNG; cyfry i monety z bieżącego wariantu tuszowego. Bez zmian danych i produkcji.
+
+
+## 2026-11-10 — Wybrany wzór kosztu frakcyjnego
+- Użytkownik wybrał delikatne tło. W propozycji pozostawiono ten wariant, przysunięto liczbę do logo o 8 jednostek i dopasowano szerokość tła. Aktualizacja SVG/PNG; nadal wzór, bez implementacji kosztów frakcyjnych.
+- Weryfikacja: render Chrome.
+
+
+## 2026-11-10 — Naprawa SVG propozycji
+- Poprzednia edycja wzoru przecięła strukturę zagnieżdżonych elementów SVG i wygenerowała obraz błędu przeglądarki. Odtworzono dokument z pełnych zasobów, zachowując delikatne tło i przysunięcie logo/liczby.
+- Weryfikacja: parser Chrome bez parsererror, poprawny root SVG, ponowny render PNG i kontrola wizualna. Bez zmian aplikacji i danych.
+
+
+## 2026-11-10 — Koszt frakcyjny w edytorze
+- Wdrożono zaakceptowany wzór: delikatne tło, logo, liczba i monety. Osobny obiekt factionCost w kreatorze, automatyczny rząd po podstawowym koszcie, własna geometria i wzorcowa frakcja/cena. Wykorzystano cztery skopiowane logotypy. Kolor wspólny z symbolem kosztu.
+- Talent: + Koszt frakcyjny przy włączonym koszcie, wybór jednej z czterech frakcji i ceny 0–10, usunięcie nadpisania. Wersjonowany zapis i historia, odczyt listy, podgląd i PDF. Starsze dokumenty zgodne; starszy klient nie usuwa pola przez pominięcie. Bez nowych tabel i migracji rzeczywistych talentów.
+- Weryfikacja: TS/Vite, PHP lint i 11 testów składu poprawne. Tymczasowy talent: walidacja frakcji i cen 0/10, odrzucenie nieznanej frakcji/11/ułamka; Playwright sprawdził wzór 4 + Soldaci 3, zmianę na Mechaniści 10, zapis/reload, PDF, usunięcie/dodanie oraz obiekt i właściwości kreatora, bez błędów JS. PHP potwierdził zachowanie pola przy starszym kliencie, jawne null i przykład Hanzy 10 w szablonie.
+- Tymczasowy rekord, wersje, raporty i historię usunięto guarded cleanup. Zrzut podglądu i wyrenderowany PDF sprawdzone wizualnie. Narzędzia: wtf_www/local-scripts/one-off/faction-cost-20261110/. Poprzednich talentów i szablonów nie zapisywano, stary projekt i produkcja bez zmian.
+
+
+## 2026-11-10 — Uproszczenie kontrolek kosztów
+- Koszty przeniesione z głównego paska do osobnego zwartego bloku: ikony wyboru frakcji, poniżej przełącznik i wartość kosztu podstawowego oraz frakcyjnego. Widoczność niezależna; wyłączenie nie gubi wartości w bieżącym szkicu. Usunięto tło grafiki kosztu frakcyjnego; odświeżono cache kafelków i niezależną informację na liście.
+- Weryfikacja: TS/Vite i diff --check poprawne. Playwright sprawdził wszystkie cztery kombinacje widoczności, wybór frakcji, cenę 10, brak tła oraz pozycję kontrolek pod frakcjami; bez błędów JS i bez zapisu rzeczywistych talentów. Zrzut kontrolek sprawdzony wizualnie.
+
+
+## 2026-11-10 — Niezależne ikony frakcji pomiędzy kosztami
+- Jeden rząd: koszt podstawowy z wartością → cztery niezależne ikony frakcji → drugi koszt z wartością, bez powtarzania logo na przycisku kosztu. Każdy element przełączany osobno, w tym wiele frakcji i same frakcje bez kosztów. Podgląd, lista i PDF korzystają z tych samych oznaczeń; układ rezerwuje tylko potrzebną szerokość.
+- settings.factions zapisuje tablicę frakcji; starsze rekordy odczytują logo dawnego kosztu frakcyjnego. Pusta tablica jawnie wyłącza wszystkie logotypy; starszy klient nie kasuje jej przez pominięcie. Bez nowych tabel.
+- Weryfikacja: TS/Vite, PHP lint, 11 testów składu i diff --check poprawne. Playwright na tymczasowym talencie sprawdził 64 kombinacje, kolejność kontrolek w jednym rzędzie, zapis/reload samych dwóch frakcji i PDF, bez błędów JS. Zrzut kontrolek sprawdzony; rekord QA i historię usunięto. Rzeczywistych talentów nie zapisywano.
+
+
+## 2026-11-10 — Jednakowy rozmiar i pion ikon kosztu
+- Druga ikona monet pobiera wymiary oraz pozycję Y pierwszej z bieżącego szablonu, z kompensacją skali bloku frakcji. Dotyczy obu szablonów, podglądu, kafelków i PDF; odświeżono cache. Bez przepisywania danych.
+- Weryfikacja: TS/Vite poprawne. Playwright zmierzył szerokość, wysokość i pozycję Y obu ikon w obu szablonach (różnica poniżej 0,01 px), bez błędów JS i bez zapisu danych.
+
+
+## 2026-11-10 — Jednakowy rozmiar i pion wartości kosztów
+- Druga wartość kosztu dziedziczy wymiary i pozycję Y pierwszej, z kompensacją skali bloku frakcji; monety odsuwają się o rzeczywistą szerokość liczby, również 10. Odświeżono cache kafelków.
+- Weryfikacja: TS/Vite poprawne; Playwright porównał szerokość, wysokość i Y liczb 3/10 oraz monet w obu szablonach (różnica poniżej 0,01 px), bez błędów JS i zapisu danych.
+
+
+## 2026-11-10 — Rozdzielenie błędnej grupy frakcji i kosztu
+- Poprzedni wspólny SVG łączył logo, liczbę i monety, zostawiając szerokie marginesy i wspólne zaznaczenie. Zastąpiono go trzema obiektami: factionSymbol, factionCostAmount, factionCost. Własne oczko, blokada, geometria i Y; automatyczny X bez pustej grupy, odstęp liczba–monety 1 pt. Domyślne parametry kosztów takie same jak pierwszych; dalsza edycja niezależna. Stare szablony konwertowane przy odczycie bez przepisywania historii.
+- Weryfikacja: TS/Vite, PHP lint, 11 testów składu, diff --check poprawne. Playwright sprawdził osobne zaznaczenie, niezależny Y/oczko, ścisłe granice symbolu monet i zrzut kreatora. W obu szablonach porównano geometrię cyfr 3/10 i monet oraz dodatni minimalny odstęp; eksport PDF pobrany, bez błędów JS. PHP sprawdził odczyt starych szablonów i stabilny roundtrip niezależnych geometrii/widoczności. Bez zapisów rzeczywistych talentów/szablonów. Narzędzia w wtf_www/local-scripts/one-off/faction-cost-20261110/.
+
+
+## 2026-11-10 — Wyjątek odstępu logo–liczba
+- Między factionSymbol a widoczną factionCostAmount odstęp 1 pt zamiast wspólnego odstępu rzędu. Po ukryciu liczby wraca zwykły odstęp do następnej ikony. TS i PHP zgodne, odświeżono cache kafelków.
+- Weryfikacja: TS/Vite, PHP lint oraz kontrola serwerowego układu z widoczną i ukrytą liczbą poprawne; bez zapisu danych.
+
+
+## 2026-11-10 — Logo–liczba bez odstępu
+- Na polecenie użytkownika zmieniono wyjątek logo frakcji → liczba z 1 pt na 0 pt w TS/PHP i odświeżono cache kafelków. Liczba → monety pozostaje 1 pt.
+- Weryfikacja: TS/Vite, PHP lint i kontrola odstępu 0 pt oraz zwykłego odstępu po ukryciu liczby poprawne. Bez zapisu danych.
+
+
+## 2026-11-10 — Bez bocznych marginesów frakcji
+- Zmierzono rzeczywiste getBBox czterech logotypów i przycięto viewBox do grafiki. Szczególnie Hanza miała puste boki (107,697–695,723 w polu 800), Soldaci puste pasy w pionie oraz fragment poza dawnym viewBox. Nie zmieniano ścieżek ani starego projektu.
+- Szerokość obiektu frakcji wynika teraz z wysokości i rzeczywistych proporcji znaku; każde logo ma własną szerokość, również przy wielu oznaczeniach. Wyłączono rozpinanie proporcji logotypu w kreatorze. TS/PHP i cache kafelków zaktualizowane; logo–liczba nadal 0 pt.
+- Weryfikacja: TS/Vite, PHP lint, diff --check poprawne; Playwright sprawdził wszystkie cztery frakcje, zgodność szerokości obrazu i obiektu oraz zerowy odstęp przed liczbą. Zrzuty sprawdzone wizualnie, bez błędów JS i zapisu danych. Serwer potwierdził 0 pt oraz zwykły odstęp przy ukrytej liczbie.
+
+
+## 2026-11-10 — Odstęp 1 pt i drugi koszt po lewej
+- Przywrócono 1 pt logo frakcji → liczba w TS/PHP; odświeżono cache kafelków. Wartość drugiego kosztu (0–10) przeniesiona z prawego panelu do wiersza Drugi koszt — wartość w lewej kolumnie, identycznie jak pierwszy koszt.
+- Weryfikacja: TS/Vite, PHP lint i diff --check poprawne. Playwright sprawdził zmianę drugiego kosztu na 10 bez zmiany pierwszego, pole na liście obiektów i odstęp 1 pt dla czterech frakcji, bez błędów JS i zapisów danych. PHP potwierdził odstęp przy widocznej i ukrytej liczbie.
+
+
+
+## 2026-11-10 — Kolejność w podgrupie od 1
+- Dodano talents.sort_order, indeks i jawną migrację schematu 4→5. Odtworzono 437 importów według source.page/index, ręczny talent na końcu; wszystkie 438 talentów w 30 niepustych podgrupach ma gęstą numerację 1..N. Snapshot i kopia SQL sprzed migracji zachowane w wtf_www/backups/klanarchia-editor/20261110/before-talent-order/.
+- Lista/kafelki/nawigator sortują po sort_order,id. Pole w edytorze przed szablonem, zapis dopiero po Zapisz. Nowy/przeniesiony talent na końcu, zmiana pozycji przesuwa sąsiadów i porządkuje starą podgrupę. Zwykły zapis pomija order i zachowuje aktualną pozycję. Historia zawiera ruch i przesuniętych sąsiadów, bez sztucznych wersji sąsiadów. Aktualizacja guardów schematu (w tym liczników i ochrony usuwania podgrup) oraz ke talents-init.
+- Weryfikacja: TS/Vite, PHP lint i diff --check poprawne. Audit przed/po potwierdził niezmienione treści/wersje/historię i wszystkie 437 źródłowych kolejności, gęstość 1..N i idempotencję migracji.
+- Trzy tymczasowe talenty w dwóch tymczasowych podgrupach: append 1..3, ruch na początek/przesunięcia, stabilny zapis treści, ograniczenie pozycji do końca, przenoszenie z porządkowaniem obu podgrup i odrzucenie zera. Paginacja 228 rekordów poprawna.
+- Playwright potwierdził minimum 1, zapis/reload pozycji 3, kolejność B/C/A w nawigatorze i zachowanie pozycji po korekcie mechaniki, bez błędów JS. Pierwszy selektor testu obejmował puste spany statusów; poprawiono test i powtórzono na tych samych rekordach QA.
+- Guarded cleanup usunął testowe rekordy, wersje, raporty, historię i podgrupy. Ponowny audit 438 rzeczywistych rekordów poprawny. Narzędzia poza Git w wtf_www/local-scripts/one-off/faction-cost-20261110/order-*. Bez wdrożenia i zmian starego projektu.
+
+
+## 2026-11-10 — Zwarta wyszukiwarka i podgląd notatek
+- Cztery filtry w jednym rzędzie na szerokim ekranie, dwa na średnim i jeden na telefonie. Mniejsze odstępy i pola. Resetuj przywraca domyślne filtry, wyszukiwanie w treści i usuwa wyniki; token żądania zapobiega przywróceniu wyników przez opóźnioną odpowiedź.
+- Notatki na liście i w wynikach wyszukiwania można rozwinąć/zwinąć bez otwierania talentu; treść i poziom aktywnych notatek. Nawigator zachowuje dotychczasową odznakę.
+- Weryfikacja: TS/Vite poprawne (dotychczasowe ostrzeżenie rozmiaru paczki). Playwright: cztery filtry w rzędzie, otwarcie/zamknięcie rzeczywistych notatek, reset wyników i domyślnych ustawień, formularz mieści się przy 390 px, brak błędów JS. Bez zapisów do bazy i wdrożenia.
+
+
+## 2026-11-10 — Druga zagrywka w kreatorze
+- Osobny element play2 (Zagrywka 2), ta sama grafika wariantu, za pierwszą zagrywką. Niezależne oko, geometria/Y, blokada i kolor; X automatycznego rzędu. Model TS, walidacja PHP, miniatury i ochrona użytych kolorów obejmują nowy element. Starsze szablony otrzymują ukrytą kopię pierwszej zagrywki bez zmiany zapisanych danych.
+- Zakres: kreator szablonów. W talentach druga zagrywka pozostaje ukryta do podłączenia osobnego ustawienia w kolejnym etapie.
+- Weryfikacja: TS/Vite i PHP lint poprawne. Playwright: element dostępny, po włączeniu obok pierwszego z tym samym Y, niezależne wyłączenie, brak błędów JS; bez zapisów do bazy.
+
+
+## 2026-11-10 — Zagrywka 2 w edytorze talentu
+- Niezależny przełącznik drugiej zagrywki, zapis flagi play2 przez API, podgląd/PDF i symbole listy. Brak flagi w starych danych oznacza wyłączenie. Odświeżono cache kafelków.
+- Przyciski frakcji i obu kosztów mają ten sam rozmiar 34 px, kolor, stan aktywny, hover i focus co pozostałe ikony; pola liczbowe dopasowane wysokością.
+- Weryfikacja: TS/Vite oraz PHP lint poprawne; test przeglądarkowy opisany poniżej. Bez wdrożenia.
+- Playwright: niezależne włączenie/wyłączenie Zagrywki 2, identyczny asset obu zagrywek, jednakowa wysokość przycisków kosztów/frakcji/oznaczeń, brak błędów JS. Bez zapisu danych testowych.

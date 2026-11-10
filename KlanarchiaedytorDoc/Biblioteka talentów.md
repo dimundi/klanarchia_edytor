@@ -71,3 +71,29 @@ W pasku formatowania Mechaniki przycisk monet wstawia [ikona-kosztu: koszt] w 
 Docelowe miejsce promocyjnych talentów dla wspierających: promki → Zbiórka - Dary Ciemności. Grupa i podgrupa utworzone lokalnie; import osobnym krokiem, z zachowaniem dotychczasowych kodów.
 
 - Nazwę grupy lub podgrupy zmieniamy ołówkiem przy jej nazwie w bibliotece albo nawigacji edytora. Zapis dotyczy bieżącego języka i zachowuje przypisania talentów. Nazwy rodzeństwa muszą być unikalne.
+
+
+## Narzędzia i walidacja nazw
+
+Po kliknięciu Talenty w menu otwiera się ekran Narzędzia, bez automatycznego wyboru pierwszej grupy i bez pobierania jej listy. Grupę/podgrupę wybiera użytkownik. Powrót przyciskiem przeglądarki zachowuje kontekst poprzedniego widoku; kliknięcie menu Talenty wraca do narzędzi i chroni niezapisany szkic.
+
+Waliduj nazwy sprawdza wszystkie niearchiwizowane talenty (również wycofane) w bieżącym języku, z fallbackiem do PL. Raport pokazuje identyczne nazwy po normalizacji, bardzo podobne tytuły i rekordy bez nazwy. Normalizacja pomija wielkość liter, diakrytykę, interpunkcję i nadmiarowe spacje. Podobieństwo wykrywa drobne różnice pisowni (Levenshtein: maksymalnie 1/2/3 zmiany dla nazw krótszych niż 9/25/dłuższych znaków, jednocześnie najwyżej 16% długości; nazwy krótsze niż 5 znaków tylko w grupie zgodnych). Nie porównuje znaczenia.
+
+Wynik zawiera tytuł, kod, ścieżkę grupy i status. Kliknięcie tytułu otwiera edytor. Raport pozostaje dostępny po powrocie, ma czas wykonania i przycisk ponownego sprawdzenia. Nie zapisuje błędów talentu i nie zmienia danych — powtórzenia mogą być celowe.
+
+
+## Wyszukiwanie
+
+Wyszukiwarka jest na samej górze. Nagłówek Narzędzia i opis znajdują się pod nią, bezpośrednio przed Waliduj nazwy. Pierwsze narzędzie: Szukaj talentów. Formularz jest od razu widoczny, bez przycisku rozwijania i bez pobierania listy całej biblioteki. Domyślnie fraza pasuje do fragmentu tytułu, kodu bazowego lub pełnego kodu wersji oraz fabuły i mechaniki. Checkbox szukania w treści jest zaznaczony; jego wyłączenie ogranicza zakres do tytułu i kodu. Porównanie pomija wielkość liter, polskie znaki i nadmiarowe spacje.
+
+Opcjonalne filtry Grupa, Podgrupa i Status ograniczają wyszukiwanie. Filtr Błędy: Wszystkie, Z błędami (zapisany licznik > 0), Bez błędów (aktualny raport i zero błędów), Wymagają sprawdzenia (brak aktualnego raportu). Filtry działają także bez frazy po kliknięciu Szukaj. Wyniki korzystają z tego samego wiersza co lista biblioteki: tytuł i status, ścieżka grupy, kod wersji, ikony i szczegóły błędów po lewej; pełna fabuła, sformatowana mechanika i ograniczenia dostępności po prawej. Paleta i oznaczenia tekstu są wspólne. Po 20 wyników na stronę, z licznikiem i nawigacją. Brak wyników i błąd pobierania mają osobne komunikaty.
+
+Kliknięcie tytułu otwiera talent; Back przywraca wpisaną frazę, filtry, stronę i wyniki. Stan zachowywany podczas pracy w module (bez zapisu do localStorage/bazy). Ponowne Szukaj odświeża wynik. Wyszukiwanie niczego nie zapisuje.
+
+Grupy i podgrupy są wyświetlane alfabetycznie, z uwzględnieniem języka interfejsu. Zmiana nazwy od razu aktualizuje kolejność.
+
+
+## Kolejność w podgrupie
+Talenty na liście, kafelkach i w lewym panelu edytora korzystają z trwałej pozycji 1..N. Zapis treści nie przenosi talentu na początek. Pole „Kolejność w podgrupie” jest w edytorze pod podglądem, przed wyborem szablonu; zmiana działa po Zapisz. Zmiana pozycji przesuwa pozostałe talenty bez luk. Nowe talenty domyślnie na końcu; w pustej podgrupie pierwszy otrzymuje 1. Wyszukiwarka nadal sortuje alfabetycznie.
+
+2026-11-10: odtworzono kolejność stron PDF i pozycji starego JSON dla wszystkich 437 importowanych talentów; ręczny talent po importowanych.

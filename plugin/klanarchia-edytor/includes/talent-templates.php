@@ -3,7 +3,7 @@ if(!defined('ABSPATH'))exit;
 // Template history is retained for audit; talents always resolve the template's current document.
 function ke_migrate_live_talent_templates(){
  global $wpdb;
- if(get_option('ke_talents_schema_version')==='4'&&get_option('ke_talent_checks_schema_version')!=='1')return;
+ if(in_array(get_option('ke_talents_schema_version'),['4','5'],true)&&get_option('ke_talent_checks_schema_version')!=='1')return;
  ke_migrate_talent_status();
  if(!in_array('template_id',$wpdb->get_col('SHOW COLUMNS FROM '.ke_table('talent_versions')),true))ke_db_query('ALTER TABLE '.ke_table('talent_versions').' ADD template_id bigint unsigned NULL');
  ke_db_query('UPDATE '.ke_table('talent_versions').' v JOIN '.ke_table('template_versions').' old ON old.id=v.template_version_id SET v.template_id=old.template_id WHERE v.template_id IS NULL');

@@ -12,6 +12,7 @@ const fonts=Object.fromEntries(await Promise.all(Object.entries({regular:'R',bol
 const style={font:'libertine',fontSize:9,lineHeight:1.12,letterSpacing:0,color:'#000000',bold:false,italic:false};
 const run=(text,extra={})=>({text,style:{...style,...extra}});
 const {parseTalentText}=await server.ssrLoadModule('/src/FormattedTalentText.tsx');
+const {glyphPathData}=await server.ssrLoadModule('/src/glyph-path.ts');
 const {cardRuns}=await server.ssrLoadModule('/src/FixedCardText.tsx');
 const {stripInlineTalentIcons}=await server.ssrLoadModule('/src/inline-talent-icons.ts');
 
@@ -43,3 +44,10 @@ test('formatted cost run inherits surrounding size and colour',()=>{
 });
 
 test('a cost value stays on the same line as its symbol',()=>{const runs=cardRuns([{text:'wartość 5 [ikona-kosztu: koszt] na misję',formatted:true,style}],[],[]);const result=layoutCardText(runs,fonts,{width:30,height:100},'pl');const line=result.lines.find(l=>l.atoms.some(a=>a.icon));assert.ok(line.text.includes('5\u00a0\uFFFC'));});
+
+
+test('glyph paths stay finite near integer boundaries with negative tracking',()=>{
+ const glyph=fonts.regular.charToGlyph('y');
+ for(const x of [99.56933593750001,100+Number.EPSILON*64,-1e-14,0,100]){const path=glyphPathData(glyph,x,18.0533,9);assert.ok(path.includes('Q'));assert.ok(path.length>100);assert.doesNotMatch(path,/NaN|Infinity/);}
+ for(const tracking of [-.05,-.2,-.4,-1,0,.1]){const layout=layoutCardText([run('Klanyta, który uderzy w dzwon, ma ryzyko (7) wyzwolenia Mrocznego Instynktu.',{letterSpacing:tracking})],fonts,{width:171.67,height:100},'pl');for(const line of layout.lines)for(const {atom,x}of atomPositions(line.atoms)){const raw=atom.glyph.getPath(x,line.baseline,atom.size);assert.ok(raw.commands.every(c=>Object.entries(c).filter(([k])=>k!=='type').every(([,v])=>Number.isFinite(v))));assert.doesNotMatch(glyphPathData(atom.glyph,x,line.baseline,atom.size),/NaN|Infinity/);}}
+});

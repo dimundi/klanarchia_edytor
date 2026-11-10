@@ -11,10 +11,14 @@ require_once __DIR__.'/includes/validation.php';
 require_once __DIR__.'/includes/api.php';
 require_once __DIR__.'/includes/library.php';
 require_once __DIR__.'/includes/talents.php';
+require_once __DIR__.'/includes/talent-order.php';
+require_once __DIR__.'/includes/talent-name-audit.php';
+require_once __DIR__.'/includes/talent-search.php';
 require_once __DIR__.'/includes/talent-codes.php';
 require_once __DIR__.'/includes/talent-status.php';
 require_once __DIR__.'/includes/talent-templates.php';
 require_once __DIR__.'/includes/talent-checks.php';
+require_once __DIR__.'/includes/editorial-notes.php';
 
 function ke_can_access() { return is_user_logged_in() && current_user_can('manage_options'); }
 function ke_is_page() { return is_page() && get_page_uri(get_queried_object_id()) === 'klanarchia/edytor'; }

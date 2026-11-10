@@ -39,3 +39,5 @@ Sprawdzono rzeczywiste pobrania z obu przycisków, brak window.print/window.ope
 [ikona-kosztu: koszt] jest wbudowanym znacznikiem grafiki, nie stylem oznaczenia. Parser zamienia go na pojedynczy element składu o szerokości 1,05 em i wysokości 1 em, z kolorem i wielkością otaczającego tekstu oraz grafiką kosztu z wariantu szablonu. Symbol nie dzieli się między wiersze, nie stosujemy do niego kerningu; liczba przed symbolem jest z nim łączona spacją nierozdzielającą wyłącznie podczas renderowania. Treść źródłowa pozostaje bez zmian.
 
 Działa w zagnieżdżonych formatowaniach, w liście HTML, podglądzie SVG, buforowanych kafelkach i PDF (dotychczasowe spłaszczanie masek SVG). Niepoprawna zawartość znacznika pozostaje widoczna i daje unknown_annotation. Silnik i API mają wspólny numer 2, wcześniejsze raporty układu wymagają ponownej kontroli; pamięć kart uwzględnia numer silnika.
+
+Kontury SVG zapisujemy przez glyphPathData z precyzją 4 miejsc. Nie używamy toPathData biblioteki do zaokrąglania: przy ujemnym trackingu i współrzędnych bliskich liczbom całkowitym generował NaN i ucinał litery. Zmiana dotyczy rysowania, bez zmiany geometrii składu.

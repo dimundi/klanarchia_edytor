@@ -171,3 +171,39 @@ GET rekordu i listy wiąże template_id z templates.current_version_id. API pr
 Schemat raportów 2: talent_checks.template_version_id wskazuje układ, który rzeczywiście sprawdzono. Dawne raporty dostają historyczny znacznik, bez zmiany poprzednich kolumn. Raport jest stale po zmianie szablonu, a otwarcie talentu przelicza go bez zapisu treści. validation.templateId/templateRevision służą wyłącznie kontroli świeżości diagnostyki; nie są przypięciem wyglądu. Raport ze starego układu odrzucany 409; starszy klient bez znacznika nie może oznaczyć układu jako kompletnie sprawdzonego.
 
 Edytor aktualizuje szablony po zapisie kreatora i powrocie do okna; przed zapisem/PDF ponownie sprawdza bieżący dokument i czeka na gotowy podgląd. Kafelki korzystają z aktualnej rewizji w kluczu pamięci. Kopia: wtf_www/backups/klanarchia-editor/20261110/before-live-templates/ (database.sql, records.json). Audyt potwierdził 118 talentów, w tym 82 wcześniej zamrożone na starym wyglądzie, bez zmian ich treści, kodów, rewizji i historii.
+
+
+### Raport nazw talentów
+
+GET talents/name-audit?language=pl|en: admin i nonce jak pozostałe API, odpowiedź no-store/private. Odczyt aktualnych wersji nazw, kodów, statusów i grup; identyczne i podobne nazwy oraz puste tytuły. Raport wyliczany na żądanie, bez dodatkowych tabel, zapisu historii lub zmian rekordów.
+
+
+### Wyszukiwanie talentów
+
+GET talents/search?language=pl|en&q=fraza&category=UUID&content=0|1&page=N. Admin/nonce i no-store/private jak pozostałe API. q opcjonalne (puste pozwala użyć samych filtrów), do 120 znaków; category opcjonalne (grupa lub podgrupa), content=1 dodaje fabułę i mechanikę. Dodatkowo status=dev|toCheck|approved|delete (puste: wszystkie), errors=yes|no|pending (puste: wszystkie). Filtr błędów używa najnowszych zapisanych raportów aktualnych wersji: no wymaga statusu checked i zera błędów; pending oznacza unchecked/stale. Odczyt aktualnych wersji z fallbackiem do PL, również status delete, bez rekordów archiwizowanych. Zwraca 20 trafień na stronę, total/hasMore, pełne treści, ustawienia, walidację i metadane talentu do wspólnego widoku listy. Dokumenty aktualnych szablonów deduplikowane w templates jak na liście biblioteki; dane jednej strony pobierane w spójnym odczycie transakcyjnym. Zachowano dopasowane pole i fragment dla zgodności API. Fraza traktowana dosłownie, bez wildcardów SQL; interfejs nie otrzymuje całych treści biblioteki. Bez nowych tabel i zapisów.
+
+
+### Notatki redakcyjne
+
+Bez nowych tabel: wersjonowany dokument settings.editorialNotes zawiera opcjonalne listy PL/EN, każda do 50 notatek {id,text,level,enabled}. Tekst do 2000 znaków, niepusty; level error|warning|info, ID unikalne w języku. Edytor zachowuje pozostałe języki. Zapis przez zwykłe PUT talentu, pod dotychczasową kontrolą rewizji; historia settings.editorialNotes. Starszy klient pomijający pole dziedziczy istniejące notatki, bez ich usuwania.
+
+Raport validation: issues wyłącznie automatyczne, automaticErrorCount, notes (także wyłączone), noteCounts per poziom, noteCount aktywnych. errorCount = automaticErrorCount + aktywne notatki error. Notatki łączone z najnowszym raportem podczas odczytu, niezależne od rewalidacji. Zgodne stare sourceReview z import_pdf są odczytywane jako notatki z deterministycznymi ID; nie są już nowo zapisywane jako source_review_required. Pierwszy świadomy zapis listy notatek staje się źródłem aktualnego stanu, również gdy lista jest pusta.
+
+
+### Koszt frakcyjny
+
+Opcjonalne settings.factionCost = {faction: soldaci|mechanisci|hanza|rytualisci, cost: 0–10} lub null. Wersjonowane i zapisywane z talentem, historia settings.factionCost. Starszy klient pomijający pole zachowuje istniejące nadpisanie; null usuwa je jawnie. Obecnie jedno nadpisanie, bez nowych tabel. Szablon ma element factionCost oraz przykładowe factionCost do kreatora; istniejące dokumenty dostają domyślne parametry w odczycie, bez zapisu migracyjnego.
+
+2026-11-10: koszt frakcyjny wyświetla się niezależnie od podstawowego (obecność settings.factionCost). Grafika bez tła; wybór frakcji ikonami, pod nim osobne przełączniki i wartości obu kosztów.
+
+2026-11-10: settings.factions to niezależna tablica soldaci/mechanisci/hanza/rytualisci (0–4, bez duplikatów). Oba koszty i każdy logotyp mogą być widoczne niezależnie. Brak pola zachowuje starsze zachowanie, [] oznacza brak logotypów.
+
+Szablon: elements.factionSymbol, elements.factionCostAmount i elements.factionCost to trzy niezależne geometrie zamiast jednej grupy. Starsze dokumenty otrzymują domyślne geometrie z podstawowego kosztu przy odczycie; zapis utrwala niezależne parametry. Bez zmiany schematu tabel.
+
+
+## Kolejność talentów w podgrupie — schemat 5 (2026-11-10)
+- ke_talents.sort_order (unsigned int) i indeks category_order(category_id,sort_order,id). Numeracja aktywnych rekordów każdej podgrupy: 1..N, bez luk; status wycofany nie archiwizuje rekordu.
+- API record/list/search zwraca order. POST/PUT przyjmuje opcjonalne order (liczba całkowita od 1); pozycja ponad koniec listy jest ograniczana do końca. Brak pola przy zwykłym zapisie zachowuje aktualną pozycję, także po przesunięciu przez inny talent. Nowy talent i przeniesienie do innej podgrupy domyślnie na końcu.
+- Zmiana pozycji przesuwa sąsiadów; przeniesienie porządkuje obie podgrupy. Transakcja i blokada catalogue_state wspólne z zapisem talentu. Zdarzenie zapisu zawiera order.from/to/shifted; sąsiedzi nie otrzymują sztucznych wersji treści.
+- Jawna migracja: wp ke talent-order-init --user=1 --allow-root, również przez ke talents-init. Odtworzenie według source.page (PDF) lub source.index (stary JSON), następnie numeracja 1..N. Rekordy bez importu na końcu. Powtórzenie migracji nie resetuje ręcznej kolejności.
+- Lokalnie: 438 talentów, 30 niepustych podgrup; kolejność 437 importów zweryfikowana. Treści, wersje i historia importów bez zmian. Kopia sprzed migracji: wtf_www/backups/klanarchia-editor/20261110/before-talent-order/database.sql.
