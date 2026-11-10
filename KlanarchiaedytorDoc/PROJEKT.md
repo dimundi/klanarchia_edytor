@@ -100,7 +100,7 @@ Kreator ma ekran wyboru wielu szablonów z miniaturami, otwieraniem i duplikow
 Pierwsza grupa: Talenty archetypów. Podgrupy: Egzorcysta, Inkwizytor, Kronikarz, Rzecznik, Siepacz, Szabrownik, Wiedźmiarz, Żarmistrz, Żerca. Hierarchia i sposób pracy zatwierdzone w dokumencie [Biblioteka talentów](Biblioteka%20talentów.md). Zgodnie z poleceniem użytkownika na tym etapie bez kodowania i bez tworzenia tabel lub rekordów grup.
 2026-11-09: uruchomiono bibliotekę grup w module Talenty. Drzewo, tworzenie grup/podgrup, zaznaczanie i eksport struktury zapisanej w dwóch nowych tabelach. Dodano Talenty archetypów z dziewięcioma podgrupami. Bez importu treści talentów; ich kreator, historia i eksport kart pozostają kolejnym etapem.
 
-2026-11-09: uruchomiono trwały zapis talentów w bazie WordPressa z wersjami i historią autor/data/zmienione pola. Biblioteka pokazuje zapisane talenty, otwiera je ponownie i zlicza w grupach. Zapamiętywane są treści, oznaczenia, typografia i konkretna wersja szablonu. Bez zmian danych starego edytora, importu i wdrożenia produkcyjnego. Szczegóły: Biblioteka talentów.md oraz Baza danych.md.
+2026-11-09: uruchomiono trwały zapis talentów w bazie WordPressa z wersjami i historią autor/data/zmienione pola. Biblioteka pokazuje zapisane talenty, otwiera je ponownie i zlicza w grupach. Zapamiętywane są treści, oznaczenia, typografia i wybrany szablon. Bez zmian danych starego edytora, importu i wdrożenia produkcyjnego. Szczegóły: Biblioteka talentów.md oraz Baza danych.md.
 
 ## Plan dalszych prac
 
@@ -120,6 +120,12 @@ Zbiorcza lista zadań, w tym Asystent Klanarchii i korekta podręcznika: [TODO
 
 2026-11-09: talent identyfikuje stały kod XXXX-XXXX, np. A7K2-M9B4; zastąpił UUID talentu w API i bazie. Wersja ma format A7K2-M9B4-091126-01 (ddmmyy i kolejny zapis tego talentu w danym dniu, czas Europe/Warsaw). Do przyszłego Roll20 sam kod bazowy. Przenumerowano 81 talentów z zachowaniem historii/powiązań; kopia i mapa identyfikatorów poza Gitem. Szczegóły: [Baza danych](Baza%20danych.md).
 
-W szablonie talentu działa niezależny element Numer wersji, pozycjonowany i stylowany jak inne pola; eksport używa rzeczywistego oznaczenia talentu. Talent podstawowy / 45 ma pole włączone przy dolnej lewej krawędzi. Istniejące przypięcia talentów do 44 zachowano.
+W szablonie talentu działa niezależny element Numer wersji, pozycjonowany i stylowany jak inne pola; eksport używa rzeczywistego oznaczenia talentu. Aktualny Talent podstawowy ma pole włączone przy dolnej lewej krawędzi; wszystkie przypisane talenty używają tego ustawienia.
 
-Biblioteka ma widoki Lista / Kafelki, domyślnie Lista, w sekcjach według podgrup. Kafelki pokazują rzeczywisty układ z przypiętej wersji szablonu, renderują się w pobliżu ekranu i korzystają z ograniczonej pamięci gotowych podglądów SVG.
+Biblioteka ma widoki Lista / Kafelki, domyślnie Lista, w sekcjach według podgrup. Kafelki pokazują rzeczywisty aktualny układ przypisanego szablonu, renderują się w pobliżu ekranu i korzystają z ograniczonej pamięci gotowych podglądów SVG.
+
+2026-11-10: dopisano 36 talentów frakcji z PDF do grupy Talenty frakcji (Soldaci, Mechaniści, Hanzyci, Rytualiści, po 9), z kosztami, użyciami, formatowaniem, statusem dev i historią importu. 82 poprzednie talenty zachowane; łącznie 118. [Raport importu](Import%20talentów%20z%20PDF.md).
+
+## Aktualizacja szablonów — obowiązująca zasada
+
+Talent wskazuje szablon, zawsze korzysta z jego aktualnych ustawień. Zapis szablonu aktualizuje wygląd wszystkich powiązanych talentów w podglądach, kafelkach i PDF; bez tworzenia nowych wersji treści talentów. Jeśli potrzebujemy innego lub zachowanego wyglądu, tworzymy nowy szablon. Historyczne dokumenty szablonu pozostają wyłącznie do audytu i kontroli zmian, bez wyboru ich wersji w edytorze talentu.

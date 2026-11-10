@@ -82,3 +82,10 @@
 #klanarchia-editor .ke-talent-row-title {display:flex;align-items:baseline;gap:9px;}
 #klanarchia-editor .ke-row-opening {display:inline-flex;align-items:center;gap:6px;font-size:13px;}
 @media(max-width:600px){#klanarchia-editor .ke-talent-list.is-rows article {flex-wrap:wrap;}}
+
+#klanarchia-editor .ke-tile-info {display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;width:100%;box-sizing:border-box;min-height:30px;padding:5px 8px;background:#202420;color:#cbbfa3;font-size:12px;cursor:pointer;}
+#klanarchia-editor .ke-tile-info code {font:12px/1.4 ui-monospace,Consolas,monospace;color:#cbb47a;}
+#klanarchia-editor .ke-tile-info-status {display:inline-flex;align-items:center;gap:6px;}
+#klanarchia-editor .ke-tile-info-errors {display:inline-flex;align-items:center;gap:4px;margin-left:auto;opacity:.5;}
+#klanarchia-editor .ke-tile-info-errors.has-errors {opacity:1;color:#e4a677;}
+#klanarchia-editor .ke-library .ke-tile-status-toggle[aria-pressed=true] {background:#c3a65e18;border-color:#c3a65e;}

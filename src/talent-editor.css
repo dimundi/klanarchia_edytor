@@ -161,3 +161,6 @@
 #klanarchia-editor .ke-talent-move-dialog p {font-size:13px;line-height:1.5;color:#cbbfa3;}
 #klanarchia-editor .ke-talent-move-dialog form>div {display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
 #klanarchia-editor .ke-talent-move-dialog button:disabled {opacity:.4;cursor:default;}
+
+#klanarchia-editor .ke-pdf-id-option {display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;}
+#klanarchia-editor .ke-pdf-id-option input {margin:0;accent-color:#c3a65e;}

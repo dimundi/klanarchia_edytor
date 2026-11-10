@@ -19,4 +19,4 @@ export async function readLibrary(): Promise<LibraryItem[]> {
  const items: LibraryItem[] = [];
  for (let page = 1; ; page++) { const result = await request<{items: LibraryItem[]; hasMore: boolean}>('templates?page='+page); items.push(...result.items.map(item => ({...item, template:parseTemplate(item.template)}))); if (!result.hasMore) return items; }
 }
-export function writeTemplate(item: {id: string; revision: number; template: TalentTemplate}) { return request<LibraryItem>('templates/'+item.id,'PUT',{revision:item.revision,template:item.template}); }
+export function writeTemplate(item: {id: string; revision: number; template: TalentTemplate}) { return request<LibraryItem>('templates/'+item.id,'PUT',{revision:item.revision,template:item.template}).then(saved=>{window.dispatchEvent(new Event('ke:templates-changed'));return saved;}); }

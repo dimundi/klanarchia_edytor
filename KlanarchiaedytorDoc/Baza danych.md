@@ -1,6 +1,6 @@
 # Baza danych edytora
 
-Stan lokalny, 2026-11-09. Wspólna baza WordPressa, osobne tabele edytora. Bez zmian w produkcji i starym projekcie. Model pozostałych modułów: [Projekt bazy danych](Projekt%20bazy%20danych.md).
+Stan lokalny, 2026-11-10. Wspólna baza WordPressa, osobne tabele edytora. Bez zmian w produkcji i starym projekcie. Model pozostałych modułów: [Projekt bazy danych](Projekt%20bazy%20danych.md).
 
 ## Utworzone tabele
 
@@ -103,18 +103,18 @@ Cztery nowe tabele z prefiksem WordPressa, InnoDB:
 | Tabela | Bieżąca zawartość |
 | --- | --- |
 | ke_talents | Unikalny stały code CHAR(9) w formacie XXXX-XXXX (zastępuje UUID), podgrupa, wskaźnik aktualnej wersji, lock_version, daty i autorzy utworzenia/zmiany, archived_at |
-| ke_talent_versions | Talent, wewnętrzny numer rewizji, version_day DATE i day_serial, FK konkretnej wersji szablonu, schema_version=1, dokument ustawień, data i autor; unikalne talent_id/version_no i talent_id/version_day/day_serial |
+| ke_talent_versions | Talent, wewnętrzny numer rewizji, version_day DATE i day_serial, FK szablonu template_id; dawne template_version_id wyłącznie do audytu, schema_version=1, dokument ustawień, data i autor; unikalne talent_id/version_no i talent_id/version_day/day_serial |
 | ke_talent_texts | Wersja, język PL/EN, tytuł, fabuła, mechanika ze znacznikami, ograniczenie dostępności; unikalne version/language |
 | ke_talent_events | Talent, autor/czas, create/save/import_pdf, wersja przed/po, lista zmienionych pól i podgrupa |
 
-Dokument ustawień przechowuje templateId/templateRevision, flags (hexMark/cost/play/gift/specialRules/nonRenewable), action, usage (none/mission-one/mission-three/once), cost 0–9, letterSpacing (tytuł/fabuła/mechanika, null lub -2…10), lineHeight (fabuła/mechanika, null lub .75…3). To dokument w bazie, bez osobnych plików JSON. W tym pierwszym zapisie parametry mechaniczne również są w dokumencie; ewentualne wydzielenie do kolumn na potrzeby filtrowania pozostaje dalszym etapem projektu danych.
+Dokument ustawień przechowuje templateId (bez przypięcia rewizji), flags (hexMark/cost/play/gift/specialRules/nonRenewable), action, usage (none/mission-one/mission-three/once), cost 0–9, letterSpacing (tytuł/fabuła/mechanika, null lub -2…10), lineHeight (fabuła/mechanika, null lub .75…3). To dokument w bazie, bez osobnych plików JSON. W tym pierwszym zapisie parametry mechaniczne również są w dokumencie; ewentualne wydzielenie do kolumn na potrzeby filtrowania pozostaje dalszym etapem projektu danych.
 
 Wersje i zdarzenia są dopisywane atomowo w jednej transakcji. Treści pozostałych języków kopiowane do nowej wersji bez zmian. Autor/czas wyłącznie z serwera i sesji WP. Blokada i oczekiwana rewizja zabezpieczają przed utratą równoczesnych zmian (409). Siedem nowych kluczy obcych chroni odwołania kategorii, talentów, szablonów i historii. Wskaźnik aktualnej wersji utrzymuje kod transakcyjny.
 
 API pod klanarchia-editor/v1, wyłącznie manage_options i nonce:
 
 - GET talents?category=UUID&language=pl&page=1 — podgrupa lub grupa z potomkami, stronicowanie po 100.
-- GET talents/{code}?language=pl — dane i przypięty szablon. Brak tłumaczenia zwraca puste treści, bez kopiowania fallbacku.
+- GET talents/{code}?language=pl — dane i aktualny przypisany szablon. Brak tłumaczenia zwraca puste treści, bez kopiowania fallbacku.
 - PUT talents/UUID?language=pl — oczekiwana revision, categoryId, content, settings.
 - GET talents/UUID/history?page=1 — wersje, autorzy, czasy i zmienione pola, po 100.
 
@@ -144,11 +144,11 @@ Kopia w wtf_www/backups/klanarchia-editor/20261109/before-talent-codes/: databa
 
 Dokument szablonu 2 obsługuje elements.version (geometria/widoczność/blokada/proporcje) i styles.version (niezależny styl, minimum 5 pt, wyłącznie kolor palety). Zapis i walidacja klient/serwer; kolor pola objęty ochroną przed archiwizacją, również w historycznych szablonach. Brak migracji tabel: starszy dokument otrzymuje ukryty element i styl 5 pt podczas odczytu, bez przepisywania wersji. TemplateVersion renderuje lokalnymi fontami SVG rzeczywisty kod talentu, a w kreatorze przykład.
 
-W szablonie Talent podstawowy zapisano wersję 45 z włączonym polem. Starsze 44 wersje dokumentu i talenty przypięte do 44 zachowane. Kopia sprzed zapisu w wtf_www/backups/klanarchia-editor/20261109/before-template-version-label/: database.sql oraz template.json.
+W szablonie Talent podstawowy zapisano wersję 45 z włączonym polem. Historia 44 starszych dokumentów zachowana do audytu; talenty korzystają z aktualnego układu. Kopia sprzed zapisu w wtf_www/backups/klanarchia-editor/20261109/before-template-version-label/: database.sql oraz template.json.
 
 ## Podglądy kafelków biblioteki
 
-GET talents zwraca obok items/hasMore tablicę templates: unikalne dokumenty historycznych wersji szablonów używanych na danej stronie listy. Klucz to id szablonu i revision wersji, nie bieżąca wersja szablonu. Klient wiąże dokumenty z settings.templateId/templateRevision, bez odczytu każdego talentu osobno. Brak nowych tabel, migracji i zapisywania podglądów do bazy.
+GET talents zwraca obok items/hasMore tablicę templates: unikalne aktualne dokumenty szablonów używanych na danej stronie listy. Klient wiąże je po settings.templateId, bez odczytu każdego talentu osobno. Rewizja służy kontroli zmian i unieważnianiu pamięci podglądu, nie przypięciu wyglądu. Brak nowych tabel, migracji i zapisywania podglądów do bazy.
 
 ## Status talentu — schemat 3 (2026-11-10)
 
@@ -159,3 +159,15 @@ API GET listy/talentu zwraca status; POST/PUT przyjmuje dev, toCheck, approved, 
 ### Usuwanie pustej podgrupy
 
 DELETE talent-categories/{uuid}, wyłącznie administrator z nonce. Transakcja z tą samą blokadą katalogu co tworzenie kategorii i zapis talentu; serwer odrzuca grupę główną (400), brakującą podgrupę (404), dowolny talent w podgrupie lub potomne kategorie (409). Kontrola obejmuje także wycofane i zarchiwizowane talenty. Dopiero po kontroli usuwa nazwy PL/EN i pusty rekord kategorii; FK pozostają aktywne. Bez migracji schematu.
+
+## Aktualny szablon talentu — schemat 4
+
+Obowiązująca zasada: talent wskazuje szablon i zawsze używa jego aktualnego dokumentu. Oddzielny wygląd to osobny szablon. Rewizje szablonów są wyłącznie historią audytową i kontrolą równoległych zapisów, nie wyborem układu na talencie.
+
+Jawna migracja `wp ke live-templates-init --user=1 --allow-root` (także talents-init): talent_versions.template_id NOT NULL z FK do templates, wypełnione na podstawie dotychczasowych odwołań. Dawne template_version_id i surowe dokumenty pozostają nietknięte jako ślad audytowy. Przy nowym zapisie template_version_id zapamiętuje jedynie techniczny stan szablonu w chwili zapisu; renderer nie używa go do ustalania wyglądu. W nowych ustawieniach wyłącznie templateId; dawne templateRevision usuwane z odpowiedzi API bez przepisywania historii JSON.
+
+GET rekordu i listy wiąże template_id z templates.current_version_id. API przy zapisie ustala bieżący szablon po templateId, nigdy po wskazanej przez klienta starej rewizji. Zapis szablonu nie tworzy nowych wersji talentów.
+
+Schemat raportów 2: talent_checks.template_version_id wskazuje układ, który rzeczywiście sprawdzono. Dawne raporty dostają historyczny znacznik, bez zmiany poprzednich kolumn. Raport jest stale po zmianie szablonu, a otwarcie talentu przelicza go bez zapisu treści. validation.templateId/templateRevision służą wyłącznie kontroli świeżości diagnostyki; nie są przypięciem wyglądu. Raport ze starego układu odrzucany 409; starszy klient bez znacznika nie może oznaczyć układu jako kompletnie sprawdzonego.
+
+Edytor aktualizuje szablony po zapisie kreatora i powrocie do okna; przed zapisem/PDF ponownie sprawdza bieżący dokument i czeka na gotowy podgląd. Kafelki korzystają z aktualnej rewizji w kluczu pamięci. Kopia: wtf_www/backups/klanarchia-editor/20261110/before-live-templates/ (database.sql, records.json). Audyt potwierdził 118 talentów, w tym 82 wcześniej zamrożone na starym wyglądzie, bez zmian ich treści, kodów, rewizji i historii.

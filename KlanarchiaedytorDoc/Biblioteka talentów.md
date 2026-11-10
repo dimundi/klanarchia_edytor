@@ -12,7 +12,7 @@ Grupa **Talenty archetypów**, podgrupy: Egzorcysta, Inkwizytor, Kronikarz, Rzec
 - Lewa kolumna: tytuł, fabuła, mechanika. Podgląd pośrodku, ustawienia po prawej. Początkowy przykład PL: Prymat potępieńca. Znaczniki B/I/Cecha/Aspekt/Stan tylko w mechanice, zgodne z prototypem i wspólnymi stylami.
 - Użycia: brak, raz na misję (prawy kwadrat), trzy razy na misję, raz na scenę. Oznaczenia, akcja, koszt, ograniczenie dostępności oraz niezależne odstępy liter i interlinia. Ostrzeżenie przepełnienia pod podglądem.
 - Zapisz zapisuje talent i nową wersję historii w bazie WordPressa. Kręciołek podczas zapisu. Błąd sieci lub konflikt zachowuje szkic; starsza rewizja nie nadpisuje nowszej. Niezapisane zmiany wymagają potwierdzenia przy wyjściu.
-- Zapis obejmuje wszystkie treści, oznaczenia i nadpisania typografii. Talent przypięty do konkretnej wersji szablonu; otwieranie odtwarza tę wersję. Wybranie innej wersji jest świadomą zmianą. Tło podglądu i chwilowe ukrycie tła ramki pozostają wyłącznie preferencjami podglądu.
+- Zapis obejmuje wszystkie treści, oznaczenia i nadpisania typografii. Talent wskazuje szablon i zawsze używa jego aktualnego układu. Oddzielny wygląd wymaga utworzenia osobnego szablonu. Tło podglądu i chwilowe ukrycie tła ramki pozostają wyłącznie preferencjami podglądu.
 - Stały kod talentu ma format XXXX-XXXX; wersja XXXX-XXXX-ddmmyy-nn, np. A7K2-M9B4-091126-01. Widoczna na liście, w edytorze, historii i nazwie PDF. Historia zmian w edytorze: oznaczenie wersji, data, autor WordPressa i zmienione pola. Bez przywracania dawnych wersji na tym etapie.
 
 ## Baza i uruchomienie
@@ -34,9 +34,9 @@ Bieżące zadania biblioteki i dalsza kolejność: [TODO i ramowy plan](TODO.md)
 
 Biblioteka ma przełącznik Lista / Kafelki, domyślnie Lista. Wybór pozostaje przy zmianie podgrupy i powrocie z edytora, bez trwałego zapisu preferencji. Lista pokazuje tytuł otwierający talent, kod, status, oznaczenia, raporty błędów oraz fabułę/mechanikę. Talenty są podzielone na sekcje z nazwą podgrupy i liczbą talentów; po wybraniu podgrupy pozostaje jej sekcja. Puste sekcje nie są wyświetlane. Kafelek pokazuje wyłącznie wizualizację karty, bez podpisu, kodu, podgrupy i raportu pod spodem. Diagnostyka pozostaje zapisana i dostępna po otwarciu edytora. Kliknięcie kafelka otwiera edytor; bez osobnego przycisku Otwórz w tym widoku. Minimalna docelowa szerokość kafelka 480 px, na mniejszym ekranie dopasowanie do dostępnego miejsca.
 
-Karty używają dokładnie przypiętej wersji szablonu, treści i nadpisań talentu oraz wspólnych fontów/stylów, jak podgląd edytora. Szablony historyczne pobierane zbiorczo i bez powtarzania dokumentu dla każdego talentu.
+Karty używają aktualnego dokumentu wybranego szablonu, treści i nadpisań talentu oraz wspólnych fontów/stylów, jak podgląd edytora. Aktualne szablony pobierane zbiorczo, bez powtarzania dokumentu dla każdego talentu.
 
-IntersectionObserver uruchamia skład w pobliżu ekranu (margines 300 px). Po gotowym składzie utrwalany jest obraz SVG z krzywymi liter i osadzonymi grafikami. Poza ekranem zwalniane są węzły podglądu oraz jego URL; gotowe obrazy pozostają w pamięci LRU do 96 kart. Klucz uwzględnia talent/rewizję, przypięty szablon/wersję, rewizję wspólnych stylów i język. Dzięki temu przewijanie i powrót do biblioteki korzysta z gotowego obrazu, a zmiana danych unieważnia podgląd. Pamięć działa w bieżącej sesji strony, bez zapisu do bazy i localStorage.
+IntersectionObserver uruchamia skład w pobliżu ekranu (margines 300 px). Po gotowym składzie utrwalany jest obraz SVG z krzywymi liter i osadzonymi grafikami. Poza ekranem zwalniane są węzły podglądu oraz jego URL; gotowe obrazy pozostają w pamięci LRU do 96 kart. Klucz uwzględnia talent/rewizję, szablon/aktualną rewizję, rewizję wspólnych stylów i język. Dzięki temu przewijanie i powrót do biblioteki korzysta z gotowego obrazu, a zmiana danych unieważnia podgląd. Pamięć działa w bieżącej sesji strony, bez zapisu do bazy i localStorage.
 
 Historia przeglądarki obsługuje otwieranie talentu i nowego szkicu: Wstecz wraca do wybranej podgrupy, Dalej przywraca edytor. Powrót do biblioteki przez Talenty w menu. Przy niezapisanych zmianach cofnięcie wymaga potwierdzenia odrzucenia.
 
@@ -48,7 +48,7 @@ Kliknięcie innego talentu otwiera go obok. Niezapisane zmiany wymagają potwier
 
 Układ zwarty: strzałka przed nazwą grupy, oznaczenia/użycia pod podglądem w jednym lub dwóch wierszach, szablon na końcu. Mechanika ma 5 widocznych wierszy (maks. 190 px), dłuższa treść przewijana. Historia zmian pod Mechaniką w prawej kolumnie.
 
-Dodaj talent na końcu lewej listy jest dostępne wewnątrz podgrupy bez dalszych podgrup. Otwiera pusty szkic w tej podgrupie, z szablonem ostatnio edytowanego talentu (zachowana jego konkretna wersja). Bez dotychczasowych danych przykładowych i bez kopiowania treści/oznaczeń. Dopiero Zapisz tworzy rekord i kod talentu; odrzucenie szkicu nie zmienia bazy. Także ponowne Dodaj talent wymaga potwierdzenia odrzucenia niezapisanej treści.
+Dodaj talent na końcu lewej listy jest dostępne wewnątrz podgrupy bez dalszych podgrup. Otwiera pusty szkic w tej podgrupie, z szablonem ostatnio edytowanego talentu (używany aktualny układ tego szablonu). Bez dotychczasowych danych przykładowych i bez kopiowania treści/oznaczeń. Dopiero Zapisz tworzy rekord i kod talentu; odrzucenie szkicu nie zmienia bazy. Także ponowne Dodaj talent wymaga potwierdzenia odrzucenia niezapisanej treści.
 
 ## Statusy
 
@@ -61,3 +61,7 @@ Gdy lewa nawigacja pokazuje podgrupy grupy głównej, pod listą jest Dodaj podg
 ## Przenoszenie talentu
 
 Obok tytułu klikalna ścieżka Grupa / Podgrupa. Otwiera okno z wyborem grupy, a następnie jednej z jej podgrup. Wybierz ustawia roboczy cel; dopiero Zapisz przenosi talent, zachowując kod, treść i historię. Anuluj lub Escape zamyka okno bez zmiany celu. Po zapisie lewa nawigacja przechodzi do nowej podgrupy, listy/liczniki odświeżają się, historia odnotowuje zmianę podgrupy. Dotyczy również wyboru podgrupy nowego szkicu przed pierwszym zapisem.
+
+Grupy w lewej kolumnie biblioteki są domyślnie zwinięte przy pierwszym wczytaniu. Ręczne rozwinięcie pozostaje po odświeżeniu danych i powrocie z edycji. W widoku Kafelki przełącznik Pokaż/Ukryj statusy odsłania pod kartą zwarty pasek: bazowy kod talentu (pełne oznaczenie wersji w podpowiedzi), kolor i nazwę statusu oraz symbol błędu z liczbą. Przy zerze symbol jest przygaszony, przy błędach wyróżniony i ma podpowiedź z komunikatami. Domyślnie paski ukryte; przełącznik nie występuje w Liście. Wybór pozostaje w bieżącej sesji podczas powrotu z edytora.
+
+Identyfikator na samej grafice talentu jest zawsze ukryty w bibliotece i podglądzie edytora. Przy PDF opcja ID w PDF jest domyślnie wyłączona; zaznaczenie dodaje zapisane oznaczenie talentu do pliku w miejscu określonym przez szablon. Nie zmienia podglądu, treści ani ustawień szablonu. Dla niezapisanego szkicu/zmian opcja niedostępna, aby nie oznaczyć roboczej treści dawnym kodem. ID w pasku statusów oraz metadanych listy pozostaje.

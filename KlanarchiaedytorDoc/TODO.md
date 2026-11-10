@@ -11,7 +11,7 @@ Stan: 2026-11-09. Jedna lista zadań projektu; szczegóły wymagań pozostają w
 - Własne fonty Linux Libertine, wspólne dzielenie PL/EN-US i gotowy skład SVG; ostrzeganie o przepełnieniu.
 - Bezpośredni eksport pojedynczej karty do PDF z edytora talentu i kreatora szablonu. Obecny PDF zawiera tekst jako krzywe; na razie tak zostaje.
 
-Działające fundamenty nie oznaczają ukończenia całych modułów. Dane starego edytora nie zostały zaimportowane. Osobno wykonano [import 81 talentów archetypów z PDF](Import%20talentów%20z%20PDF.md); brak wdrożenia na produkcję.
+Działające fundamenty nie oznaczają ukończenia całych modułów. Dane starego edytora nie zostały zaimportowane. Osobno wykonano [import 81 talentów archetypów i 36 talentów frakcji z PDF](Import%20talentów%20z%20PDF.md); brak wdrożenia na produkcję.
 
 Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentów](Błędy%20talentów.md).
 
@@ -31,7 +31,7 @@ Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentó
 - [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Doprecyzować przeglądanie dużej liczby talentów (także zbiorcze liczniki i filtrowanie po zapisanych kodach błędów): szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
 - [ ] T-03 Zaprojektować zaznaczanie talentów i działania na zaznaczeniu, także w kontekście grup/podgrup.
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
-- [ ] T-05 Wstawić symbol kosztu do treści mechaniki przez edytor; obecnie istnieje osobna grafika/komponent, ale brak obsługi wstawiania. Importowany talent Zatuszowanie sprawy ma z tego powodu jawny znacznik i błąd.
+- [ ] T-05 Wstawić symbol kosztu do treści mechaniki przez edytor; obecnie istnieje osobna grafika/komponent, ale brak obsługi wstawiania. Importowane talenty Zatuszowanie sprawy, Doraźny wierzchowiec i Prototypowy egzopancerz mają z tego powodu jawny znacznik i błąd.
 - [ ] T-07 Wydzielić archiwum talentów o statusie delete: ukrycie w zwykłej bibliotece, przegląd wycofanych i przywracanie; statusy i historia zmian już działają.
 - [ ] T-06 Wrócić do zgłoszonych poprawek ramki i ikony kosztu. Zachować wariant Oryginalny i Tuszowy oraz możliwość powrotu do wcześniejszych grafik.
 
@@ -44,6 +44,8 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 - [ ] D-03 Ustalić zakres kopiowania ze starego projektu: talenty, grupy, szablony i powiązania. Zachować nadane wcześniej kody wysyłkowe XXXX-XXXX i sprawdzić ich konflikty. Bez automatycznego przenoszenia wszystkich dawnych funkcji/danych.
 - [x] D-04 Pierwszy uzgodniony import: manifest 81 talentów archetypów z PDF, mapowanie podgrup/UUID, próba z wycofaniem i raport błędów. [Wynik i kopia](Import%20talentów%20z%20PDF.md). Kolejne źródła wymagają osobnego zakresu.
 - [x] D-05 Zapisano zatwierdzony zakres PDF: 81 talentów, po 9 w podgrupie, historia Import z PDF i raporty błędów. Dotychczasowe talenty zastąpiono na wyraźne polecenie po kopii bazy. Kolejne importy osobno; stary projekt pozostaje 1:1.
+
+- [x] D-06 Dopisano drugą partię PDF: 36 talentów frakcji, nowa grupa z 4 podgrupami, po 9 talentów, koszty/użycia/formatowanie i historia importu; pominięte strony 10/20/30/40. Poprzednie 82 talenty zachowane. [Raport](Import%20talentów%20z%20PDF.md).
 
 ### 3. Zestawy talentów i arkusze
 
@@ -61,7 +63,7 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 
 - [ ] U-01 Zaprojektować pracę bez logowania oraz Moje postacie/Moje talenty dla zalogowanych, z zakresem własnych zapisów i historii.
 - [ ] U-02 Wdrożyć specjalne uprawnienia WordPressa bez wymagania pełnej roli administratora. Każda chroniona operacja sprawdza prawa na serwerze.
-- [ ] U-03 Wdrożyć zapis danych postaci i powiązania z konkretnymi wersjami talentów/szablonów; zmiana szablonu nie zmienia samoczynnie zapisanej postaci.
+- [ ] U-03 Wdrożyć zapis danych postaci i powiązania z talentami i szablonami; uwzględnić zasadę aktualnego szablonu zamiast zamrażania jego wyglądu.
 - [ ] U-04 Sprawdzić brak dostępu do cudzych danych, działanie PL/EN, interfejs mobilny i współpracę ze stroną WordPressa.
 - [ ] U-05 Przygotować migracje, kopię i procedurę wdrożenia. Produkcja dopiero na wyraźne polecenie użytkownika.
 
