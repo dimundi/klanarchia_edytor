@@ -1327,3 +1327,9 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 ## 2026-11-11 — Ikony bez podpisów na liście
 - Usunięto etykiety przy graficznych oznaczeniach talentu na liście i w wynikach wyszukiwania. Pozostawiono title i aria-label, wartość kosztu oraz oznaczenia tekstowe (nieodnawialny, talent ekskluzywny).
 - Weryfikacja: TS/Vite poprawne. Bez zmian danych i wdrożenia.
+
+## 2026-11-11 — Tło ograniczenia dostępności
+- Nieregularna, asymetryczna górna/lewa krawędź szarego tła; odsunięcie tekstu o dodatkowe 2 pt od prawej. Nadal warstwa nad treścią, przycięta ramką karty.
+
+## 2026-11-11 — Zwykły tekst ograniczenia
+- Ograniczenie dostępności renderowane bez kursywy i pogrubienia, również dla dotychczasowych szablonów. Odświeżony klucz cache kafelków uwzględnia nowe tło i styl. TS/Vite poprawne.
