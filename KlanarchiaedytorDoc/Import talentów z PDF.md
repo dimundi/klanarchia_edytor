@@ -119,3 +119,10 @@ Kopia pełnej bazy i 15 tabel: wtf_www/backups/klanarchia-editor/20261110/before
 Pięć zapisanych source_review_required: strony 1, 6, 8, 9, 12 mają dwa symbole zagrywki, a model pozwala pokazać jeden (zagrywka włączona). Strona 12 ma również dwa pola użyć, których model obecnie nie obsługuje — nie pokazano zastępczej liczby. Faktyczne liczby symboli i pól zachowane w source.symbols historii import_pdf oraz opisane w błędach. Wszystkie 14 tekstów mieści się w aktualnych szablonach.
 
 Kopia SQL i 15 tabel: wtf_www/backups/klanarchia-editor/20261110/before-frozen-blood-import/. Próba rollback, następnie commit z porównaniem wcześniejszych wierszy; poprzednie 424 talenty zachowano, 438 łącznie. Narzędzia, manifest, mapowanie i zrzuty: local-scripts/one-off/frozen-blood-import-20261110/.
+
+
+## 2026-11-11 — Import Talenty_wyzwan.pdf
+- Lokalnie dodano 28 talentów do Splugawieni: Drzewiec 4 (strony 1–4), Wilkołaki 8 (11–18), Technoid 10 (21–30), Koroder 6 (31–36). Pominięto 12 kart wzorcowych. Kolejność w każdej podgrupie 1..N zgodna z PDF.
+- Treści i formatowanie, akcje, zaznaczenie heksa, pojedyncze/podwójne zagrywki, użycia oraz trzy ograniczenia dostępności zachowane. Sześć Darów Ciemności korzysta z odpowiedniego szablonu. Historia import_pdf (Import z PDF), plik/hash/strona/symbole.
+- Cuchnąca żywica: body_overflow; Zarażenie likantropią: brak numeru strony, zachowano s. xxx i notatkę. Statusy dev.
+- Kopia SQL i snapshot: wtf_www/backups/klanarchia-editor/20261111/challenges/. Narzędzia i manifest: wtf_www/local-scripts/one-off/challenges-import-20261111/. Preflight oraz próbny rollback poprawne; import zatwierdzony, odczyt treści/ustawień zgodny, wcześniejsze rekordy wszystkich 15 tabel niezmienione. Bez wdrożenia i zmian starego projektu.

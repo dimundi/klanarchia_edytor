@@ -1315,3 +1315,15 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 - Przyciski frakcji i obu kosztów mają ten sam rozmiar 34 px, kolor, stan aktywny, hover i focus co pozostałe ikony; pola liczbowe dopasowane wysokością.
 - Weryfikacja: TS/Vite oraz PHP lint poprawne; test przeglądarkowy opisany poniżej. Bez wdrożenia.
 - Playwright: niezależne włączenie/wyłączenie Zagrywki 2, identyczny asset obu zagrywek, jednakowa wysokość przycisków kosztów/frakcji/oznaczeń, brak błędów JS. Bez zapisu danych testowych.
+
+
+## 2026-11-11 — Import Talenty_wyzwan.pdf
+- Lokalnie dodano 28 talentów do Splugawieni: Drzewiec 4 (strony 1–4), Wilkołaki 8 (11–18), Technoid 10 (21–30), Koroder 6 (31–36). Pominięto 12 kart wzorcowych. Kolejność w każdej podgrupie 1..N zgodna z PDF.
+- Treści i formatowanie, akcje, zaznaczenie heksa, pojedyncze/podwójne zagrywki, użycia oraz trzy ograniczenia dostępności zachowane. Sześć Darów Ciemności korzysta z odpowiedniego szablonu. Historia import_pdf (Import z PDF), plik/hash/strona/symbole.
+- Cuchnąca żywica: body_overflow; Zarażenie likantropią: brak numeru strony, zachowano s. xxx i notatkę. Statusy dev.
+- Kopia SQL i snapshot: wtf_www/backups/klanarchia-editor/20261111/challenges/. Narzędzia i manifest: wtf_www/local-scripts/one-off/challenges-import-20261111/. Preflight oraz próbny rollback poprawne; import zatwierdzony, odczyt treści/ustawień zgodny, wcześniejsze rekordy wszystkich 15 tabel niezmienione. Bez wdrożenia i zmian starego projektu.
+- Kontrola przez API/Playwright zakończona: wszystkie 28 treści i ustawień zgodne, historia importu, szablony, liczby podgrup i kolejność 1..N poprawne. Podgląd Żelaznej burzy z drugą zagrywką działa, brak błędów JS. Raport liczy trzy sygnały dotyczące dwóch talentów (brak strony ma walidację i notatkę).
+
+## 2026-11-11 — Ikony bez podpisów na liście
+- Usunięto etykiety przy graficznych oznaczeniach talentu na liście i w wynikach wyszukiwania. Pozostawiono title i aria-label, wartość kosztu oraz oznaczenia tekstowe (nieodnawialny, talent ekskluzywny).
+- Weryfikacja: TS/Vite poprawne. Bez zmian danych i wdrożenia.
