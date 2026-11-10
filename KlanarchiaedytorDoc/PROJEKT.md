@@ -137,3 +137,6 @@ Talent wskazuje szablon, zawsze korzysta z jego aktualnych ustawień. Zapis sza
 Notatki redakcyjne są oddzielne od automatycznej walidacji. Można je dodawać, edytować i wyłączać, z poziomem Błąd/Ostrzeżenie/Informacja. Zapis i historia razem z wersją talentu; poziom Błąd wpływa na filtrowanie i zatwierdzanie, wyłączone notatki nie są liczone.
 
 2026-11-10: talenty mają trwałą kolejność w podgrupie, numerowaną 1..N bez luk. Odtworzono kolejność plików źródłowych; zwykły zapis nie zmienia pozycji. Ręczna zmiana w edytorze przesuwa pozostałe elementy.
+
+
+2026-11-11: uzgodniono zakres eksportu zbiorczego: zaznaczanie grup/podgrup/talentów, zapisywane SET-y z obowiązkowym zachowaniem kolejności, hardkodowane układy A4 i naklejek A4 oraz wybór ramki, ID i RGB/CMYK. Zapis konfiguracji eksportu w SET-ach pozostaje propozycją. [Specyfikacja eksportu](Eksport%20talentów.md). Wyłącznie dokumentacja, bez implementacji i tabel.

@@ -1,6 +1,6 @@
 ﻿# TODO i ramowy plan
 
-Stan: 2026-11-10. Jedna lista zadań projektu; szczegóły wymagań pozostają w dokumentach modułów. Kolejność poniżej jest propozycją do dopracowania, bez ustalonych terminów. Uzgodniony kierunek: najpierw narzędzia wewnętrzne do talentów i kart, potem część dla użytkowników.
+Stan: 2026-11-11. Jedna lista zadań projektu; szczegóły wymagań pozostają w dokumentach modułów. Kolejność poniżej jest propozycją do dopracowania, bez ustalonych terminów. Uzgodniony kierunek: najpierw narzędzia wewnętrzne do talentów i kart, potem część dla użytkowników.
 
 ## Już działa lokalnie
 
@@ -29,7 +29,7 @@ Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentó
 
 - [ ] T-01 Działa ekran Narzędzia po wejściu w Talenty, bez automatycznego wyboru grupy, oraz raport identycznych/podobnych nazw. Doprecyzować pozostałe narzędzia i miejsce Utwórz talent; obecne umiejscowienie pozostaje do poprawy.
 - [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Działa osobne narzędzie wyszukiwania po tytule/kodzie i opcjonalnie treści, z filtrami grup/podgrup i paginacją. Doprecyzować pozostałe przeglądanie dużej liczby talentów: zbiorcze liczniki, filtrowanie po statusach/kodach błędów i sortowanie. Nie przywracać Całej biblioteki bez ustalenia jej roli.
-- [ ] T-03 Zaprojektować zaznaczanie talentów i działania na zaznaczeniu, także w kontekście grup/podgrup.
+- [ ] T-03 Wdrożyć checkboxy grup, podgrup i talentów; eksport wymaga zaznaczenia. Ustalenia: [Eksport talentów](Eksport%20talentów.md).
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
 - [x] T-05 Symbol kosztu w mechanice: [ikona-kosztu: koszt], przycisk wstawiania, pojedynczy element składu, lista/kafelki/PDF i walidacja. Odświeżono raporty trzech importowanych talentów bez zmiany treści.
 - [ ] T-07 Wydzielić archiwum talentów o statusie delete: ukrycie w zwykłej bibliotece, przegląd wycofanych i przywracanie; statusy i historia zmian już działają.
@@ -57,9 +57,9 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 
 ### 3. Zestawy talentów i arkusze
 
-- [ ] A-01 Ustalić cechy arkusza poza samą listą talentów oraz przebieg wyboru i układania kart.
+- [ ] A-01 Wdrożyć zapis/otwieranie SET-ów z bezwzględnym zachowaniem kolejności talentów. Doprecyzować ustalanie i edycję kolejności oraz opcjonalne zapisywanie konfiguracji eksportu. [Specyfikacja](Eksport%20talentów.md).
 - [ ] A-02 Dopiero na tym etapie zaprojektować i utworzyć tabele zestawów/arkuszy.
-- [ ] A-03 Wdrożyć podgląd i eksport wielu kart, łączenie ramek bez odstępów oraz kontrolę formatu i przepełnień.
+- [ ] A-03 Wdrożyć podgląd i eksport zaznaczenia/SET-u: hardkodowane układy A4 oraz A4 na naklejki, opcje ramki, ID i RGB/CMYK. Zachować kolejność SET-u; ustalić geometrię arkuszy i obsługę CMYK. Uwzględnić łączenie ramek bez odstępów i kontrolę przepełnień.
 
 ### 4. Szablony kart postaci
 

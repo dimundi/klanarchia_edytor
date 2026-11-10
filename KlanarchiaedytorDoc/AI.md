@@ -1333,3 +1333,25 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 ## 2026-11-11 — Zwykły tekst ograniczenia
 - Ograniczenie dostępności renderowane bez kursywy i pogrubienia, również dla dotychczasowych szablonów. Odświeżony klucz cache kafelków uwzględnia nowe tło i styl. TS/Vite poprawne.
+
+## 2026-11-11 — Ustalenia eksportu i SET-ów
+- Utworzono Eksport talentów.md: zatwierdzony zakres, kluczowa kolejność SET-u, dwa układy arkuszy, opcje eksportu oraz oddzielnie kwestie otwarte. Zaktualizowano odnośnik PROJEKT i zadania T-03/A-01/A-03 w jedynym TODO.
+- Wyłącznie dokumentacja; bez kodu, migracji i testów aplikacji. Sprawdzono spójność wymagań i diff dokumentacji.
+
+## 2026-11-11 — Przyciski zaznaczania i eksportu
+- Nad zawartością biblioteki dodano Tryb zaznaczania (aria-pressed) i zawsze aktywny Eksportuj. Tryb pokazuje istniejące checkboxy grup/podgrup i licznik; wyłączenie nie kasuje zaznaczenia.
+- Eksportuj pokazuje na razie informację o przygotowywanym panelu zaznaczenia/SET-ów. Checkboxy talentów, drzewo talentów i właściwy eksport pozostają kolejnym etapem.
+- TS/Vite poprawne; bez zmian bazy.
+
+## 2026-11-11 — Zwarty nagłówek biblioteki
+- Lista/Kafelki z ikonami przed ścieżką grupy/podgrupy i licznikiem w nawiasie, wspólny wiersz. Usunięto powtórzony tytuł sekcji dla widoku pojedynczej podgrupy; sekcje pozostają przy całej grupie. TS/Vite poprawne.
+
+## 2026-11-11 — Menu działań biblioteki
+- Tryb zaznaczania i Eksportuj przeniesione do hamburgera na prawym końcu wspólnego nagłówka, obok dodawania podgrupy/talentu. Dostępne także na ekranie narzędzi. Menu zamykane wyborem, kliknięciem poza i Escape; eksport niezależny od zaznaczania.
+
+## 2026-11-11 — Dodawanie podgrupy przy grupach
+- Przycisk + Podgrupa obok + Grupa w lewym panelu, widoczny po wybraniu grupy lub podgrupy. Przy wybranej podgrupie tworzy jej rodzeństwo w grupie nadrzędnej. Usunięto przycisk z nagłówka zawartości.
+- Weryfikacja: TS/Vite poprawne; bez zmian danych.
+
+## 2026-11-11 — Krótszy nagłówek
+- Nagłówek lewego panelu Grupy talentów skrócony do Talenty (EN: Talents). TS/Vite poprawne.
