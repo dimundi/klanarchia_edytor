@@ -1,18 +1,19 @@
-export const CARD_TEXT_ENGINE_VERSION=1; // Keep in sync with the validation API.
+import { INLINE_COST_WIDTH_EM } from './inline-talent-icons';
+export const CARD_TEXT_ENGINE_VERSION=2; // Keep in sync with the validation API.
 ﻿import type { Font, Glyph } from 'opentype.js';
 import type { CardFonts } from './card-fonts';
 import { hyphenPoints } from './hyphenation';
 export type RunStyle={font:string;fontSize:number;lineHeight:number;letterSpacing:number;color:string;bold:boolean;italic:boolean;smallCaps?:boolean;background?:string;underline?:boolean};
-export type TextRun={text:string;style:RunStyle};
-export type Atom={char:string;glyph:Glyph;font:Font;size:number;style:RunStyle};
+export type TextRun={icon?:'cost';text:string;style:RunStyle};
+export type Atom={icon?:'cost';char:string;glyph:Glyph;font:Font;size:number;style:RunStyle};
 export type FixedLine={atoms:Atom[];width:number;height:number;baseline:number;top:number;text:string};
 export type FixedLayout={lines:FixedLine[];width:number;height:number;overflow:boolean};
-function advance(atom:Atom){return (atom.glyph.advanceWidth??0)*atom.size/atom.font.unitsPerEm+atom.style.letterSpacing;}
-export function atomPositions(atoms:Atom[]){let x=0;let previous:Atom|undefined;return atoms.map(atom=>{if(previous&&previous.font===atom.font&&previous.size===atom.size)x+=atom.font.getKerningValue(previous.glyph,atom.glyph)*atom.size/atom.font.unitsPerEm;const left=x;x+=advance(atom);previous=atom;return {atom,x:left,advance:advance(atom),right:x};});}
+function advance(atom:Atom){return atom.icon?atom.size*INLINE_COST_WIDTH_EM:(atom.glyph.advanceWidth??0)*atom.size/atom.font.unitsPerEm+atom.style.letterSpacing;}
+export function atomPositions(atoms:Atom[]){let x=0;let previous:Atom|undefined;return atoms.map(atom=>{if(previous&&!previous.icon&&!atom.icon&&previous.font===atom.font&&previous.size===atom.size)x+=atom.font.getKerningValue(previous.glyph,atom.glyph)*atom.size/atom.font.unitsPerEm;const left=x;x+=advance(atom);previous=atom;return {atom,x:left,advance:advance(atom),right:x};});}
 function width(atoms:Atom[]){return atomPositions(atoms).at(-1)?.right??0;}
 export function layoutCardText(runs:TextRun[],fonts:CardFonts,box:{width:number;height:number},language:'pl'|'en',hyphenate=true):FixedLayout{
  const atoms:Atom[]=[];
- for(const run of runs){if(run.style.font!=='libertine')throw new Error('Unsupported font: '+run.style.font);const font=fonts[run.style.bold?(run.style.italic?'boldItalic':'bold'):(run.style.italic?'italic':'regular')];for(const c of Array.from(run.text.normalize('NFC').replaceAll('\r\n','\n').replaceAll('\r','\n'))){if(c==='\u00ad')continue;const small=run.style.smallCaps&&c.toUpperCase()!==c;const char=small?c.toUpperCase():c;const glyph=font.charToGlyph(char==='\n'||char==='\t'?' ':char);if(!['\n','\t',' '].includes(char)&&glyph.index===0)throw new Error('Missing glyph: '+c);atoms.push({char:c,glyph,font,size:run.style.fontSize*(small?.8:1),style:run.style});}}
+ for(const run of runs){if(run.style.font!=='libertine')throw new Error('Unsupported font: '+run.style.font);const font=fonts[run.style.bold?(run.style.italic?'boldItalic':'bold'):(run.style.italic?'italic':'regular')];if(run.icon){atoms.push({icon:run.icon,char:'\uFFFC',glyph:font.charToGlyph(' '),font,size:run.style.fontSize,style:run.style});continue;}for(const c of Array.from(run.text.normalize('NFC').replaceAll('\r\n','\n').replaceAll('\r','\n'))){if(c==='\u00ad')continue;const small=run.style.smallCaps&&c.toUpperCase()!==c;const char=small?c.toUpperCase():c;const glyph=font.charToGlyph(char==='\n'||char==='\t'?' ':char);if(!['\n','\t',' '].includes(char)&&glyph.index===0)throw new Error('Missing glyph: '+c);atoms.push({char:c,glyph,font,size:run.style.fontSize*(small?.8:1),style:run.style});}}
  const tokens:Atom[][]=[];let token:Atom[]=[];let type='';for(const atom of atoms){const next=atom.char==='\n'?'newline':/[ \t]/.test(atom.char)?'space':'word';if(next!==type||next==='newline'){if(token.length)tokens.push(token);token=[];type=next;}token.push(atom);}if(token.length)tokens.push(token);
  const lines:FixedLine[]=[];let line:Atom[]=[],spaces:Atom[]=[],y=0;
  const base=runs[0]?.style;

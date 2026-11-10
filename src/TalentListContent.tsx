@@ -18,7 +18,7 @@ export default function TalentListContent({item,language,annotations,colours}:{i
  const pl=language==='pl',c=item.content;
  return <div className="ke-talent-list-content">
   {c.flavor&&<p className="ke-talent-list-flavor">{polishSpacing(c.flavor)}</p>}
-  {c.mechanics&&<p className="ke-talent-list-mechanics"><FormattedTalentText text={polishSpacing(c.mechanics)} annotations={annotations} colours={colours}/></p>}
+  {c.mechanics&&<p className="ke-talent-list-mechanics"><FormattedTalentText graphicVariant={item.template.template.graphicVariant} text={polishSpacing(c.mechanics)} annotations={annotations} colours={colours}/></p>}
   {c.restriction&&<p className="ke-talent-list-restriction"><strong>{pl?'Dostępność:':'Availability:'}</strong> {polishSpacing(c.restriction)}</p>}
  </div>;
 }

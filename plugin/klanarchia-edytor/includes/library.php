@@ -62,6 +62,19 @@ function ke_category_create($name,$parent,$language) {
  ke_db_query('COMMIT');return ['id'=>$uuid,'parentId'=>$parent,'name'=>$name];
 }
 function ke_categories_post($r) { $b=$r->get_json_params();return ke_category_create($b['name']??null,$b['parentId']??null,ke_api_language($r)); }
+function ke_category_rename($r){
+ global $wpdb;if(get_option('ke_library_schema_version')!=='1')throw new KE_Request_Error('Run library migration first',503);
+ $uuid=ke_uuid($r['uuid']);$body=$r->get_json_params();$name=$body['name']??null;$expected=$body['expectedName']??null;$lang=ke_api_language($r);
+ ke_require_value(is_string($name)&&is_string($expected)&&mb_strlen($name)<=120&&mb_strlen($expected)<=120&&!preg_match('/[\x00-\x1f]/',$name),'Invalid category name');$name=preg_replace('/^[\p{Z}\s]+|[\p{Z}\s]+$/u','',$name);ke_require_value($name!=='','Name is required');
+ ke_db_query('START TRANSACTION');$wpdb->get_var('SELECT id FROM '.ke_table('catalogue_state').' WHERE id=1 FOR UPDATE');
+ $row=$wpdb->get_row($wpdb->prepare('SELECT c.id,c.parent_id,p.uuid AS parent_uuid,COALESCE(x.name,pl.name) AS name FROM '.ke_table('talent_categories').' c LEFT JOIN '.ke_table('talent_categories').' p ON p.id=c.parent_id LEFT JOIN '.ke_table('talent_category_texts').' x ON x.category_id=c.id AND x.language=%s LEFT JOIN '.ke_table('talent_category_texts')." pl ON pl.category_id=c.id AND pl.language='pl' WHERE c.uuid=%s AND c.archived_at IS NULL",$lang,$uuid),ARRAY_A);if(!$row)throw new KE_Request_Error('Category not found',404);
+ if($row['name']!==$expected)throw new KE_Request_Error('Category changed; reload before renaming',409);
+ $siblings=$wpdb->get_results($wpdb->prepare('SELECT c.id,c.parent_id,COALESCE(x.name,pl.name) AS name FROM '.ke_table('talent_categories').' c LEFT JOIN '.ke_table('talent_category_texts').' x ON x.category_id=c.id AND x.language=%s LEFT JOIN '.ke_table('talent_category_texts')." pl ON pl.category_id=c.id AND pl.language='pl' WHERE c.archived_at IS NULL AND c.id<>%d",$lang,$row['id']),ARRAY_A);
+ foreach($siblings as$sibling)if($sibling['parent_id']===$row['parent_id']&&mb_strtolower($sibling['name']??'')===mb_strtolower($name))throw new KE_Request_Error('A group with this name already exists',409);
+ if($wpdb->get_var($wpdb->prepare('SELECT category_id FROM '.ke_table('talent_category_texts').' WHERE category_id=%d AND language=%s',$row['id'],$lang)))ke_db_write('update','talent_category_texts',['name'=>$name],['category_id'=>(int)$row['id'],'language'=>$lang]);else ke_db_write('insert','talent_category_texts',['category_id'=>(int)$row['id'],'language'=>$lang,'name'=>$name]);
+ ke_db_query('COMMIT');return ['id'=>$uuid,'parentId'=>$row['parent_uuid'],'name'=>$name];
+}
+add_action('rest_api_init',function(){register_rest_route('klanarchia-editor/v1','/talent-categories/(?P<uuid>[a-fA-F0-9-]{36})',['methods'=>'PUT','permission_callback'=>'ke_can_access','callback'=>function($r){return ke_api_run('ke_category_rename',$r);}]);});
 function ke_category_delete($r){
  global $wpdb;
  if(get_option('ke_library_schema_version')!=='1')throw new KE_Request_Error('Run library migration first',503);

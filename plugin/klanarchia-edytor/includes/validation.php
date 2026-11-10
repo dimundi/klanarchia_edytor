@@ -22,7 +22,7 @@ function ke_validate_catalogue($v) {
   ke_require_value(is_array($a));
   $id = ke_uuid($a['id'] ?? null); ke_require_value(!isset($ids[$id])); $ids[$id] = true;
   $name = ke_text($a['name'] ?? null,80); $key = mb_strtolower($name); ke_require_value(!isset($names[$key]),'Duplicate name'); $names[$key] = true;
-  $tag = $a['tag'] ?? null; ke_require_value(is_string($tag) && preg_match('/^(?:[a-z][a-z0-9_-]{0,39}|\*{1,2})$/D',$tag) && !isset($tags[$tag]),'Invalid or duplicate tag'); $tags[$tag] = true;
+  $tag = $a['tag'] ?? null; ke_require_value(is_string($tag) && $tag!=='ikona-kosztu' && preg_match('/^(?:[a-z][a-z0-9_-]{0,39}|\*{1,2})$/D',$tag) && !isset($tags[$tag]),'Invalid or duplicate tag'); $tags[$tag] = true;
   foreach (['colourId','backgroundId'] as $key) ke_require_value(isset($a[$key]) && is_string($a[$key]) && ($a[$key] === '' || in_array($a[$key],$colour_ids,true)),'Unknown colour');
   $weight = $a['weight'] ?? null; ke_require_value(in_array($weight,[400,600,700],true));
   $annotations[] = ['id'=>$id,'name'=>$name,'tag'=>$tag,'colourId'=>$a['colourId'],'backgroundId'=>$a['backgroundId'],'weight'=>$weight,'bold'=>$weight === 700,'italic'=>ke_bool($a['italic'] ?? null),'underline'=>ke_bool($a['underline'] ?? null),'smallCaps'=>ke_bool($a['smallCaps'] ?? null)];

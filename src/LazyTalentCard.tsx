@@ -1,3 +1,4 @@
+import { CARD_TEXT_ENGINE_VERSION } from './card-text-engine';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import TemplateThumbnail from './TemplateThumbnail';
 import { talentPreviewTemplate } from './talent-preview';
@@ -8,7 +9,7 @@ type Palette={revision:number|null;error:boolean;colours:Colour[];annotations:An
 export default function LazyTalentCard({item,language,palette,onOpen,disabled}:{item:TalentListItem;language:'pl'|'en';palette:Palette;onOpen:()=>void;disabled:boolean}){
  const host=useRef<HTMLButtonElement>(null),[near,setNear]=useState(false),[image,setImage]=useState<{key:string;url:string}|null>(null),[failed,setFailed]=useState(false);
  const ready=palette.revision!==null&&!palette.error;
- const key=['no-card-id-1',item.id,item.revision,item.template.id,item.template.revision,palette.revision,language].join(':');
+ const key=['no-card-id-1','inline-cost-1',CARD_TEXT_ENGINE_VERSION,item.id,item.revision,item.template.id,item.template.revision,palette.revision,language].join(':');
  const template=useMemo(()=>talentPreviewTemplate(item.template.template,item.settings,item.content),[item]);
  useEffect(()=>{const element=host.current;if(!element)return;const observer=new IntersectionObserver(entries=>{for(const entry of entries)setNear(entry.isIntersecting);},{rootMargin:'300px'});observer.observe(element);return()=>observer.disconnect();},[]);
  useEffect(()=>{

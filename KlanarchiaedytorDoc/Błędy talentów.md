@@ -48,3 +48,5 @@ page_reference_missing: zachowane odniesienie (s. xxx) wymaga numeru; ponownie w
 Po pierwszym zapisie nowego talentu kod powstaje dopiero na serwerze. Diagnostyka kontroluje wyrenderowane pole także po tej odpowiedzi i może dopisać raport bez tworzenia kolejnej wersji treści.
 
 Zmiana aktualnego szablonu unieważnia poprzedni raport także bez zmiany treści talentu. Żądanie kontroli przekazuje templateId/templateRevision jako znacznik sprawdzonego podglądu; serwer odrzuca nieaktualny układ 409. To metadane diagnostyki, nie przypięcie talentu do wersji szablonu.
+
+[ikona-kosztu: koszt] jest obsługiwanym wbudowanym symbolem i nie powoduje unknown_annotation. Nieznana zawartość, np. [ikona-kosztu: złoto], nadal zgłasza błąd. Nazwa ikona-kosztu jest zarezerwowana i nie może zostać zajęta przez styl użytkownika.

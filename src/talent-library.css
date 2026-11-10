@@ -89,3 +89,15 @@
 #klanarchia-editor .ke-tile-info-errors {display:inline-flex;align-items:center;gap:4px;margin-left:auto;opacity:.5;}
 #klanarchia-editor .ke-tile-info-errors.has-errors {opacity:1;color:#e4a677;}
 #klanarchia-editor .ke-library .ke-tile-status-toggle[aria-pressed=true] {background:#c3a65e18;border-color:#c3a65e;}
+
+#klanarchia-editor .ke-library button.ke-category-rename,#klanarchia-editor .ke-talent-navigator button.ke-category-rename {display:inline-flex;align-items:center;justify-content:center;width:24px;height:26px;flex:0 0 24px;min-width:0;padding:3px;border:0;background:transparent;color:#cbb47a;opacity:.65;}
+#klanarchia-editor .ke-library button.ke-category-rename:hover,#klanarchia-editor .ke-talent-navigator button.ke-category-rename:hover {opacity:1;background:#c3a65e16;}
+#klanarchia-editor .ke-category-rename-dialog {box-sizing:border-box;width:min(400px,calc(100vw - 32px));padding:22px;background:#252920;color:#e7dfcb;border:1px solid #a58b4c88;border-radius:5px;box-shadow:0 16px 70px #0008;}
+#klanarchia-editor .ke-category-rename-dialog::backdrop {background:#0009;}
+#klanarchia-editor .ke-category-rename-dialog h3 {margin:0 0 16px;font-size:22px;}
+#klanarchia-editor .ke-category-rename-dialog label {display:grid;gap:8px;font-size:14px;}
+#klanarchia-editor .ke-category-rename-dialog input {width:100%;box-sizing:border-box;background:#171b16;color:#e7dfcb;border:1px solid #a58b4c66;border-radius:4px;padding:9px;font:inherit;}
+#klanarchia-editor .ke-category-rename-dialog form>div {display:flex;justify-content:flex-end;gap:10px;margin-top:18px;}
+#klanarchia-editor .ke-category-rename-dialog form>div button {width:auto;flex:none;padding:7px 12px;border:1px solid #a58b4c66;border-radius:4px;}
+#klanarchia-editor .ke-category-rename-dialog button:disabled {opacity:.4;cursor:default;}
+#klanarchia-editor .ke-category-rename-dialog [role=alert] {font-size:13px;color:#e4a677;}

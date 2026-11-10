@@ -1,7 +1,7 @@
 export type Colour = { id: string; name: string; value: string; cmyk: [number, number, number, number] | null };
 export type Annotation = { id: string; name: string; tag: string; colourId: string; backgroundId: string; weight: 400 | 600 | 700; smallCaps: boolean; bold: boolean; italic: boolean; underline: boolean };
 export type Catalogue = { version: 2; colours: Colour[]; annotations: Annotation[] };
-export const validTag = (tag: string) => /^(?:[a-z][a-z0-9_-]{0,39}|\*{1,2})$/.test(tag);
+export const validTag = (tag: string) => tag!=='ikona-kosztu' && /^(?:[a-z][a-z0-9_-]{0,39}|\*{1,2})$/.test(tag);
 export const notation = (tag: string, text: string) => tag === '*' || tag === '**' ? `${tag}${text}${tag}` : `[${tag}: ${text}]`;
 export function approximateCmyk(hex: string): [number, number, number, number] {
  const rgb = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255), k = 1 - Math.max(...rgb);

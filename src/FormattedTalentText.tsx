@@ -1,13 +1,17 @@
+import { InlineCostIcon } from './CostIcon';
+import type { GraphicVariantId } from './graphic-variants';
 import { CSSProperties, ReactNode } from 'react';
 import { Annotation, Colour } from './styles-colors-model';
 import { canonicalColourId } from './palette';
-export type TextFragment = string | { tag: string; children: TextFragment[] };
+export type TextFragment = string | {icon:'cost'} | { tag: string; children: TextFragment[] };
 // Markup is text data, never HTML. Unclosed or unknown markers stay visible.
 export function parseTalentText(text: string, tags: Set<string>, depth = 0): TextFragment[] {
  if (depth >= 20) return [text];
+ text=text.replace(/(\d)[ \t]+(?=\[ikona-kosztu:[ \t]*koszt[ \t]*\])/g,'$1\u00a0');
  const result: TextFragment[] = []; let plain = '', i = 0;
  const flush = () => { if (plain) { result.push(plain); plain = ''; } };
  while (i < text.length) {
+  const icon=text[i]==='['?/^\[ikona-kosztu:[ \t]*koszt[ \t]*\]/.exec(text.slice(i)):null;if(icon){flush();result.push({icon:'cost'});i+=icon[0].length;continue;}
   const named = text[i] === '[' ? /^\[([a-z][a-z0-9_-]*):[ \t]?/.exec(text.slice(i)) : null;
   const tag = named?.[1] || (text.startsWith('***', i) ? '***' : text.startsWith('**', i) ? '**' : text[i] === '*' ? '*' : '');
   const allowed = tag === '***' ? tags.has('*') && tags.has('**') : tags.has(tag);
@@ -29,10 +33,11 @@ export function parseTalentText(text: string, tags: Set<string>, depth = 0): Tex
 }
 export function annotationStyle(a:Annotation,colours:Colour[]):CSSProperties {return { fontWeight:a.tag==='*'&&a.weight===400?undefined:a.weight, fontStyle:a.tag==='**'&&!a.italic?undefined:a.italic?'italic':'normal', fontVariant:a.smallCaps?'small-caps':'normal', textDecoration:a.underline?'underline':undefined, color:colours.find(c=>c.id===canonicalColourId(a.colourId))?.value, backgroundColor:colours.find(c=>c.id===canonicalColourId(a.backgroundId))?.value };}
 export function annotationUiStyle(a:Annotation,colours:Colour[]):CSSProperties {return {...annotationStyle(a,colours),...(a.tag==='aspekt'?{color:'#202420'}:{})};}
-export default function FormattedTalentText({ text, annotations, colours }: { text: string; annotations: Annotation[]; colours: Colour[] }) {
+export default function FormattedTalentText({ text, annotations, colours, graphicVariant='ink' }: {graphicVariant?:GraphicVariantId; text: string; annotations: Annotation[]; colours: Colour[] }) {
  const tags = new Map(annotations.map(a => [a.tag, a]));
  function render(nodes: TextFragment[]): ReactNode { return nodes.map((node, index) => {
   if (typeof node === 'string') return node;
+  if('icon'in node)return <InlineCostIcon key={index} variant={graphicVariant}/>;
   const a = tags.get(node.tag)!;
   const style = annotationUiStyle(a,colours);
   return <span key={index} data-annotation={node.tag} style={style}>{render(node.children)}</span>;

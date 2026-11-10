@@ -1,6 +1,6 @@
 <?php
 if(!defined('ABSPATH'))exit;
-const KE_CARD_TEXT_ENGINE_VERSION=1; // Keep in sync with CARD_TEXT_ENGINE_VERSION in card-text-engine.ts.
+const KE_CARD_TEXT_ENGINE_VERSION=2; // Keep in sync with CARD_TEXT_ENGINE_VERSION in card-text-engine.ts.
 function ke_checks_ready(){return get_option('ke_talent_checks_schema_version')==='2';}
 function ke_migrate_talent_checks(){
  global $wpdb;if(ke_checks_ready())return;if(get_option('ke_talent_checks_schema_version')==='1'){ke_migrate_live_talent_templates();return;}ke_talents_ready();require_once ABSPATH.'wp-admin/includes/upgrade.php';$charset=$wpdb->get_charset_collate();
@@ -28,7 +28,8 @@ function ke_store_talent_check($version,$language,$content,$report){
  $review=$source?(json_decode($source,true)['sourceReview']??null):null;
  if($review&&hash_equals($review['mechanicsSha256'],hash('sha256',$content['mechanics'])))$issues['source_review_required']=['code'=>'source_review_required','details'=>['notes'=>$review['notes']]];
  if(!preg_match('/[^\p{Z}\s]/u',$content['title']))$issues['missing_title']=['code'=>'missing_title','details'=>[]];
- preg_match_all('/\[([a-z][a-z0-9_-]*):[^\]]*\]/',$content['mechanics'],$matches);$tags=$wpdb->get_col('SELECT tag FROM '.ke_table('text_annotations').' WHERE archived_at IS NULL');$unknown=array_values(array_unique(array_diff($matches[1],$tags)));if($unknown)$issues['unknown_annotation']=['code'=>'unknown_annotation','details'=>['tags'=>$unknown]];
+ $semantic=preg_replace('/\[ikona-kosztu:[ \t]*koszt[ \t]*\]/u','',$content['mechanics']);
+ preg_match_all('/\[([a-z][a-z0-9_-]*):[^\]]*\]/',$semantic,$matches);$tags=$wpdb->get_col('SELECT tag FROM '.ke_table('text_annotations').' WHERE archived_at IS NULL');$unknown=array_values(array_unique(array_diff($matches[1],$tags)));if($unknown)$issues['unknown_annotation']=['code'=>'unknown_annotation','details'=>['tags'=>$unknown]];
  ke_db_write('insert','talent_checks',['talent_version_id'=>$version,'template_version_id'=>(int)$stamp['current_version_id'],'language'=>$language,'complete'=>(int)$complete,'engine_version'=>$engine,'catalogue_revision'=>$catalogue,'checked_at'=>current_time('mysql',true),'checked_by'=>get_current_user_id()]);$check=(int)$wpdb->insert_id;
  foreach($issues as $issue)ke_db_write('insert','talent_issues',['check_id'=>$check,'code'=>$issue['code'],'details'=>wp_json_encode($issue['details'],JSON_UNESCAPED_UNICODE)]);
 }

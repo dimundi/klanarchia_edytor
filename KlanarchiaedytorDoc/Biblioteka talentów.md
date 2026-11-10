@@ -65,3 +65,9 @@ Obok tytułu klikalna ścieżka Grupa / Podgrupa. Otwiera okno z wyborem grupy,
 Grupy w lewej kolumnie biblioteki są domyślnie zwinięte przy pierwszym wczytaniu. Ręczne rozwinięcie pozostaje po odświeżeniu danych i powrocie z edycji. W widoku Kafelki przełącznik Pokaż/Ukryj statusy odsłania pod kartą zwarty pasek: bazowy kod talentu (pełne oznaczenie wersji w podpowiedzi), kolor i nazwę statusu oraz symbol błędu z liczbą. Przy zerze symbol jest przygaszony, przy błędach wyróżniony i ma podpowiedź z komunikatami. Domyślnie paski ukryte; przełącznik nie występuje w Liście. Wybór pozostaje w bieżącej sesji podczas powrotu z edytora.
 
 Identyfikator na samej grafice talentu jest zawsze ukryty w bibliotece i podglądzie edytora. Przy PDF opcja ID w PDF jest domyślnie wyłączona; zaznaczenie dodaje zapisane oznaczenie talentu do pliku w miejscu określonym przez szablon. Nie zmienia podglądu, treści ani ustawień szablonu. Dla niezapisanego szkicu/zmian opcja niedostępna, aby nie oznaczyć roboczej treści dawnym kodem. ID w pasku statusów oraz metadanych listy pozostaje.
+
+W pasku formatowania Mechaniki przycisk monet wstawia [ikona-kosztu: koszt] w miejscu kursora (lub zastępuje zaznaczenie). W tekście pola pozostaje znacznik, w liście/podglądzie/kafelku/PDF renderowany jest sam symbol. W Tytule i Fabule nie ma tego narzędzia.
+
+Docelowe miejsce promocyjnych talentów dla wspierających: promki → Zbiórka - Dary Ciemności. Grupa i podgrupa utworzone lokalnie; import osobnym krokiem, z zachowaniem dotychczasowych kodów.
+
+- Nazwę grupy lub podgrupy zmieniamy ołówkiem przy jej nazwie w bibliotece albo nawigacji edytora. Zapis dotyczy bieżącego języka i zachowuje przypisania talentów. Nazwy rodzeństwa muszą być unikalne.

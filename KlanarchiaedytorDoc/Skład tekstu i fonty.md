@@ -33,3 +33,9 @@ Przyciski PDF w edytorze talentu i kreatorze szablonu pobierają gotowy plik .
 Generator jsPDF + svg2pdf.js (przypięte wersje w package-lock.json, licencje MIT w public/licenses), ładowany dopiero przy eksporcie. Jedna strona A4, karta w skali 1:1, 10 mm od góry i lewej. Treść i większość grafiki pozostają wektorowe; grafiki z maską alfa są spłaszczane do przezroczystego PNG 600 dpi, ponieważ konwerter nie obsługuje tych masek. Litery pozostają dokładnymi krzywymi z podglądu. Obrysy zaznaczenia i narzędzia kreatora nie trafiają do pliku. Eksport nie zapisuje talentu ani szablonu.
 
 Sprawdzono rzeczywiste pobrania z obu przycisków, brak window.print/window.open i błędów JS. Niezależny odczyt PDF potwierdził poprawną jedną stronę A4 i krzywe wektorowe. Wyrenderowano i obejrzano oba pliki, łącznie z ikonami i ograniczeniem dostępności.
+
+## Symbol kosztu w mechanice
+
+[ikona-kosztu: koszt] jest wbudowanym znacznikiem grafiki, nie stylem oznaczenia. Parser zamienia go na pojedynczy element składu o szerokości 1,05 em i wysokości 1 em, z kolorem i wielkością otaczającego tekstu oraz grafiką kosztu z wariantu szablonu. Symbol nie dzieli się między wiersze, nie stosujemy do niego kerningu; liczba przed symbolem jest z nim łączona spacją nierozdzielającą wyłącznie podczas renderowania. Treść źródłowa pozostaje bez zmian.
+
+Działa w zagnieżdżonych formatowaniach, w liście HTML, podglądzie SVG, buforowanych kafelkach i PDF (dotychczasowe spłaszczanie masek SVG). Niepoprawna zawartość znacznika pozostaje widoczna i daje unknown_annotation. Silnik i API mają wspólny numer 2, wcześniejsze raporty układu wymagają ponownej kontroli; pamięć kart uwzględnia numer silnika.

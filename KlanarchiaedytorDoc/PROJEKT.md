@@ -129,3 +129,7 @@ Biblioteka ma widoki Lista / Kafelki, domyślnie Lista, w sekcjach według podg
 ## Aktualizacja szablonów — obowiązująca zasada
 
 Talent wskazuje szablon, zawsze korzysta z jego aktualnych ustawień. Zapis szablonu aktualizuje wygląd wszystkich powiązanych talentów w podglądach, kafelkach i PDF; bez tworzenia nowych wersji treści talentów. Jeśli potrzebujemy innego lub zachowanego wyglądu, tworzymy nowy szablon. Historyczne dokumenty szablonu pozostają wyłącznie do audytu i kontroli zmian, bez wyboru ich wersji w edytorze talentu.
+
+2026-11-10: utworzono osobny szablon Dary Ciemności jako kopię aktualnego pierwszego szablonu. Geometria, ramka i typografia zachowane; wszystkie ikony, cyfra kosztu i oznaczenie nieodnawialny ustawione na Czarny ze wspólnej palety. Przed przyszłym importem Darów dla wspierających obowiązuje zachowanie ich dotychczasowych kodów bez zmiany. Import jeszcze niewykonany.
+
+2026-11-10: [przeniesiono 228 promocyjnych Darów Ciemności](Import%20Darów%20Ciemności.md) ze starej biblioteki do promki → Zbiórka - Dary Ciemności. Wszystkie korzystają z szablonu Dary Ciemności, wszystkie źródłowe kody zachowano 1:1. 118 wcześniejszych talentów bez zmian, 346 łącznie; bez modyfikacji starego projektu.

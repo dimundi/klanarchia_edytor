@@ -1,3 +1,4 @@
+import { stripInlineTalentIcons } from './inline-talent-icons';
 import { CARD_TEXT_ENGINE_VERSION } from './card-text-engine';
 ﻿export type TalentIssue={code:string;details?:{tags?:string[];notes?:string[]}};
 export type TalentValidation={templateId?:string;templateRevision?:number;status:'unchecked'|'checked'|'stale';issues:TalentIssue[];errorCount:number;checkedAt?:string;engineVersion?:number;catalogueRevision?:number};
@@ -10,7 +11,7 @@ export function collectTalentValidation(root:HTMLElement|null,title:string,mecha
  const issues:TalentIssue[]=[];
  if(/(?<![\p{L}\p{N}_])s\.\s*(?:x{2,}|[?…]+)(?![\p{L}\p{N}_])/iu.test(mechanics))issues.push({code:'page_reference_missing'});
  if(!title.trim())issues.push({code:'missing_title'});
- if(catalogueRevision!==null&&!paletteError){const unknown=[...new Set([...mechanics.matchAll(/\[([a-z][a-z0-9_-]*):[^\]]*\]/g)].map(m=>m[1]).filter(tag=>!tags.includes(tag)))];if(unknown.length)issues.push({code:'unknown_annotation',details:{tags:unknown}});}
+ if(catalogueRevision!==null&&!paletteError){const unknown=[...new Set([...stripInlineTalentIcons(mechanics).matchAll(/\[([a-z][a-z0-9_-]*):[^\]]*\]/g)].map(m=>m[1]).filter(tag=>!tags.includes(tag)))];if(unknown.length)issues.push({code:'unknown_annotation',details:{tags:unknown}});}
  if(root){for(const [field,code]of [['body','body_overflow'],['restriction','restriction_overflow'],['nonRenewable','nonrenewable_overflow'],['version','version_overflow']])if(root.querySelector(`[data-fixed-text="${field}"][data-text-overflow=true]`)&&!root.querySelector(`[data-fixed-text="${field}"][data-text-overflow=true]`)?.closest('[data-export-version][display=none]'))issues.push({code});if(root.querySelector('[data-text-status=error]'))issues.push({code:'text_layout_error'});}
  return {complete:!!root?.querySelector('svg')&&!root.querySelector('[data-text-status=loading]')&&catalogueRevision!==null&&!paletteError,engineVersion:CARD_TEXT_ENGINE_VERSION,catalogueRevision:catalogueRevision??0,issues};
 }

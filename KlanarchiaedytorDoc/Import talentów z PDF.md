@@ -41,3 +41,7 @@ Cztery talenty z błędami:
 Pełna kopia i migawka 15 tabel w wtf_www/backups/klanarchia-editor/20261110/before-factions-import/. Narzędzia, PDF, manifest, arkusze wszystkich stron, raport i mapa kodów: wtf_www/local-scripts/one-off/talent-factions-import-20261110/. Próba w transakcji wycofana przed właściwym dopisaniem; ochrona SHA-256 przed powtórzeniem oraz porównanie wszystkich istniejących wierszy. Audyt potwierdził zachowanie 82 wcześniejszych talentów i powiązań, 118 łącznie po imporcie.
 
 Sprawdzono API wszystkich 36 rekordów: treść, ustawienia, koszty, status, rewizja i kolejność. UI dla stron 1/4/8/9/14/19/29/36: podgląd, zero kosztu, heks, akcja, formatowania, błędy i historia; brak błędów JS. Trwałość i usuwanie błędów numeracji po korekcie sprawdzone w wycofanej transakcji dla trzech odnośników. Źródło i stary projekt bez zmian, brak wdrożenia.
+
+## Aktualizacja 2026-11-10 — symbole kosztu obsługiwane
+
+Znaczniki w Zatuszowaniu sprawy, Doraźnym wierzchowcu i Prototypowym egzopancerzu renderują już monety. Odświeżono ich raporty bez zmiany treści i rewizji; unknown_annotation zniknął. Zatuszowanie sprawy ma raport bez błędów; pozostałe dwa zachowują page_reference_missing. Doraźny wierzchowiec po zastąpieniu długiego znacznika symbolem mieści się w ramce, więc jego body_overflow również zniknął. Wcześniejsze liczby błędów w rozdziałach importów opisują stan w chwili importowania.

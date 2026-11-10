@@ -31,7 +31,7 @@ Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentó
 - [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Doprecyzować przeglądanie dużej liczby talentów (także zbiorcze liczniki i filtrowanie po zapisanych kodach błędów): szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
 - [ ] T-03 Zaprojektować zaznaczanie talentów i działania na zaznaczeniu, także w kontekście grup/podgrup.
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
-- [ ] T-05 Wstawić symbol kosztu do treści mechaniki przez edytor; obecnie istnieje osobna grafika/komponent, ale brak obsługi wstawiania. Importowane talenty Zatuszowanie sprawy, Doraźny wierzchowiec i Prototypowy egzopancerz mają z tego powodu jawny znacznik i błąd.
+- [x] T-05 Symbol kosztu w mechanice: [ikona-kosztu: koszt], przycisk wstawiania, pojedynczy element składu, lista/kafelki/PDF i walidacja. Odświeżono raporty trzech importowanych talentów bez zmiany treści.
 - [ ] T-07 Wydzielić archiwum talentów o statusie delete: ukrycie w zwykłej bibliotece, przegląd wycofanych i przywracanie; statusy i historia zmian już działają.
 - [ ] T-06 Wrócić do zgłoszonych poprawek ramki i ikony kosztu. Zachować wariant Oryginalny i Tuszowy oraz możliwość powrotu do wcześniejszych grafik.
 
@@ -41,11 +41,13 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 
 - [ ] D-01 Dokończyć projekt bazy pod uzgodnione filtry, publikację, talenty prywatne/ograniczone i prawa do edycji. Ocenić, które parametry obecnego dokumentu ustawień wymagają osobnych kolumn oraz indeksów.
 - [ ] D-02 Ustalić obieg treści PL/EN: brak tłumaczenia, gotowość do publikacji i odpowiedzialność za zatwierdzanie. Nie utożsamiać angielskiego interfejsu z gotowymi tłumaczeniami materiałów.
-- [ ] D-03 Ustalić zakres kopiowania ze starego projektu: talenty, grupy, szablony i powiązania. Zachować nadane wcześniej kody wysyłkowe XXXX-XXXX i sprawdzić ich konflikty. Bez automatycznego przenoszenia wszystkich dawnych funkcji/danych.
+- [ ] D-03 Częściowo wykonane: 228 promocyjnych Darów Ciemności przeniesione z zachowaniem kodów. Ustalić pozostały zakres kopiowania ze starego projektu: talenty, grupy, szablony i powiązania. Zachować nadane wcześniej kody wysyłkowe XXXX-XXXX i sprawdzić ich konflikty. Bez automatycznego przenoszenia wszystkich dawnych funkcji/danych.
 - [x] D-04 Pierwszy uzgodniony import: manifest 81 talentów archetypów z PDF, mapowanie podgrup/UUID, próba z wycofaniem i raport błędów. [Wynik i kopia](Import%20talentów%20z%20PDF.md). Kolejne źródła wymagają osobnego zakresu.
 - [x] D-05 Zapisano zatwierdzony zakres PDF: 81 talentów, po 9 w podgrupie, historia Import z PDF i raporty błędów. Dotychczasowe talenty zastąpiono na wyraźne polecenie po kopii bazy. Kolejne importy osobno; stary projekt pozostaje 1:1.
 
 - [x] D-06 Dopisano drugą partię PDF: 36 talentów frakcji, nowa grupa z 4 podgrupami, po 9 talentów, koszty/użycia/formatowanie i historia importu; pominięte strony 10/20/30/40. Poprzednie 82 talenty zachowane. [Raport](Import%20talentów%20z%20PDF.md).
+
+- [x] D-07 Przeniesiono 228 promocyjnych Darów Ciemności do promki → Zbiórka - Dary Ciemności, szablon Dary Ciemności, wszystkie dotychczasowe kody zachowane. [Raport](Import%20Darów%20Ciemności.md).
 
 ### 3. Zestawy talentów i arkusze
 
