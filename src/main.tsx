@@ -129,6 +129,7 @@ function App({ config }: { config: Config }) {
   const isDesign = designViews.includes(view);
   const allowed = !isDesign || canDesign;
   function choose(next: View) {
+    if(next==='talents'&&!window.dispatchEvent(new Event('ke:open-talent-library',{cancelable:true})))return;
     window.location.hash = next;
     setView(next);
     setMenuOpen(false);

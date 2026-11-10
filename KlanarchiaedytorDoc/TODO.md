@@ -28,10 +28,11 @@ Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentó
 ### 1. Redakcja talentów — najbliższy etap
 
 - [ ] T-01 Doprecyzować ekran biblioteki i miejsce Utwórz talent; obecne umiejscowienie pozostaje do poprawy.
-- [ ] T-02 Obecna lista pokazuje już pełne treści/oznaczenia i otwiera edycję kliknięciem tytułu. Doprecyzować przeglądanie dużej liczby talentów (także zbiorcze liczniki i filtrowanie po zapisanych kodach błędów): lista/karty, szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
+- [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Doprecyzować przeglądanie dużej liczby talentów (także zbiorcze liczniki i filtrowanie po zapisanych kodach błędów): szukanie, filtry i sortowanie. Dopiero potem wdrożyć; nie przywracać usuniętej wyszukiwarki ani Całej biblioteki bez ustalenia ich roli.
 - [ ] T-03 Zaprojektować zaznaczanie talentów i działania na zaznaczeniu, także w kontekście grup/podgrup.
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
 - [ ] T-05 Wstawić symbol kosztu do treści mechaniki przez edytor; obecnie istnieje osobna grafika/komponent, ale brak obsługi wstawiania. Importowany talent Zatuszowanie sprawy ma z tego powodu jawny znacznik i błąd.
+- [ ] T-07 Wydzielić archiwum talentów o statusie delete: ukrycie w zwykłej bibliotece, przegląd wycofanych i przywracanie; statusy i historia zmian już działają.
 - [ ] T-06 Wrócić do zgłoszonych poprawek ramki i ikony kosztu. Zachować wariant Oryginalny i Tuszowy oraz możliwość powrotu do wcześniejszych grafik.
 
 Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentach, nie tylko edycja pojedynczej karty. Rozbudowę eksportu zaznaczenia połączyć z etapem arkuszy.

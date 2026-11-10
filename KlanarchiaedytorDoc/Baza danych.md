@@ -145,3 +145,17 @@ Kopia w wtf_www/backups/klanarchia-editor/20261109/before-talent-codes/: databa
 Dokument szablonu 2 obsługuje elements.version (geometria/widoczność/blokada/proporcje) i styles.version (niezależny styl, minimum 5 pt, wyłącznie kolor palety). Zapis i walidacja klient/serwer; kolor pola objęty ochroną przed archiwizacją, również w historycznych szablonach. Brak migracji tabel: starszy dokument otrzymuje ukryty element i styl 5 pt podczas odczytu, bez przepisywania wersji. TemplateVersion renderuje lokalnymi fontami SVG rzeczywisty kod talentu, a w kreatorze przykład.
 
 W szablonie Talent podstawowy zapisano wersję 45 z włączonym polem. Starsze 44 wersje dokumentu i talenty przypięte do 44 zachowane. Kopia sprzed zapisu w wtf_www/backups/klanarchia-editor/20261109/before-template-version-label/: database.sql oraz template.json.
+
+## Podglądy kafelków biblioteki
+
+GET talents zwraca obok items/hasMore tablicę templates: unikalne dokumenty historycznych wersji szablonów używanych na danej stronie listy. Klucz to id szablonu i revision wersji, nie bieżąca wersja szablonu. Klient wiąże dokumenty z settings.templateId/templateRevision, bez odczytu każdego talentu osobno. Brak nowych tabel, migracji i zapisywania podglądów do bazy.
+
+## Status talentu — schemat 3 (2026-11-10)
+
+Jawna migracja `wp ke talent-status-init --user=1 --allow-root` (również w talents-init) dodaje do ke_talent_versions kolumnę status VARCHAR(16), domyślnie dev. Dotychczasowe talenty i ich starsze wersje otrzymały dev jako wartość początkową, bez tworzenia nowych wersji treści. ke_talents_schema_version=3. Powtórzenie migracji niczego nie przepisuje; migracja kodów rozpoznaje również schemat 3. Kopia przed migracją: wtf_www/backups/klanarchia-editor/20261110/before-talent-status/database.sql.
+
+API GET listy/talentu zwraca status; POST/PUT przyjmuje dev, toCheck, approved, delete. Status jest wspólny dla języków, niezależny od validation.status. Pominięcie pola zachowuje aktualny status istniejącego talentu; nowy otrzymuje dev. Błędny kod jest odrzucany. Zmiana wymaga Zapisz i tworzy wersję z dotychczasową kontrolą revision. talent_events.changes zawiera pole status oraz from/to; historia zwraca statusChange. delete jest obecnie odwracalnym oznaczeniem Wycofany, bez kasowania danych ani użycia archived_at; oddzielny widok archiwum pozostaje do wykonania.
+
+### Usuwanie pustej podgrupy
+
+DELETE talent-categories/{uuid}, wyłącznie administrator z nonce. Transakcja z tą samą blokadą katalogu co tworzenie kategorii i zapis talentu; serwer odrzuca grupę główną (400), brakującą podgrupę (404), dowolny talent w podgrupie lub potomne kategorie (409). Kontrola obejmuje także wycofane i zarchiwizowane talenty. Dopiero po kontroli usuwa nazwy PL/EN i pusty rekord kategorii; FK pozostają aktywne. Bez migracji schematu.

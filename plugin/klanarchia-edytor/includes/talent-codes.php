@@ -11,7 +11,7 @@ function ke_talent_version_day($utc){return (new DateTimeImmutable($utc,new Date
 function ke_talent_version_code($code,$day,$serial){return $code.'-'.(new DateTimeImmutable($day))->format('dmy').'-'.str_pad((string)$serial,2,'0',STR_PAD_LEFT);}
 function ke_next_talent_day_serial($talent,$day){global $wpdb;return 1+(int)$wpdb->get_var($wpdb->prepare('SELECT MAX(day_serial) FROM '.ke_table('talent_versions').' WHERE talent_id=%d AND version_day=%s',$talent,$day));}
 function ke_migrate_talent_codes(){
- global $wpdb;if(get_option('ke_talents_schema_version')==='2')return;ke_migrate_talents();
+ global $wpdb;if(in_array(get_option('ke_talents_schema_version'),['2','3'],true))return;ke_migrate_talents();
  $columns=$wpdb->get_col('SHOW COLUMNS FROM '.ke_table('talents'));if(!in_array('code',$columns,true))ke_db_query('ALTER TABLE '.ke_table('talents').' ADD code char(9) NULL');
  $columns=$wpdb->get_col('SHOW COLUMNS FROM '.ke_table('talent_versions'));if(!in_array('version_day',$columns,true))ke_db_query('ALTER TABLE '.ke_table('talent_versions').' ADD version_day date NULL');if(!in_array('day_serial',$columns,true))ke_db_query('ALTER TABLE '.ke_table('talent_versions').' ADD day_serial bigint unsigned NULL');
  try{

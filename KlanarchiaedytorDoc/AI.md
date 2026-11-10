@@ -923,3 +923,115 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 - Weryfikacja: TS/Vite, PHP lint validation/api/talent-checks i git diff --check poprawne. UI: pozycja, styl 5 pt, oczko, kłódka, undo, za wąskie pole i PDF kreatora. Poprawiono selektor QA obejmujący również ukryty panel stylów. W talencie rzeczywisty kod i PDF, brak przykładu w szkicu, ukrycie przy niezapisanych zmianach; serwer przyjmuje zapis version_overflow. Brak błędów JS. Zrzut kreatora sprawdzony wizualnie.
 - Osobny test utworzył tymczasowy szablon o polu szerokości 1 pt i nowy talent przez UI: po pierwszym zapisie automatycznie utrwalił przepełnienie faktycznie nadanego kodu, zachowując revision=1. Usunięto 2 utworzone talenty QA (w osobnych przebiegach) i 1 szablon QA wraz z zależnościami. SQL porównał wszystkie 81 talentów, ich wersje/treści/zdarzenia/raporty oraz 44 starsze wersje szablonu — bez zmian. Pozostał 1 szablon z bieżącą wersją 45.
 - Narzędzia/zrzuty/PDF-y w wtf_www/local-scripts/one-off/template-version-label-20261109/, poza Gitem. Dokumentacja kreatora/bazy/błędów/projektu/TODO uaktualniona. Bez zmian starego projektu i wdrożenia.
+
+## 2026-11-10 — Przełączanie Lista / Kafelki
+
+- Przełącznik w nagłówku biblioteki, domyślnie Lista, bez localStorage/cookie. Wybór pozostaje przy zmianie podgrupy i powrocie z edytora; przeładowanie zaczyna od Listy. Podgląd, tytuł i Otwórz prowadzą do wspólnego edytora; zachowane kody, podgrupy, symbole i raporty błędów. Responsywna siatka.
+- API listy zwraca unikalne przypięte szablony w templates obok items/hasMore. Odczyt historycznych wersji zbiorczy, nie najnowszego dokumentu; bez N+1 żądań per talent. readTalents parsuje dokument raz i wiąże z elementami listy. Wspólny talentPreviewTemplate dla edytora i kafelków, z nadpisaniami odstępów/interlinii, flagami, kosztem, użyciami i ograniczeniem.
+- LazyTalentCard: IntersectionObserver z 300 px marginesu; skład tylko w pobliżu ekranu. Gotowy SVG z krzywymi liter i osadzonymi obrazami przechowywany jako Blob w LRU do 96 kart. Poza ekranem bez ciężkiego drzewa SVG; URL-e obrazów zwalniane przy ukryciu/unmount. Klucz: talent/rewizja, szablon/wersja, paleta/rewizja, język. Oddzielna pamięć zasobów SVG; błędy pokazują lekki komunikat i nie blokują otwarcia talentu. Bez danych przykładowych zamiast treści talentów.
+- Podczas kontroli wizualnej wykryto liczniki grup 0: warunek w library.php obsługiwał wyłącznie schemat talentów 1. Poprawiono obsługę także 2 po wcześniejszej migracji kodów; potwierdzono 81/9.
+- Weryfikacja: TS/Vite, lint PHP talents/library i git diff --check poprawne. UI/API: Lista na starcie, 81 talentów i 1 wspólny historyczny szablon 44, liczniki grup 81/9; w pierwszym obszarze 9 gotowych obrazów, dalsze karty bez renderowania, 0 odczytów pojedynczego talentu podczas generowania. Lokalny pomiar pierwszego podglądu ok. 0,46–0,50 s (nie gwarancja wydajności innych środowisk).
+- Zapisany SVG zawiera osadzone grafiki, bez zewnętrznych href. Porównano linie tekstu kafelka i edytora — identyczne. Test: otwarcie przez podgląd, powrót do Kafelków, zwolnienie DOM poza ekranem, powrót z tym samym podglądem, przełączenie Listy/Kafelków, filtr podgrupy 9 elementów, 390 px bez poziomego przepełnienia i ponowny start w Liście po odświeżeniu. Brak błędów JS; zrzut desktop sprawdzony wizualnie. Bez zapisów talentów, migracji ani wdrożenia.
+- Narzędzia i zrzuty: wtf_www/local-scripts/one-off/talent-tile-view-20261110/. Dokumentacja biblioteki/bazy/projektu i bieżący stan T-02 zaktualizowane.
+
+## 2026-11-10 — Większe kafelki otwierane całą powierzchnią
+
+- Minimalna docelowa szerokość kafelka 300 → 480 px, z dopasowaniem do mniejszych ekranów; większy podgląd bez zmiany składu tekstu. Usunięto osobny Otwórz z kafelków. Kliknięcie podglądu, tytułu, metadanych lub wolnego miejsca otwiera edytor; rozwijanie błędów obsługiwane osobno. Status Otwieranie… i blokada kolejnych otwarć zachowane.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Istniejący przegląd przeglądarkowy potwierdził brak przycisku w kafelkach, szerokość co najmniej 480 px na desktopie oraz otwarcie kliknięciem kodu (metadane). Przewijanie/pamięć, powrót do widoku, podgrupy, telefon i domyślna Lista nadal działają; brak błędów JS. Zrzut większych kafelków sprawdzony wizualnie. Bez zmian danych i wdrożenia.
+
+## 2026-11-10 — Bez powtarzania symboli w podpisie kafelka
+
+- TalentListSymbols renderowane wyłącznie w widoku Listy; pod kafelkiem bez ponownego wyliczania ikon/użyć/akcji. Oznaczenia na wyrenderowanej karcie pozostają.
+- Weryfikacja: kontrola warunku JSX i git diff --check. Zmiana prezentacji, bez zapisów danych.
+
+## 2026-11-10 — Kafelki podzielone na podgrupy
+
+- Usunięto przełącznik Lista/Kafelki, pozostawiono wyłącznie kafelki. Każda niepusta podgrupa ma własną sekcję z nazwą i liczbą talentów. Zachowane otwieranie kafelkiem, błędy i leniwe podglądy.
+- Weryfikacja: TS/Vite oraz git diff --check poprawne. Przeglądarka: 9 sekcji po 9 talentów, brak przełącznika i powielonych symboli, gotowy podgląd, otwarcie/powrót, filtr podgrupy i telefon 390 px bez przepełnienia; brak błędów JS. Pierwszy przebieg QA zatrzymał błędny selektor powrotu; po poprawieniu skrypt przeszedł. Bez zapisów danych i wdrożenia.
+
+## 2026-11-10 — Sama wizualizacja talentu
+
+- Doprecyzowanie: usunięto cały podpis pod wizualizacją (tytuł, kod, podgrupę, raport) oraz zewnętrzną obudowę kafelka. Pozostają klikalna karta i sekcje podgrup; kręciołek otwierania nakładany na podgląd. Błędy w bazie i edytorze zachowane.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Bez zmian danych i wdrożenia.
+
+## 2026-11-10 — Karty bez odstępów
+
+- Siatka talentów bez odstępów poziomych i pionowych. Usunięto wewnętrzny margines 6 px podglądu i beżowe tło przycisku. Obraz/SVG wypełnia cały kafelek; podział na podgrupy zachowany. Geometria szablonów bez zmian.
+- Weryfikacja: kontrola CSS i git diff --check. Bez zmian danych.
+
+## 2026-11-10 — Historia przeglądarki przy edycji talentu
+
+- Otwarcie talentu lub nowego szkicu tworzy wpis historii przeglądarki. Wstecz wraca do biblioteki, Dalej otwiera edytor; zachowane wybrana podgrupa i pozycja przewijania. Strzałka powrotu korzysta z tej samej historii. Zapis aktualizuje rekord we wpisie historii.
+- Niezapisana treść wymaga potwierdzenia odrzucenia przy Wstecz; anulowanie przywraca wpis edytora bez utraty roboczych zmian. Dotychczasowe ostrzeżenie przy zamknięciu/odświeżeniu strony zachowane.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Playwright: Wstecz do wybranej podgrupy (9 kart), Dalej, anulowanie odrzucenia z zachowaniem tekstu, potwierdzenie odrzucenia, powrót strzałką i ponowne Dalej; brak błędów JS. Pierwszy przebieg QA używał błędnego selektora pola liczbowego zamiast tytułu; poprawiony test przeszedł. Bez zapisu talentów ani wdrożenia. Skrypt lokalny: wtf_www/local-scripts/one-off/talent-tile-view-20261110/history.cjs.
+
+## 2026-11-10 — Nawigacja katalogowa i nowy układ edytora
+
+- Nowy TalentNavigator: jeden poziom kategorii/talentów, foldery, Wyżej, zaznaczenie aktualnego talentu, liczniki błędów, wczytywanie/błąd/retry. Początek w podgrupie otwartego talentu; bez pełnego rozwiniętego drzewa. Przewijana lewa kolumna.
+- Podgląd w środku, ustawienia pod podglądem, tekst po prawej. Na mniejszych ekranach układ pionowy. Usunięto konflikt display:flex dziedziczony przez nav ze strony WordPress; końcowy zrzut sprawdzony wizualnie.
+- Przełączanie talentu pobiera jego aktualny rekord i ponownie montuje edytor z poprawnymi danymi. Potwierdzenie odrzucenia roboczych zmian, blokada podczas zapisu i otwierania. Błąd otwierania pozostawia dotychczasowy talent.
+- Historia przechowuje kolejne otwarcia, obsługuje oba kierunki i odmowę odrzucenia; strzałka biblioteki wraca przez całą serię otwarć do kafelków. Zapis odświeża rekord/aktywne oznaczenie i listę nawigacji. Bez nowych tabel i zmian struktury danych.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Playwright: położenie trzech kolumn i ustawień pod podglądem; 9 talentów jednej podgrupy, poziom wyżej z 9 folderami bez list potomnych, przejście do Inkwizytora, poprawna treść/zaznaczenie, Wstecz/Dalej między talentami, anulowanie i potwierdzenie odrzucenia, powrót do 81 kafelków oraz 390 px bez poziomego przepełnienia. Brak błędów JS. Test powtórzony po poprawce stylu nav. Bez zapisu talentów ani wdrożenia. Narzędzia/zrzut: wtf_www/local-scripts/one-off/talent-tile-view-20261110/workspace.cjs i workspace.png.
+
+## 2026-11-10 — Zagęszczenie kontrolek edytora
+
+- Strzałka powrotu poziom wyżej przed nazwą grupy w jednym wierszu, bez tekstu Wyżej. Historia zmian przeniesiona na dół prawej kolumny pod Mechanikę. Szablon na końcu ustawień; usunięto nagłówek Ustawienia talentu.
+- Mechanika: 5 wierszy zamiast 9, maksymalnie 190 px i przewijanie dłuższej treści, bez ograniczania zapisanych znaków. Około 300–400 widocznych znaków przy szerokiej prawej kolumnie; pojemność zależy od szerokości i tekstu.
+- Oznaczenia i użycia w zwartym wspólnym pasku z zawijaniem; przyciski 34 px, ikony 22–24 px, koszt przy symbolu. Potrójne użycia mają szerszy przycisk, żeby zmieścić trzy kwadraty.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Playwright compact.cjs: historia w prawej kolumnie, szablon ostatni, brak etykiety ustawień, strzałka bez tekstu, wysokość Mechaniki do 190 px i przyciski do 35 px; kontrole przełączania talentów, grup, historii przeglądarki, ochrony zmian i 390 px bez przepełnienia nadal poprawne. Zrzut sprawdzony wizualnie, następnie poszerzono przycisk trzech użyć. Bez zapisów talentów ani wdrożenia.
+
+## 2026-11-10 — Widoczny status niezapisanych zmian
+
+- Niezapisane zmiany i nowy niezapisany talent mają wyraźną złotą etykietę obok Zapisz: pełna nieprzezroczystość, pogrubienie, tło, obramowanie i kropka. Status ogłaszany aria-live; zapisany talent zachowuje spokojny status.
+- Weryfikacja: kontrola JSX/CSS i git diff --check. Bez zapisów danych.
+
+## 2026-11-10 — Napis statusu i czerwony Zapisz
+
+- Status niezapisanych zmian jako zwykły napis, bez tła, ramki i kropki. Zapisz przy niezapisanej treści ma przygaszoną czerwień dopasowaną do ciemnej oprawy, z hover/focus. Zapisany stan bez czerwonego wyróżnienia.
+- Weryfikacja: kontrola JSX/CSS i git diff --check. Bez zmian danych.
+
+## 2026-11-10 — Dodaj talent w nawigacji edytora
+
+- Przycisk na końcu listy w podgrupie, ukryty na poziomach zawierających podgrupy. Otwiera pusty szkic w przeglądanej podgrupie; szablon z ostatniego edytora, również historyczna przypięta wersja. Bez kopiowania danych talentu. Dotychczasowe tworzenie z biblioteki korzysta z tego samego przepływu.
+- Nowy szkic jest niezapisany od początku i chroniony potwierdzeniem odrzucenia; ma roboczy klucz widoku dla poprawnego resetowania kolejnych szkiców, bez nadania kodu talentu. Tworzenie rekordu tylko istniejącym POST po Zapisz.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Playwright add-talent.cjs potwierdził pustą treść, zachowanie wersji szablonu, brak kodu i POST przed Zapisz, ukrycie przycisku wyżej, anulowanie/potwierdzenie odrzucenia oraz zachowanie treści po symulowanym błędzie POST. Żądanie zapisu przechwycone w teście, bez utworzenia rzeczywistego talentu. Poprawiono selektory testowe natywnych option i folderu; końcowy przebieg poprawny. Bez wdrożenia i zmian starego projektu.
+
+## 2026-11-10 — Spójna nazwa talentu bez tytułu
+
+- Nagłówek edytora używa Bez tytułu / Untitled, tak jak lista talentów, również gdy wpisano same białe znaki. Nowy talent nie zastępuje już brakującego tytułu w nagłówku.
+- Weryfikacja: kontrola JSX i git diff --check. Bez zmiany zapisanych danych.
+
+## 2026-11-10 — Bez strzałki przy tytule talentu
+
+- Usunięto strzałkę przy tytule i przypisany jej skok historii do biblioteki. Kliknięcie Talenty w menu otwiera bibliotekę, z ochroną niezapisanych zmian i blokadą podczas zapisu. Jest osobnym wpisem historii, bez wymuszania celu przycisku Wstecz przeglądarki. Strzałka poziomu grupy pozostaje.
+- Weryfikacja: TS/Vite i git diff --check.
+- Kontrola przeglądarkowa menu-return.cjs: brak strzałki przy tytule, menu Talenty otwiera kafelki, Wstecz po wejściu przez menu wraca do faktycznie poprzedniego edytora, anulowanie/potwierdzenie odrzucenia działa. Bez błędów JS i zapisu talentów.
+
+## 2026-11-10 — Statusy talentów i kolorowe kropki
+
+- Schemat talentów 3: osobna kolumna status w każdej wersji, domyślnie dev; jawna, powtarzalna migracja po kopii pełnej bazy. API waliduje dev/toCheck/approved/delete, odczyt listy/rekordu, zapis wersji i historia z from/to. Pominięty status nie resetuje istniejącego. Kontrola rewizji chroni równoległe zmiany. Zgodność migracji kodów i liczników kategorii ze schematem 3.
+- Wybór w nagłówku obok zapisu, zmiana robocza do Zapisz. Kropki żółta/niebieska/zielona/czerwona na liście katalogowej i kafelkach; wspólny komponent z nazwą dostępną dla czytnika i podpowiedzią. Potwierdzenie wycofania oraz zatwierdzania z błędami. Kropki nie zmieniają składu karty i PDF.
+- delete oznacza Wycofany, bez fizycznego kasowania; na tym etapie nadal widoczny do łatwego przywracania zmianą statusu. Osobny widok archiwum/ukrywanie w T-07.
+- Weryfikacja: TS/Vite, PHP lint talents/talent-status i git diff --check poprawne, ponowna migracja poprawna. Playwright status.cjs utworzył wyłącznie tymczasowy talent QA: status początkowy dev, trzy kolejne zapisy toCheck/approved/delete, kropki odświeżane, dane przed Zapisz bez zmian, historia pełnych przejść, odrzucenie niepoprawnego kodu bez nowej wersji, konflikt 409 i zachowanie statusu przy pominięciu pola. Usunięto rekord QA i jego zależności przez skrypt z kontrolą kodu/nazwy. Brak błędów JS. Końcowy audyt osobnym eval-file, ponieważ bezpośrednie przekazanie PHP przez PowerShell miało błąd cytowania. Bez wdrożenia i zmian starego projektu.
+
+## 2026-11-10 — Dodawanie i usuwanie pustych podgrup w nawigacji
+
+- Dodaj podgrupę pod listą folderów grupy głównej, nazwa + Dodaj/Anuluj, obsługa zapisu/błędu i duplikatów. Lista/biblioteka odświeża się bez zamykania edytowanego talentu. Przy pustych folderach kosz z nazwą dostępną dla czytnika i potwierdzeniem. Brak kosza dla podgrup z talentami/potomkami i dla aktualnie edytowanego szkicu.
+- Chroniona trasa DELETE kategorii, blokada katalogu i transakcja wspólne z tworzeniem/zapisem. Sprawdza wszystkie talenty bez względu na status/archiwizację i potomne kategorie; usuwa tylko pustą podgrupę wraz z nazwami. Grupy główne chronione. Bez zmian tabel.
+- Weryfikacja: TS/Vite, PHP lint library i git diff --check poprawne. Playwright subgroups.cjs utworzył pustą podgrupę QA przez UI; duplikat 409, kosz tylko przy pustej, anulowanie/potwierdzenie usunięcia, brak rekordu po usunięciu (404). Próba usunięcia zajętej podgrupy 409, głównej 400. Porównano pełne listy kategorii przed/po — bez różnic; brak błędów JS. Podgrupa QA usunięta, bez zmian rzeczywistych talentów i wdrożenia.
+
+## 2026-11-10 — Przywrócenie widoku listy
+
+- Przywrócono Lista / Kafelki, domyślnie Lista. W obu widokach sekcje podgrup; wybór zostaje po powrocie z edytora. Lista: klikalny tytuł, kod, kropka statusu, oznaczenia, raport błędów i druga kolumna z treścią. Kafelki nadal bez podpisów, odstępów i dodatkowej obudowy.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Playwright restore-views.cjs: domyślna Lista, treść i kropki, otwarcie tytułem, przełączenie na gotowe karty bez podpisów i gap=0, zachowanie widoku po powrocie przez menu, 390 px bez przepełnienia; brak błędów JS. Bez zapisów talentów i wdrożenia.
+
+## 2026-11-10 — Kafelki bez statusu
+
+- Usunięto kropkę statusu wyłącznie z widoku kafelków. Status i jego zmiana pozostają w edytorze, kropki na liście i w nawigacji bez zmian.
+- Weryfikacja: kontrola JSX i git diff --check. Bez zmian danych.
+
+## 2026-11-10 — Klikalna ścieżka grupy i okno przenoszenia
+
+- Zamiast samej nazwy podgrupy przy tytule talentu pełne Grupa / Podgrupa, przycisk otwierający natywny modal dialog. Wybór grupy zawęża listę podgrup, zmiana grupy czyści poprzednią podgrupę. Anuluj/Escape bez zatwierdzenia, Wybierz aktualizuje tylko roboczy cel i oznacza niezapisane zmiany.
+- Zapis przekazuje wybraną categoryId do istniejącego transakcyjnego API; bez migracji. Po sukcesie stan edytowanego talentu, wpis historii przeglądarki, nazwa i lewa nawigacja korzystają z docelowej podgrupy. Stały kod bez zmian; dotychczasowa historia zapisu obejmuje pole category.
+- Weryfikacja: TS/Vite i git diff --check poprawne. Playwright move-talent.cjs utworzył tymczasowy talent QA: pełna ścieżka, wstępny wybór, anulowanie/Escape, brak przeniesienia w bazie przed Zapisz; po zapisie nowa podgrupa, ten sam kod i treść, wpis historii, zniknięcie z listy źródłowej i obecność w docelowej, odświeżona lewa nawigacja. Brak błędów JS. Usunięto tylko talent QA i jego zależności, bez zmian rzeczywistych talentów i wdrożenia.
