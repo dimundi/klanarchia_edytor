@@ -67,6 +67,7 @@ add_action('rest_api_init', function () {
     ]);
 });
 add_action('wp_enqueue_scripts', function () {
+    if (ke_is_page() && !ke_requested() && ke_can_access()) wp_enqueue_style('ke-entry', plugins_url('assets/entry.css', __FILE__), [], '0.2.1');
     if (!ke_is_page() || !ke_requested() || !ke_can_access()) return;
     $dev = ke_dev_server();
     if ($dev) {

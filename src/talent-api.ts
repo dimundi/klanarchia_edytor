@@ -19,3 +19,10 @@ export async function readTalentHistory(id:string) {
  const items:TalentHistoryItem[]=[];
  for(let page=1;;page++){const result=await request<{items:TalentHistoryItem[];hasMore:boolean}>(`talents/${id}/history?page=${page}`);items.push(...result.items);if(!result.hasMore)return items;}
 }
+
+export async function readExportTalents(codes:string[],language:string):Promise<TalentRecord[]> {
+ const result=await request<{items:Omit<TalentRecord,'template'>[];templates:LibraryItem[]}>(`talents/batch?language=${language}`,'POST',{codes});
+ const templates=new Map(result.templates.map(item=>[item.id,{...item,template:parseTemplate(item.template)}]));
+ const records=new Map(result.items.map(item=>[item.id,item]));
+ return codes.map(code=>{const item=records.get(code);if(!item)throw new Error('Talent unavailable');const template=templates.get(item.settings.templateId);if(!template)throw new Error('Template unavailable');return {...item,template};});
+}

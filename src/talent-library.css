@@ -228,3 +228,40 @@
 
 #klanarchia-editor .ke-library-direct-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #klanarchia-editor .ke-library-direct-actions button[aria-pressed=true]{background:#c3a65e22;border-color:#d4b66e;box-shadow:inset 0 -2px #d4b66e}
+
+/* Shared severity counters: automatic issues and active notes together. */
+#klanarchia-editor .ke-messages{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+#klanarchia-editor .ke-messages.is-expandable{display:flex;align-items:flex-start;flex-direction:column;gap:4px}
+#klanarchia-editor .ke-messages .is-error{color:#eb8c83}
+#klanarchia-editor .ke-messages .is-warning{color:#d8b857}
+#klanarchia-editor .ke-messages .is-info{color:#8bbbd8}
+#klanarchia-editor .ke-message-count,#klanarchia-editor .ke-message-group>summary{display:inline-flex;align-items:center;gap:5px;font-size:12px;line-height:1.5;border:0;background:none;padding:2px 0;list-style:none}
+#klanarchia-editor .ke-message-group>summary{cursor:pointer}
+#klanarchia-editor .ke-message-group>summary::-webkit-details-marker{display:none}
+#klanarchia-editor .ke-message-group>summary:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+#klanarchia-editor .ke-message-group[open]>summary{text-decoration:underline;text-underline-offset:3px}
+#klanarchia-editor .ke-message-group>ul{margin:5px 0 8px;padding-left:18px;max-height:260px;overflow:auto;color:#e3ddcd;font-size:13px}
+#klanarchia-editor .ke-message-group li{white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0}
+
+#klanarchia-editor .ke-talent-search{margin-bottom:32px;padding:18px;border:1px solid #c3a65e55;border-radius:5px;background:#c3a65e08}
+#klanarchia-editor .ke-search-heading{margin:0 0 12px;font-size:20px}
+#klanarchia-editor .ke-search-panel{padding:0}
+#klanarchia-editor .ke-search-panel form{max-width:780px}
+#klanarchia-editor .ke-search-query{max-width:720px}
+#klanarchia-editor .ke-search-filters{grid-template-columns:repeat(2,minmax(0,1fr));max-width:600px}
+#klanarchia-editor .ke-search-toggles{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin:10px 0}
+#klanarchia-editor .ke-search-toggles>span{width:85px;font-size:12px;color:#c3a65e}
+#klanarchia-editor .ke-search-toggles button{font-size:12px;min-height:30px;padding:4px 9px;border:1px solid #c3a65e40;border-radius:4px;background:transparent;color:inherit}
+#klanarchia-editor .ke-search-toggles button[aria-pressed=true]{background:#c3a65e30;border-color:#c3a65e;color:#f2dfad}
+#klanarchia-editor .ke-search-content{margin-top:12px}
+@media(max-width:600px){#klanarchia-editor .ke-talent-search{padding:12px}#klanarchia-editor .ke-search-toggles>span{width:100%}#klanarchia-editor .ke-search-filters{grid-template-columns:1fr}}
+
+#klanarchia-editor .ke-search-toggles button{display:inline-flex;align-items:center;gap:6px}
+#klanarchia-editor .ke-search-toggles button.is-message-yes{color:#eb8c83}
+#klanarchia-editor .ke-search-toggles button.is-message-warning{color:#d8b857}
+#klanarchia-editor .ke-search-toggles button.is-message-info{color:#8bbbd8}
+#klanarchia-editor .ke-search-toggles button.is-message-clean{color:#93c79a}
+#klanarchia-editor .ke-search-toggles button.is-message-pending{color:#c6b9a1}
+
+#klanarchia-editor .ke-search-results-heading{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 0}
+#klanarchia-editor .ke-search-results-heading p{margin:0}

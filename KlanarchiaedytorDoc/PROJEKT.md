@@ -142,3 +142,11 @@ Notatki redakcyjne są oddzielne od automatycznej walidacji. Można je dodawać,
 2026-11-11: uzgodniono zakres eksportu zbiorczego: zaznaczanie grup/podgrup/talentów, zapisywane SET-y z obowiązkowym zachowaniem kolejności, hardkodowane układy A4 i naklejek A4 oraz wybór ramki, ID i RGB/CMYK. Zapis konfiguracji eksportu w SET-ach pozostaje propozycją. [Specyfikacja eksportu](Eksport%20talentów.md). Wyłącznie dokumentacja, bez implementacji i tabel.
 
 2026-11-11: działa wspólne okno SET-u z zaznaczenia lub bazy: nazwa, ustalanie kolejności, usuwanie pozycji, zapis i otwieranie. Kolejność jest przechowywana jawnie w tabeli pozycji. Eksport arkuszy pozostaje kolejnym etapem. [Szczegóły](Eksport%20talentów.md).
+
+2026-11-11: pierwsze wdrożenie produkcyjne zakończone po próbie pustej bazy lokalnej. Dostęp: administrator lub klanarchia_editor_creator. Produkcja jest głównym źródłem danych; [opis wdrożenia](Wdrozenie%20produkcyjne.md).
+
+## Standard liczników komunikatów
+
+Lista, kafelki i nawigator talentów używają wspólnego komponentu TalentMessages. Automatyczne błędy i aktywne notatki ręczne są łączone według wagi: błędy — czerwony trójkąt; ostrzeżenia — żółty trójkąt; informacje — niebieskie „i”. Ikona i liczba, bez ramki; kategorie zerowe ukryte. Lista i kafelki rozwijają treść po kliknięciu, nawigator ma zwarty licznik z podpowiedzią (bez zagnieżdżania przycisków). Źródło komunikatu pozostaje rozróżnione w edytorze i danych. Nie liczymy nieaktywnych notatek.
+
+- Eksport SET-u pobiera wybrane talenty zbiorczo, z każdym aktualnym szablonem tylko raz i zachowaniem kolejności. Brak którejkolwiek pozycji blokuje eksport zamiast pomijać talent. Lista zapisanych SET-ów pobierana równolegle z indeksem przy otwarciu okna eksportu.

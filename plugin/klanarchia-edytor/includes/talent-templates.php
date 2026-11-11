@@ -15,7 +15,7 @@ function ke_migrate_live_talent_templates(){
   $links[]=['talent_checks','template_version_id','template_versions'];update_option('ke_talent_checks_schema_version','2',false);
  }
  foreach($links as[$table,$column,$target]){$name='ke_'.substr(md5(ke_table($table).$column),0,20);if(!$wpdb->get_var($wpdb->prepare('SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME=%s AND CONSTRAINT_NAME=%s',ke_table($table),$name)))ke_db_query('ALTER TABLE '.ke_table($table).' ADD CONSTRAINT '.$name.' FOREIGN KEY ('.$column.') REFERENCES '.ke_table($target).'(id) ON DELETE RESTRICT');}
- update_option('ke_talents_schema_version','4',false);
+ if ((int)get_option('ke_talents_schema_version') < 4) update_option('ke_talents_schema_version','4',false);
 }
 function ke_live_talent_settings($document,$templateId){$settings=json_decode($document,true);unset($settings['templateRevision']);$settings['templateId']=$templateId;return $settings;}
 if(defined('WP_CLI')&&WP_CLI)WP_CLI::add_command('ke live-templates-init',function(){if(!ke_can_access())WP_CLI::error('Administrator required');try{ke_migrate_live_talent_templates();WP_CLI::success('Talents use current templates.');}catch(Throwable $e){WP_CLI::error($e->getMessage());}});

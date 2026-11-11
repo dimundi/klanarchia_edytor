@@ -1409,3 +1409,54 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 ## 2026-11-11 — Cały boks wejścia do edytora
 - Na stronie /klanarchia/edytor/ tytuł Edytor postaci jest natywnym odnośnikiem rozciągniętym na cały boks; usunięto dodatkowy przycisk. Tylko administrator i klanarchia_editor_creator. Hover/focus w klanarchia-header.css motywu WTF.
 - PHP lint poprawny; przeglądarka: konto z uprawnieniem klika dolny narożnik boksu i wchodzi na ekran powitalny; brak dodatkowego przycisku, odebranie uprawnienia blokuje dostęp. Test poprawiony o cookies/przewijanie i oczekiwanie strony powitalnej zamiast biblioteki. Konto QA usunięte.
+
+## 2026-11-11 — Pierwsze wdrożenie produkcyjne
+- Jawnie zatwierdzone wdrożenie po próbie init/import na pustej bazie. Zarchiwizowano skrypty, paczkę i kopie; opis Wdrozenie produkcyjne.md oraz dokumentacja WTF.
+- Poprawiono Vite base na względne ścieżki zasobów (wykryte w próbie bez Vite DEV), nieobniżanie schematu migracji walidacji i samodzielny styl wejścia we wtyczce. TS/Vite i PHP lint poprawne.
+- Lokalna próba: 17 tabel/options/hash/FK/current pointers zgodne, idempotent init, odmowa importu do niepustej bazy; zapis i historia/409 poprawne. Początkowy test wymagał instalacji polskiego pakietu językowego. Odizolowana próba zatrzymana, dane zachowane.
+- Produkcja: import 466 talentów, 2 szablonów i 2 SET-ów wraz z historią. Autor źródłowy 1 → wskazane konto 773. Pełna zgodność danych sprawdzona przed aktywacją. Chwilowa odmowa SSH przed aktywacją; wznowiono tylko aktywację, nie import.
+- Test produkcyjny: anonimowi 403 strony/401–403 API, boks wejścia, nagłówki cache, biblioteka i PDF 28 talentów/2 strony A4, kolejność zgodna, bez błędów JS. PDF odczytany i wyrenderowany, pierwsza strona obejrzana. Produkcyjnych talentów nie edytowano w teście; testowe sesje unieważniono.
+
+## 2026-11-11 — Wspólne liczniki komunikatów
+- TalentMessages łączy issues i aktywne notes według error/warning/info; zastępuje osobne błędy/notatki w wierszach (także wyniki wyszukiwania), kafelkach i nawigatorze. Nie sumuje ponownie zbiorczego errorCount, więc brak podwójnego naliczania. Rozwijane szczegóły list/kafelków, zwarty wariant nawigatora.
+- TS/Vite poprawne. Test przeglądarkowy na podstawionej odpowiedzi wyszukiwania: 2 automatyczne + 1 ręczny = 3 błędy, warning/info po 1, nieaktywna notatka pominięta, oba źródła widoczne po rozwinięciu; bez zapisów DB i błędów JS. Zmiana wyłącznie lokalna, produkcja bez aktualizacji.
+
+## 2026-11-11 — Notatki pod mechaniką
+- Przeniesiono EditorialNotes ze środkowej kolumny do prawej, bezpośrednio po polu mechaniki. Historia zmian pozostaje ostatnim elementem prawej kolumny. Logika zapisu bez zmian. TS/Vite poprawne; zmiana lokalna, bez wdrożenia.
+
+## 2026-11-11 — Informacja o zapisie notatek
+- Bezpośrednio pod nagłówkiem notatek jasna informacja o konieczności użycia Zapisz u góry edytora. Usunięto zdanie o historii wyłączonych notatek. Zmiana lokalna.
+
+## 2026-11-11 — Zwarty panel wyszukiwania
+- Wydzielony panel Znajdź talent, pole i Szukaj ograniczone szerokością, odstęp od Narzędzi. Statusy i komunikaty jako przyciski wielokrotnego wyboru zamiast selectów. Kliknięcie filtra odświeża wyniki; frazę wysyła Szukaj/Enter. Grupa i podgrupa pozostają selectami.
+- API przyjmuje listy statusów/komunikatów: OR wewnątrz zestawu, AND pomiędzy zestawami. Obsługuje błędy, aktywne ostrzeżenia/informacje, bez uwag (sprawdzony i bez aktywnych komunikatów), do sprawdzenia. Zachowana zgodność dawnych filtrów. Bez migracji bazy.
+- TS/Vite, PHP lint i test przeglądarkowy poprawne: fraza, bliskość przycisku, automatyczne wyszukiwanie, dwa statusy, filtr ostrzeżeń, szerokość panelu na 650 px. Bez zapisów danych. Wyłącznie lokalnie.
+
+## 2026-11-11 — Ręczne uruchamianie wyszukiwania
+- Zmiana filtrów nie uruchamia zapytania; dopiero Szukaj/Enter (paginacja nadal pobiera wybraną stronę). Statusy mają wspólne TalentStatusDot, komunikaty wspólne MessageIcon i kolory wagi, bez uwag zielony check, do sprawdzenia zegar.
+- TS/Vite oraz Playwright poprawne: zmiana dwóch statusów, komunikatu i grupy = zero zapytań; Szukaj = jedno poprawne zapytanie. Sprawdzono cztery kropki i pięć ikon. Lokalnie, bez zmian produkcji/bazy.
+
+## 2026-11-11 — Widoki wyników wyszukiwania
+- Lista/Kafelki z ikonami przy liczniku wyników; lista domyślna. Kafelki korzystają z LazyTalentCard jak biblioteka, obsługują otwarcie i zaznaczanie. Wybór widoku w stanie wyszukiwania, zachowany przy otwarciu talentu. Zmiana widoku nie odpytuje API i nie zmienia wyników.
+- TS/Vite i Playwright poprawne: lista domyślna, oba przełączenia, zgodne ID wyników i tylko jedno zapytanie wyszukiwania. Lokalnie, bez wdrożenia.
+
+## 2026-11-11 — Wcześniejsze pobieranie SET-ów
+- Okno eksportu pobiera indeks talentów i listę SET-ów równolegle. Wejście do zapisanych SET-ów korzysta z pobranej listy; ponowienie zapytania tylko po błędzie. Zapis SET-u aktualizuje też listę w pamięci. Ponowne otwarcie okna pobiera aktualne dane.
+- TS/Vite poprawne. Playwright: jedno zapytanie o SET-y, dwa wejścia do listy bez kolejnych zapytań. Lokalnie, bez wdrożenia i zmian danych.
+
+## 2026-11-11 — Zbiorczy odczyt eksportu
+- Podgląd używa POST talents/batch: jedna odpowiedź z talentami w kolejności SET-u i unikalnymi aktualnymi szablonami. Odczyt we wspólnym snapshotcie bazy, zbiorcze pobranie tekstów/raportów/szablonów zamiast odczytów na każdy talent. Wspólna serializacja z listą. Limit 5000 zgodny z SET-ami; brak talentu/szablonu blokuje całość. Uprawnienia jak pozostałe API, bez migracji.
+- TS/Vite i PHP lint poprawne. Test API: 59 talentów w odwróconej kolejności, jeden szablon, zgodność treści/ustawień/walidacji/wersji z odczytem pojedynczym; odrzucenie brakującego kodu i duplikatów. Playwright: 28 talentów, jedno zapytanie zbiorcze i zero pojedynczych, kolejność, dwie strony, opcje ramki/ID i pobranie PDF, bez błędów JS. Skrypt w wtf_www/local-scripts/one-off/sets-20261111/batch-ui.cjs. Lokalnie, bez wdrożenia i bez zapisów danych.
+
+## 2026-11-11 — Krótsza ścieżka eksportu
+- Nazwa Eksportuj talenty, wyszukiwanie SET-u w jednej linii. Zaznaczenie i zapisany SET prowadzą bezpośrednio do podglądu; Edytuj SET / kolejność otwiera edycję na żądanie. Brakujące pozycje nadal kierują do edycji. Sam podgląd zaznaczenia nie oznacza niezapisanych zmian SET-u.
+- Blok kart na każdej stronie A4 wyśrodkowany poziomo, z zachowaniem wyrównania kolumn, kolejności i rozmiarów; te same współrzędne w PDF.
+- TS/Vite i Playwright poprawne: obie ścieżki bezpośrednie, dostęp do edycji, wyszukiwanie w jednej linii i równe marginesy poziome. Lokalnie, bez wdrożenia.
+
+## 2026-11-11 — Komunikat generowania i edycja SET-ów
+- W podglądzie usunięto nadrzędny komunikat busy nakładający się na pozycjonowany nagłówek; postęp PDF pozostaje na przycisku pobierania. Dostosowano wielkość nagłówka. Lista zapisanych SET-ów ma osobny przycisk Edytuj, nazwa nadal prowadzi do podglądu.
+- TS/Vite i Playwright poprawne: bezpośrednia edycja zapisanego SET-u, przejście do eksportu i pobranie PDF bez dodatkowego komunikatu nad podglądem. Test poprawiono o oczekiwanie asynchronicznego odczytu SET-u. Lokalnie, bez wdrożenia i bez zapisów danych.
+
+## 2026-11-11 — Przeciąganie talentów w SET-ach
+- Uchwyt przy wierszu, własny ghost z nazwą/kodem, przygaszenie źródła i złota linia miejsca upuszczenia. Górna/dolna połowa wiersza wskazuje przed/za; korekta indeksu przy ruchu w dół, brak oznaczania zmiany przy upuszczeniu w tym samym miejscu. Sprzątanie ghosta i oznaczeń przy zakończeniu/anulowaniu.
+- TS/Vite poprawne; test zdarzeń drag/drop w Playwright: ghost i wskaźnik, ruch w dół/górę, kolejność i anulowanie, bez zapisów DB. Lokalnie, bez wdrożenia.

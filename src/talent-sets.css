@@ -58,3 +58,22 @@
 #klanarchia-editor .is-sheet-export .ke-sheet-paging button{flex:none;width:44px;height:40px;padding:4px}
 #klanarchia-editor .is-sheet-export .ke-sheet-paging button[aria-current=page]{background:#c3a65e;color:#25281f;border-color:#c3a65e}
 @media(max-width:680px){#klanarchia-editor .ke-sets-dialog.is-sheet-export{width:calc(100vw - 12px);height:calc(100dvh - 12px);padding:8px}#klanarchia-editor .is-sheet-export>header{left:12px;width:145px}#klanarchia-editor .is-sheet-export>header>button{left:calc(100vw - 74px)}#klanarchia-editor .is-sheet-export .ke-sheet-export{grid-template-columns:150px minmax(0,1fr);gap:8px}#klanarchia-editor .is-sheet-export .ke-sheet-config .ke-sheet-options{grid-template-columns:1fr}#klanarchia-editor .is-sheet-export .ke-sheet-config footer{flex-direction:column}#klanarchia-editor .is-sheet-export .ke-sheet-preview{grid-template-columns:minmax(0,1fr) 40px;gap:6px}#klanarchia-editor .is-sheet-export .ke-sheet-preview-area{width:min(calc(100cqw - 46px),calc(100cqh * 210 / 297))}#klanarchia-editor .is-sheet-export .ke-sheet-paging button{width:36px}}
+
+#klanarchia-editor .ke-sets-dialog .ke-set-search{display:flex;align-items:center;gap:10px}
+#klanarchia-editor .ke-set-search span{white-space:nowrap}
+#klanarchia-editor .ke-set-search input{flex:1;min-width:0}
+
+#klanarchia-editor .ke-set-library-row{display:flex;gap:8px;align-items:stretch}
+#klanarchia-editor .ke-set-library-row .ke-set-open{flex:1;min-width:0;gap:12px}
+#klanarchia-editor .ke-set-open strong{overflow-wrap:anywhere}
+#klanarchia-editor .is-sheet-export>header h3{font-size:26px;line-height:1.15}
+
+#klanarchia-editor .ke-set-items{padding:5px 0}
+#klanarchia-editor .ke-set-items li{position:relative;transition:background .12s;user-select:none}
+#klanarchia-editor .ke-set-items li:hover{background:#c3a65e0d}
+#klanarchia-editor .ke-set-grip{font-size:24px;color:#c3a65e;line-height:1;cursor:grab}
+#klanarchia-editor .ke-set-items li.is-dragging{opacity:.3;background:#c3a65e18}
+#klanarchia-editor .ke-set-items li.drop-before::before,#klanarchia-editor .ke-set-items li.drop-after::after{content:'';position:absolute;left:0;right:0;height:3px;background:#e5c56d;box-shadow:0 0 7px #e5c56d88;z-index:2;pointer-events:none}
+#klanarchia-editor .ke-set-items li.drop-before::before{top:-2px}
+#klanarchia-editor .ke-set-items li.drop-after::after{bottom:-2px}
+#klanarchia-editor .ke-set-drag-ghost{position:fixed;left:-10000px;top:0;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:12px;background:#34382a;color:#f2e6c3;border:2px solid #d5b65e;border-radius:5px;box-shadow:0 8px 20px #0008;list-style:none;pointer-events:none}
