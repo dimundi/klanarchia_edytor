@@ -12,6 +12,7 @@ require_once __DIR__.'/includes/api.php';
 require_once __DIR__.'/includes/library.php';
 require_once __DIR__.'/includes/talents.php';
 require_once __DIR__.'/includes/talent-order.php';
+require_once __DIR__.'/includes/talent-sets.php';
 require_once __DIR__.'/includes/talent-name-audit.php';
 require_once __DIR__.'/includes/talent-search.php';
 require_once __DIR__.'/includes/talent-codes.php';

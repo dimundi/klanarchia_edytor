@@ -29,3 +29,23 @@ export async function exportTalentPdf(source:SVGSVGElement,title:string,language
  const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-100000px;top:0;pointer-events:none';holder.append(clone);document.body.append(holder);
  try{await svg2pdf(clone,pdf,{x:margin,y:margin,width,height,loadExternalStyleSheets:false,loadImages:true});const blob=pdf.output('blob'),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=(title.trim().replace(/[<>:"/\\|?*\x00-\x1f]/g,'-').replace(/[. ]+$/,'').slice(0,120)||(language==='pl'?'Talent':'Talent'))+'.pdf';document.body.append(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),30000);}finally{holder.remove();}
 }
+
+export type SheetCard={source:SVGSVGElement;page:number;x:number;y:number};
+export async function exportTalentSheets(cards:SheetCard[],title:string,onProgress:(done:number)=>void):Promise<void>{
+ if(!cards.length)throw Error('Empty export');
+ const [{jsPDF},{svg2pdf}]=await Promise.all([import('jspdf'),import('svg2pdf.js')]);
+ const pdf=new jsPDF({unit:'pt',format:'a4',orientation:'portrait',compress:true,floatPrecision:8});pdf.setProperties({title:title||'Klanarchia',creator:'Klanarchia — Edytor'});
+ const holder=document.createElement('div');holder.style.cssText='position:fixed;left:-100000px;top:0;pointer-events:none';document.body.append(holder);const assets=new Map<string,Promise<string>>();let page=0;let sheet=document.createElementNS(svgNS,'svg');const initSheet=()=>{sheet=document.createElementNS(svgNS,'svg');sheet.setAttribute('xmlns',svgNS);sheet.setAttribute('viewBox','0 0 595.275590551 841.88976378');sheet.setAttribute('width','595.275590551');sheet.setAttribute('height','841.88976378');};initSheet();const flush=async()=>{holder.replaceChildren(sheet);await svg2pdf(sheet,pdf,{x:0,y:0,width:595.275590551,height:841.88976378,loadExternalStyleSheets:false,loadImages:true});};
+ try{for(const [i,card]of cards.entries()){
+  if(card.source.querySelector('[data-text-status=loading],[data-text-status=error]'))throw Error('Text not ready');
+  while(page<card.page){await flush();pdf.addPage();page++;initSheet();}
+  const clone=card.source.cloneNode(true) as SVGSVGElement,width=card.source.viewBox.baseVal.width,height=card.source.viewBox.baseVal.height;
+  clone.removeAttribute('class');clone.removeAttribute('style');clone.setAttribute('xmlns',svgNS);clone.setAttribute('width',String(width));clone.setAttribute('height',String(height));
+  if(clone.querySelector('foreignObject'))throw Error('Vector text required');
+  for(const image of Array.from(clone.querySelectorAll('image'))){const href=image.getAttribute('href');if(!href||href.startsWith('data:'))continue;const url=new URL(href,location.href).href;if(!assets.has(url))assets.set(url,assetData(url));image.setAttribute('href',await assets.get(url)!);}
+  await flattenMasks(clone,width,height);clone.setAttribute('x',String(card.x));clone.setAttribute('y',String(card.y));sheet.append(clone);onProgress(i+1);
+ }
+ await flush();
+ const blob=pdf.output('blob'),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=(title.trim().replace(/[<>:"/\\|?*]/g,'-').slice(0,100)||'Klanarchia-SET')+'.pdf';link.click();window.setTimeout(()=>URL.revokeObjectURL(url),30000);
+ }finally{holder.remove();}
+}

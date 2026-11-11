@@ -45,3 +45,19 @@ Model bazy dla SET-ów pozostaje do zaprojektowania. Lista wdrożenia jest utrz
 ## Stan lokalny — 2026-11-11
 
 Działa tryb zaznaczania: grupy, podgrupy, talenty, wspólne checkboxy drzewa/listy/kafelków/wyszukiwania, stany częściowe oraz licznik unikalnych talentów. Podgrupy można rozwijać do talentów. Wyłączenie trybu zachowuje wybór podczas pracy w module; odświeżenie strony nie zastępuje przyszłego zapisu SET-u. Eksportuj pozostaje dostępnym przyciskiem zapowiadającym panel. Zapis SET-ów, ustawianie ich kolejności i eksport zbiorczy nie są jeszcze wdrożone.
+
+## Okno SET-u — wdrożone lokalnie 2026-11-11
+
+Eksportuj otwiera wybór Z zaznaczenia / Z zapisanego SET-u. Pierwsza opcja jest niedostępna bez wyboru talentów; druga działa niezależnie od trybu zaznaczania. Obie prowadzą do wspólnego okna: nazwa, lista, przeciąganie i strzałki do zmiany kolejności, usuwanie pozycji, zapis. Zapis nazwanego SET-u w bazie i ponowne otwarcie odtwarzają dokładnie jego kolejność.
+
+Dla nowego SET-u przyjęto początkowo alfabetyczną kolejność ścieżek grup/podgrup i kolejność talentów w podgrupie, nie kolejność klikania checkboxów. Użytkownik może ją zmienić przed zapisem. Niedostępne talenty pozostają na swoich pozycjach z komunikatem, bez cichego usunięcia. Wyjście z niezapisanymi zmianami wymaga potwierdzenia.
+
+Przycisk Eksportuj wewnątrz SET-u na razie informuje o kolejnym etapie. Układy A4/naklejek, opcje RGB/CMYK i generowanie wielokartkowego PDF nadal nie są zaimplementowane; nazwa jest wymagana do zapisu SET-u, nie do przyszłego eksportu.
+
+## A4 — etap 2026-11-11
+
+Z okna SET-u można przejść do podglądu A4 i pobrać PDF bez zapisywania SET-u. Początkowy układ: A4 pionowo, marginesy 5 mm, bez skalowania i odstępów, od lewej do prawej wierszami; wysokość wiersza wyznacza najwyższa karta. Zbyt duża karta blokuje eksport zamiast zmiany rozmiaru. Kolejność listy pozostaje bez zmian na kolejnych stronach.
+
+Opcje: ramka i pełny ID z oznaczeniem wersji, domyślnie ramka włączona, ID wyłączone. Podgląd i PDF korzystają z tych samych kart i współrzędnych. Talenty są odczytywane przed przygotowaniem podglądu; brak pozycji blokuje całość.
+
+Na tym etapie działa wyłącznie RGB. CMYK jest jawnie niedostępne do czasu implementacji poprawnej konwersji (także spłaszczanych masek); nie udajemy CMYK samą etykietą. Naklejki niedostępne do ustalenia geometrii arkusza. Tekst nadal w krzywych, maskowane grafiki 600 dpi jak w eksporcie pojedynczej karty. Parametry nie są jeszcze zapisywane w SET-ach.

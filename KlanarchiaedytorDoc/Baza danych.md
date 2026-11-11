@@ -207,3 +207,9 @@ Szablon: elements.factionSymbol, elements.factionCostAmount i elements.factionCo
 - Zmiana pozycji przesuwa sąsiadów; przeniesienie porządkuje obie podgrupy. Transakcja i blokada catalogue_state wspólne z zapisem talentu. Zdarzenie zapisu zawiera order.from/to/shifted; sąsiedzi nie otrzymują sztucznych wersji treści.
 - Jawna migracja: wp ke talent-order-init --user=1 --allow-root, również przez ke talents-init. Odtworzenie według source.page (PDF) lub source.index (stary JSON), następnie numeracja 1..N. Rekordy bez importu na końcu. Powtórzenie migracji nie resetuje ręcznej kolejności.
 - Lokalnie: 438 talentów, 30 niepustych podgrup; kolejność 437 importów zweryfikowana. Treści, wersje i historia importów bez zmian. Kopia sprzed migracji: wtf_www/backups/klanarchia-editor/20261110/before-talent-order/database.sql.
+
+## SET-y talentów — 2026-11-11
+
+Jawna migracja `wp ke sets-init --user=1 --allow-root`, opcja `ke_sets_schema_version=1`. Dwie tabele: `ke_talent_sets` (UUID, nazwa, lock_version, kto/kiedy utworzył i zmienił) oraz `ke_talent_set_items` (set_id, position od 1, talent_id). Klucze obce RESTRICT, unikalne pozycje i talent w SET-cie. SET przechowuje odwołania do talentów, bez zamrażania ich treści lub szablonów.
+
+Chronione API administratora: GET/POST `/sets`, GET/PUT `/sets/{uuid}`. Zapis transakcyjny, kontrola revision/409, wymagane 1–5000 unikalnych istniejących talentów. Odczyt pozycji wyłącznie ORDER BY position. Nie ma jeszcze usuwania SET-ów ani zapisu parametrów arkusza.

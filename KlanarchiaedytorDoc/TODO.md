@@ -57,9 +57,10 @@ Wynik etapu: zatwierdzony podstawowy sposób pracy redakcyjnej na wielu talentac
 
 ### 3. Zestawy talentów i arkusze
 
-- [ ] A-01 Wdrożyć zapis/otwieranie SET-ów z bezwzględnym zachowaniem kolejności talentów. Doprecyzować ustalanie i edycję kolejności oraz opcjonalne zapisywanie konfiguracji eksportu. [Specyfikacja](Eksport%20talentów.md).
-- [ ] A-02 Dopiero na tym etapie zaprojektować i utworzyć tabele zestawów/arkuszy.
-- [ ] A-03 Wdrożyć podgląd i eksport zaznaczenia/SET-u: hardkodowane układy A4 oraz A4 na naklejki, opcje ramki, ID i RGB/CMYK. Zachować kolejność SET-u; ustalić geometrię arkuszy i obsługę CMYK. Uwzględnić łączenie ramek bez odstępów i kontrolę przepełnień.
+- [x] A-01 Zapis i otwieranie SET-ów, wspólne okno dla zaznaczenia i bazy, zmiana kolejności strzałkami/przeciąganiem, kontrola konfliktów. [Specyfikacja](Eksport%20talentów.md).
+- [ ] A-04 Ustalić zapisywanie konfiguracji eksportu wraz z SET-em lub jako oddzielnego presetu.
+- [x] A-02 Utworzono tabele SET-ów i uporządkowanych pozycji. Parametry arkuszy pozostają w A-03/A-04.
+- [ ] A-03 Działa podgląd i PDF SET-u na A4 RGB, ramka/ID oraz zachowana kolejność. Pozostają naklejki, CMYK i dalsza kontrola arkuszy. Docelowo: hardkodowane układy A4 oraz A4 na naklejki, opcje ramki, ID i RGB/CMYK. Zachować kolejność SET-u; ustalić geometrię arkuszy i obsługę CMYK. Uwzględnić łączenie ramek bez odstępów i kontrolę przepełnień.
 
 ### 4. Szablony kart postaci
 

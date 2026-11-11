@@ -1,0 +1,60 @@
+#klanarchia-editor .ke-sets-dialog{box-sizing:border-box;width:min(960px,calc(100vw - 32px));max-height:90vh;overflow:auto;background:#25281f;color:#e8ddbc;border:1px solid #a58b4c88;border-radius:6px;padding:20px;text-align:left}
+#klanarchia-editor .ke-sets-dialog::backdrop{background:#0009}
+#klanarchia-editor .ke-sets-dialog header,#klanarchia-editor .ke-sets-dialog footer{display:flex;align-items:center;gap:12px;justify-content:space-between}
+#klanarchia-editor .ke-sets-dialog header{margin-bottom:16px}
+#klanarchia-editor .ke-sets-dialog h3{margin:0}
+#klanarchia-editor .ke-sets-dialog label{display:grid;gap:6px;font-size:14px}
+#klanarchia-editor .ke-sets-dialog input{width:100%;box-sizing:border-box}
+#klanarchia-editor .ke-set-choices{display:flex;flex-wrap:wrap;gap:12px;padding:20px 0}
+#klanarchia-editor .ke-set-library{display:grid;gap:6px;margin:16px 0;max-height:50vh;overflow:auto}
+#klanarchia-editor .ke-set-library button{display:flex;justify-content:space-between;text-align:left}
+#klanarchia-editor .ke-set-items{padding:0;list-style:none;margin:12px 0;max-height:53vh;overflow:auto}
+#klanarchia-editor .ke-set-items li{display:flex;align-items:center;gap:10px;border-bottom:1px solid #a58b4c33;padding:8px 2px;cursor:grab}
+#klanarchia-editor .ke-set-position{min-width:28px;font-size:13px;color:#c3a65e}
+#klanarchia-editor .ke-set-item-title{min-width:0;flex:1;overflow-wrap:anywhere}
+#klanarchia-editor .ke-set-item-title small{display:block;opacity:.65;font-size:12px}
+#klanarchia-editor .ke-set-item-actions{display:flex;gap:4px}
+#klanarchia-editor .ke-set-item-actions button{padding:5px 10px}
+#klanarchia-editor .ke-set-help{font-size:13px;opacity:.8}
+#klanarchia-editor .ke-sets-dialog footer{flex-wrap:wrap;margin-top:16px}
+#klanarchia-editor .ke-sets-dialog footer span{flex:1;font-size:13px}
+@media(max-width:600px){#klanarchia-editor .ke-sets-dialog{padding:12px}#klanarchia-editor .ke-set-items li{gap:5px}#klanarchia-editor .ke-set-item-actions button{padding:6px 8px}}
+
+#klanarchia-editor .ke-sheet-options{display:flex;align-items:center;flex-wrap:wrap;gap:16px}
+#klanarchia-editor .ke-sheet-options label{display:flex;align-items:center;gap:6px}
+#klanarchia-editor .ke-sheet-options input[type=checkbox]{width:18px;height:18px;accent-color:#c3a65e}
+#klanarchia-editor .ke-sheet-options select{background:#25281f;color:inherit;padding:6px;border:1px solid #a58b4c66}
+#klanarchia-editor .ke-sheet-paging{display:flex;align-items:center;justify-content:center;gap:16px;margin:10px 0}
+#klanarchia-editor .ke-sheet-page{position:relative;width:100%;background:white;overflow:hidden}
+#klanarchia-editor .ke-sheet-pages{position:relative}
+#klanarchia-editor .ke-sheet-page.is-hidden-page{position:absolute;left:-100000px;top:0;visibility:hidden;pointer-events:none}
+#klanarchia-editor .ke-sheet-card>svg{display:block;width:100%;height:100%;max-width:none;max-height:none;box-shadow:none}
+
+/* Stable export workspace: controls left, reserved paper preview right. */
+#klanarchia-editor .ke-sheet-export{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:start}
+#klanarchia-editor .ke-sheet-config{min-width:0;position:sticky;top:0}
+#klanarchia-editor .ke-sheet-config .ke-sheet-options{display:grid;gap:14px}
+#klanarchia-editor .ke-sheet-config .ke-sheet-options label{justify-content:space-between}
+#klanarchia-editor .ke-sheet-config .ke-sheet-options label:has(input){justify-content:flex-start}
+#klanarchia-editor .ke-sheet-config footer{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+#klanarchia-editor .ke-sheet-preview{min-width:0}
+#klanarchia-editor .ke-sheet-paging{height:36px;margin:0 0 12px;font-size:13px;gap:10px}
+#klanarchia-editor .ke-sheet-preview-area{position:relative;aspect-ratio:210 / 297;background:#eee9dd;overflow:hidden}
+#klanarchia-editor .ke-sheet-pages{position:absolute;inset:0}
+#klanarchia-editor .ke-sheet-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;color:#555144;font-size:15px}
+@media(max-width:680px){#klanarchia-editor .ke-sheet-export{grid-template-columns:1fr;gap:16px}#klanarchia-editor .ke-sheet-config{position:static}#klanarchia-editor .ke-sheet-config .ke-sheet-options{grid-template-columns:repeat(2,minmax(0,1fr))}#klanarchia-editor .ke-sheet-config footer{flex-direction:row;flex-wrap:wrap}#klanarchia-editor .ke-sheet-config select{max-width:130px}}
+
+#klanarchia-editor .ke-sheet-config select{min-width:0;width:145px;max-width:100%}
+
+#klanarchia-editor .ke-sets-dialog.is-sheet-export{width:min(calc(100vw - 32px),calc((100dvh - 56px) * 210 / 297 + 426px));max-width:none;height:calc(100dvh - 32px);max-height:none;overflow:hidden;display:block;padding:12px}
+#klanarchia-editor .is-sheet-export>header{position:absolute;left:20px;top:20px;width:292px;margin:0;z-index:2}
+#klanarchia-editor .is-sheet-export>header>button{position:absolute;left:calc(min(100vw - 32px,(100dvh - 56px) * 210 / 297 + 426px) - 80px);top:0}
+#klanarchia-editor .is-sheet-export .ke-sheet-export{height:100%;min-height:0;grid-template-columns:320px minmax(0,1fr);gap:20px;overflow:hidden}
+#klanarchia-editor .is-sheet-export .ke-sheet-config{position:static;height:100%;box-sizing:border-box;padding:64px 8px 0;overflow:auto}
+#klanarchia-editor .is-sheet-export .ke-sheet-preview{height:100%;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 56px;gap:8px;container-type:size}
+#klanarchia-editor .is-sheet-export .ke-sheet-preview-area{grid-column:1;grid-row:1;align-self:start;justify-self:end;width:min(calc(100cqw - 64px),calc(100cqh * 210 / 297));max-height:100%}
+#klanarchia-editor .is-sheet-export .ke-sheet-paging{grid-column:2;grid-row:1;height:auto;min-height:0;overflow:auto;display:flex;flex-direction:column;justify-content:flex-start;margin:0;padding-top:58px;gap:8px}
+#klanarchia-editor .is-sheet-export .ke-sheet-paging span{font-size:12px;text-align:center}
+#klanarchia-editor .is-sheet-export .ke-sheet-paging button{flex:none;width:44px;height:40px;padding:4px}
+#klanarchia-editor .is-sheet-export .ke-sheet-paging button[aria-current=page]{background:#c3a65e;color:#25281f;border-color:#c3a65e}
+@media(max-width:680px){#klanarchia-editor .ke-sets-dialog.is-sheet-export{width:calc(100vw - 12px);height:calc(100dvh - 12px);padding:8px}#klanarchia-editor .is-sheet-export>header{left:12px;width:145px}#klanarchia-editor .is-sheet-export>header>button{left:calc(100vw - 74px)}#klanarchia-editor .is-sheet-export .ke-sheet-export{grid-template-columns:150px minmax(0,1fr);gap:8px}#klanarchia-editor .is-sheet-export .ke-sheet-config .ke-sheet-options{grid-template-columns:1fr}#klanarchia-editor .is-sheet-export .ke-sheet-config footer{flex-direction:column}#klanarchia-editor .is-sheet-export .ke-sheet-preview{grid-template-columns:minmax(0,1fr) 40px;gap:6px}#klanarchia-editor .is-sheet-export .ke-sheet-preview-area{width:min(calc(100cqw - 46px),calc(100cqh * 210 / 297))}#klanarchia-editor .is-sheet-export .ke-sheet-paging button{width:36px}}

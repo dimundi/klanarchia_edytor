@@ -1,0 +1,30 @@
+<?php
+if(!defined('ABSPATH'))exit;
+function ke_sets_ready(){if(get_option('ke_sets_schema_version')!=='1')throw new KE_Request_Error('Run sets migration first',503);}
+function ke_migrate_sets(){
+ global $wpdb;ke_talents_ready();if(get_option('ke_sets_schema_version')==='1')return;
+ require_once ABSPATH.'wp-admin/includes/upgrade.php';$charset=$wpdb->get_charset_collate();
+ $schemas=['talent_sets'=>"id bigint unsigned NOT NULL AUTO_INCREMENT, uuid char(36) NOT NULL, name varchar(120) NOT NULL, lock_version bigint unsigned NOT NULL DEFAULT 1, created_at datetime NOT NULL, updated_at datetime NOT NULL, created_by bigint unsigned NOT NULL, updated_by bigint unsigned NOT NULL, PRIMARY KEY  (id), UNIQUE KEY uuid (uuid)", 'talent_set_items'=>"set_id bigint unsigned NOT NULL, position int unsigned NOT NULL, talent_id bigint unsigned NOT NULL, PRIMARY KEY  (set_id,position), UNIQUE KEY set_talent (set_id,talent_id), KEY talent_id (talent_id)"];
+ foreach($schemas as $table=>$body){dbDelta('CREATE TABLE '.ke_table($table)." (\n".str_replace(', ',",\n",$body)."\n) ENGINE=InnoDB $charset;");if($wpdb->last_error)throw new RuntimeException('Set schema failed');}
+ foreach([['set_id','talent_sets'],['talent_id','talents']]as[$column,$target]){$constraint='ke_'.substr(md5(ke_table('talent_set_items').$column),0,20);if(!$wpdb->get_var($wpdb->prepare('SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME=%s AND CONSTRAINT_NAME=%s',ke_table('talent_set_items'),$constraint)))ke_db_query('ALTER TABLE '.ke_table('talent_set_items').' ADD CONSTRAINT '.$constraint.' FOREIGN KEY ('.$column.') REFERENCES '.ke_table($target).'(id) ON DELETE RESTRICT');}
+ update_option('ke_sets_schema_version','1',false);
+}
+function ke_set_record($uuid){global $wpdb;$row=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talent_sets').' WHERE uuid=%s',$uuid),ARRAY_A);if(!$row)throw new KE_Request_Error('Set not found',404);$codes=$wpdb->get_col($wpdb->prepare('SELECT t.code FROM '.ke_table('talent_set_items').' i JOIN '.ke_table('talents').' t ON t.id=i.talent_id WHERE i.set_id=%d ORDER BY i.position',$row['id']));if($wpdb->last_error)throw new RuntimeException('Set read failed');return ['id'=>$row['uuid'],'name'=>$row['name'],'revision'=>(int)$row['lock_version'],'talents'=>$codes,'updatedAt'=>str_replace(' ','T',$row['updated_at']).'Z'];}
+function ke_sets_list($r){global $wpdb;ke_sets_ready();$rows=$wpdb->get_results('SELECT s.uuid AS id,s.name,s.lock_version AS revision,s.updated_at AS updatedAt,COUNT(i.talent_id) AS count FROM '.ke_table('talent_sets').' s LEFT JOIN '.ke_table('talent_set_items').' i ON i.set_id=s.id GROUP BY s.id ORDER BY s.updated_at DESC,s.id DESC',ARRAY_A);if($wpdb->last_error)throw new RuntimeException('Set list failed');foreach($rows as &$row){$row['revision']=(int)$row['revision'];$row['count']=(int)$row['count'];$row['updatedAt']=str_replace(' ','T',$row['updatedAt']).'Z';}return ['items'=>$rows];}
+function ke_set_get($r){ke_sets_ready();ke_db_query('START TRANSACTION WITH CONSISTENT SNAPSHOT');$result=ke_set_record(ke_uuid($r['uuid']));ke_db_query('COMMIT');return $result;}
+function ke_set_put($r){
+ global $wpdb;ke_sets_ready();$b=$r->get_json_params();ke_require_value(is_array($b));$name=$b['name']??null;$codes=$b['talents']??null;
+ ke_require_value(is_string($name)&&trim($name)!==''&&mb_strlen($name)<=120);ke_require_value(is_array($codes)&&array_is_list($codes)&&count($codes)>=1&&count($codes)<=5000);
+ $seen=[];foreach($codes as $code){ke_require_value(is_string($code)&&preg_match('/^'.KE_TALENT_CODE_PATTERN.'$/D',$code)&&!isset($seen[$code]));$seen[$code]=true;}
+ $uuid=isset($r['uuid'])?ke_uuid($r['uuid']):wp_generate_uuid4();$revision=isset($r['uuid'])?ke_number($b['revision']??null,1,PHP_INT_MAX,true):0;
+ ke_db_query('START TRANSACTION');$wpdb->get_var('SELECT id FROM '.ke_table('catalogue_state').' WHERE id=1 FOR UPDATE');
+ $old=$wpdb->get_row($wpdb->prepare('SELECT * FROM '.ke_table('talent_sets').' WHERE uuid=%s FOR UPDATE',$uuid),ARRAY_A);
+ if(isset($r['uuid'])&&!$old)throw new KE_Request_Error('Set not found',404);if($old&&(int)$old['lock_version']!==$revision)throw new KE_Request_Error('Set changed; reopen it before saving',409);
+ $talents=[];foreach($wpdb->get_results('SELECT t.id,t.code FROM '.ke_table('talents').' t JOIN '.ke_table('talent_categories').' c ON c.id=t.category_id WHERE t.archived_at IS NULL AND c.archived_at IS NULL',ARRAY_A)as$row)$talents[$row['code']]=(int)$row['id'];foreach($codes as$code)if(!isset($talents[$code]))throw new KE_Request_Error('A selected talent is unavailable',422);
+ $now=current_time('mysql',true);$data=['name'=>trim($name),'updated_at'=>$now,'updated_by'=>get_current_user_id(),'lock_version'=>$revision+1];
+ if($old){$id=(int)$old['id'];ke_db_write('update','talent_sets',$data,['id'=>$id]);ke_db_query($wpdb->prepare('DELETE FROM '.ke_table('talent_set_items').' WHERE set_id=%d',$id));}else{ke_db_write('insert','talent_sets',$data+['uuid'=>$uuid,'created_at'=>$now,'created_by'=>get_current_user_id()]);$id=(int)$wpdb->insert_id;}
+ foreach($codes as$pos=>$code)ke_db_write('insert','talent_set_items',['set_id'=>$id,'position'=>$pos+1,'talent_id'=>$talents[$code]]);
+ $result=ke_set_record($uuid);ke_db_query('COMMIT');return $result;
+}
+add_action('rest_api_init',function(){foreach([['/sets','GET','ke_sets_list'],['/sets','POST','ke_set_put'],['/sets/(?P<uuid>[a-f0-9-]{36})','GET','ke_set_get'],['/sets/(?P<uuid>[a-f0-9-]{36})','PUT','ke_set_put']]as[$path,$method,$callback])register_rest_route('klanarchia-editor/v1',$path,['methods'=>$method,'permission_callback'=>'ke_can_access','callback'=>function($r)use($callback){return ke_api_run($callback,$r);}]);});
+if(defined('WP_CLI')&&WP_CLI)WP_CLI::add_command('ke sets-init',function(){try{if(!ke_can_access())throw new RuntimeException('Administrator required');ke_migrate_sets();WP_CLI::success('Talent sets ready.');}catch(Throwable $e){WP_CLI::error($e->getMessage());}});

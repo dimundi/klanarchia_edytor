@@ -1,3 +1,4 @@
+import TalentSets from './TalentSets';
 import TalentSelection,{SelectionCheckbox,type SelectionControls} from './TalentSelection';
 import EditorialNoteBadge from './EditorialNoteBadge';
 import TalentListRow from './TalentListRow';
@@ -21,9 +22,7 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
  const pl = language === 'pl', palette=usePalette(language);
  const [view,setView]=useState<'list'|'tiles'>('list'),[showTileStatuses,setShowTileStatuses]=useState(false);
  const [selectionMode,setSelectionMode]=useState(false),[exportNotice,setExportNotice]=useState(false);
- const [actionsOpen,setActionsOpen]=useState(false);const actionsRef=useRef<HTMLDivElement>(null);
- useEffect(()=>{if(!actionsOpen)return;const outside=(e:PointerEvent)=>{if(!actionsRef.current?.contains(e.target as Node))setActionsOpen(false);};const key=(e:KeyboardEvent)=>{if(e.key==='Escape'){setActionsOpen(false);actionsRef.current?.querySelector('button')?.focus();}};document.addEventListener('pointerdown',outside);document.addEventListener('keydown',key);return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',key);};},[actionsOpen]);
- const actionsMenu=<div className="ke-library-actions" ref={actionsRef}><button type="button" className="ke-library-hamburger" aria-label={pl?'Opcje biblioteki':'Library options'} title={pl?'Opcje biblioteki':'Library options'} aria-expanded={actionsOpen} onClick={()=>setActionsOpen(v=>!v)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>{actionsOpen&&<div className="ke-library-actions-panel"><button type="button" aria-pressed={selectionMode} onClick={()=>{setSelectionMode(v=>!v);setActionsOpen(false);}}>{pl?'Tryb zaznaczania':'Selection mode'}</button><button type="button" onClick={()=>{setExportNotice(v=>!v);setActionsOpen(false);}}>{pl?'Eksportuj':'Export'}</button></div>}</div>;
+ const actionsMenu=<div className="ke-library-direct-actions"><button type="button" aria-pressed={selectionMode} onClick={()=>setSelectionMode(v=>!v)}>{selectionMode?(pl?'Zakończ zaznaczanie':'Finish selecting'):(pl?'Tryb zaznaczania':'Selection mode')}</button><button type="button" onClick={()=>setExportNotice(true)}>{pl?'Eksportuj':'Export'}</button></div>;
  const groupsInitialized=useRef(false);
  const [searchState,setSearchState]=useState(emptyTalentSearch);
  const [nameReport,setNameReport]=useState<NameAuditReport|null>(null);
@@ -120,7 +119,7 @@ export default function TalentLibrary({ language, active }: { language: 'pl' | '
   </aside>
   <section className="ke-library-content" aria-label={pl ? 'Zawartość biblioteki' : 'Library contents'}>
    {!current&&<div className="ke-library-export-tools">{actionsMenu}</div>}
-   {exportNotice&&<p className="ke-export-placeholder" role="status">{pl?'Eksport zaznaczenia i zapisanych SET-ów — panel w przygotowaniu.':'Export selection and saved SETs — panel coming soon.'}</p>}
+   {exportNotice&&<TalentSets language={language} selected={selected} categories={items} onClose={()=>setExportNotice(false)}/>}
    {current&&<div className="ke-library-tools"><div className="ke-library-heading"><div className="ke-library-view-toggle" role="group" aria-label={pl?'Widok talentów':'Talent view'}><button type="button" aria-pressed={view==='list'} onClick={()=>setView('list')}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h1M3 12h1M3 18h1"/></svg>{pl?'Lista':'List'}</button><button type="button" aria-pressed={view==='tiles'} onClick={()=>setView('tiles')}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>{pl?'Kafelki':'Tiles'}</button></div><h3>{parent&&<>{parent.name} / </>}{category?.name || (pl ? 'Biblioteka talentów' : 'Talent library')} <span className="ke-library-heading-count">({category?.talentCount??talents.length})</span></h3></div>
     <div className="ke-library-view-tools">{view==='tiles'&&<button type="button" className="ke-tile-status-toggle" aria-pressed={showTileStatuses} onClick={()=>setShowTileStatuses(value=>!value)}>{showTileStatuses?(pl?'Ukryj statusy':'Hide statuses'):(pl?'Pokaż statusy':'Show statuses')}</button>}
     {category?.parentId && <button type="button" onClick={() => createTalent(category.id)}>{pl ? '+ Utwórz talent' : '+ Create talent'}</button>}

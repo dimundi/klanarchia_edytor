@@ -1370,3 +1370,34 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 ## 2026-11-11 — Cieńsza obwódka checkboxa
 - Ciemna obwódka checkboxa kafelka zmniejszona z 6 do 2 px; pole kliku nadal 32 px.
+
+## 2026-11-11 — Okno SET-u i zapis w bazie
+- Eksportuj: wybór z zaznaczenia lub z bazy, wspólne okno SET-u, nazwa, uporządkowana lista, przeciąganie/strzałki, usuwanie pozycji i zapis. Początkowy porządek nowego SET-u: ścieżki kategorii alfabetycznie, wewnątrz podgrupy sort_order. Zapisany porządek odtwarzany bez sortowania. Ochrona wyjścia i przeładowania z niezapisanymi zmianami.
+- Dwie tabele talent_sets/talent_set_items, jawne sets-init (powtórzenie bez zmian), klucze obce, pozycje 1..N i brak duplikatów. Administrator-only GET/POST/PUT, transakcja i revision/409. Brakujące talenty nie znikają po cichu. Zapis nie modyfikuje treści talentów.
+- Kopia SQL sprzed migracji zachowana w wtf_www/backups/klanarchia-editor/20261111/sets/database.sql. Pierwsze kopiowanie do katalogu nie powiodło się; zachowany wcześniejszy dump skopiowano po utworzeniu katalogu.
+- TS/Vite, PHP lint i diff check poprawne. Playwright: nowy SET 28 talentów, strzałki, drag/drop, usunięcie pozycji, zapis 27 i otwarcie po reload z identyczną kolejnością; niezależne wejście bez zaznaczenia. API: aktualizacja kolejności, konflikt409, odrzucenie duplikatów i pustej listy, odmowa anonimowi. Poprawiono skrypt testowy (brak importu fs i oczekiwania na odczyt); końcowy przebieg przeszedł. Tymczasowe SET-y QA usunięte; bez zmian rzeczywistych talentów.
+- Generowanie arkuszy, opcje CMYK/RGB i konfiguracja eksportu pozostają następnym etapem; przycisk wewnątrz SET-u komunikuje ten stan. Dokumentacja i TODO zaktualizowane.
+
+## 2026-11-11 — Jawne przyciski zaznaczania i eksportu
+- Usunięto hamburger z biblioteki. Tryb zaznaczania i Eksportuj widoczne bezpośrednio w nagłówku. Aktywny tryb podświetla przycisk i zmienia napis na Zakończ zaznaczanie; wybór pozostaje po wyłączeniu. TS/Vite poprawne.
+
+## 2026-11-11 — Eksport SET-u na A4 RGB
+- Z okna SET-u: ustawienia A4, ramka, pełne ID, podgląd stronicowany i pobranie PDF bez obowiązku zapisu SET-u. A4 pionowo, margines10mm, rozmiary kart zachowane, zero odstępów, kolejność wierszami. Odczyt talentów z ograniczeniem równoległości do3, brak karty blokuje eksport.
+- PDF: wspólny przygotowany SVG arkusza na stronę, tekst w krzywych, maski600dpi, te same pozycje co podgląd. Pierwsza próba osobnych wywołań svg2pdf dla kart ujawniła brak części ramki na stronie2; skład całej strony usunął defekt.
+- TS/Vite poprawne. Playwright: 28talentów, 2strony, identyczna kolejność, opcje ramki/ID i pobranie PDF, bez błędów JS i zapisów danych. PDF.js: poprawne 2strony A4, obie wyrenderowane; strona2 sprawdzona wizualnie po poprawce. Skrypty testowe poprawione o oczekiwanie na grupy i właściwe cleanup PDF.js. Narzędzia/plik próbny: wtf_www/local-scripts/one-off/sets-20261111/.
+- CMYK i naklejki widocznie niedostępne, nie zaimplementowano konwersji ani geometrii naklejek. Bez wdrożenia.
+
+## 2026-11-11 — Stabilny układ podglądu eksportu
+- Konfiguracja i przyciski po lewej, arkusz po prawej. Miejsce A4 rezerwowane od razu; spinner i „Generuję podgląd…” zastępowane gotowym arkuszem bez zmiany geometrii. Na wąskim ekranie kolumny układają się pionowo.
+- TS/Vite poprawne. Playwright: placeholder, położenie kolumn i identyczne x/y/szerokość/wysokość podglądu przed i po wczytaniu 28 talentów, bez błędów JS. Zrzut sprawdzony wizualnie. Bez zmian danych i wdrożenia.
+
+## 2026-11-11 — Eksport na całą dostępną przestrzeń
+- Okno eksportu niemal na cały ekran; arkusz proporcjonalnie dopasowany do wysokości i szerokości bez przewijania. Konfiguracja po lewej, numerowane przyciski stron po prawej z wyróżnieniem bieżącej strony. Placeholder zachowuje wymiary.
+- TS/Vite i Playwright poprawne: szerokość okna, cały arkusz w ekranie, stabilność geometrii, przejście do strony 2, brak błędów JS. Bez zmian danych.
+
+## 2026-11-11 — Proporcje eksportu i trzy kolumny A4
+- Węższe okno zależne od wysokości arkusza, konfiguracja 320 px, podgląd przy górnej krawędzi, przyciski stron 8 px obok arkusza. Margines A4 zmniejszony do 5 mm bez skalowania kart.
+- Build i Playwright poprawne: trzy karty w pierwszym rzędzie, czwarta w następnym, cały arkusz na ekranie, stabilny placeholder, bliskie przyciski, brak błędów JS.
+
+## 2026-11-11 — Cienie miniatur w arkuszu
+- Podgląd eksportu dziedziczył box-shadow klasy kt-thumbnail. Wyłączono cień i limity wymiarów miniatur wyłącznie w arkuszu eksportu.

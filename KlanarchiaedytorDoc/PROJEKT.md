@@ -140,3 +140,5 @@ Notatki redakcyjne są oddzielne od automatycznej walidacji. Można je dodawać,
 
 
 2026-11-11: uzgodniono zakres eksportu zbiorczego: zaznaczanie grup/podgrup/talentów, zapisywane SET-y z obowiązkowym zachowaniem kolejności, hardkodowane układy A4 i naklejek A4 oraz wybór ramki, ID i RGB/CMYK. Zapis konfiguracji eksportu w SET-ach pozostaje propozycją. [Specyfikacja eksportu](Eksport%20talentów.md). Wyłącznie dokumentacja, bez implementacji i tabel.
+
+2026-11-11: działa wspólne okno SET-u z zaznaczenia lub bazy: nazwa, ustalanie kolejności, usuwanie pozycji, zapis i otwieranie. Kolejność jest przechowywana jawnie w tabeli pozycji. Eksport arkuszy pozostaje kolejnym etapem. [Szczegóły](Eksport%20talentów.md).
