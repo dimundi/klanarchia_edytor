@@ -21,7 +21,7 @@ require_once __DIR__.'/includes/talent-templates.php';
 require_once __DIR__.'/includes/talent-checks.php';
 require_once __DIR__.'/includes/editorial-notes.php';
 
-function ke_can_access() { return is_user_logged_in() && current_user_can('manage_options'); }
+function ke_can_access() { return is_user_logged_in() && (current_user_can('manage_options') || current_user_can('klanarchia_editor_creator')); }
 function ke_is_page() { return is_page() && get_page_uri(get_queried_object_id()) === 'klanarchia/edytor'; }
 function ke_requested() { return isset($_GET['ke_app']) && is_string($_GET['ke_app']) && $_GET['ke_app'] === 'postaci'; }
 function ke_language() {
@@ -37,19 +37,19 @@ add_action('template_redirect', function () {
     if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
     nocache_headers();
     if (ke_requested() && !ke_can_access()) {
-        wp_die(ke_language() === 'en' ? 'Administrator access required.' : 'Edytor jest dostępny wyłącznie dla administratora.', 'Klanarchia', ['response' => 403]);
+        wp_die(ke_language() === 'en' ? 'Editor permission required.' : 'Nie masz uprawnień do edytora Klanarchii.', 'Klanarchia', ['response' => 403]);
     }
 });
 add_filter('render_block_core/group', function ($html, $block) {
     if (!ke_is_page() || !ke_can_access() || ke_requested()) return $html;
     $classes = preg_split('/\s+/', $block['attrs']['className'] ?? '');
     if (!in_array('klan-editor-module', $classes, true)) return $html;
-    // Istniejące moduły pozostają w treści WP; dodajemy wejście wyłącznie do modułu postaci.
+    // Istniejące moduły pozostają w treści WP; cały moduł postaci jest odnośnikiem dla uprawnionych.
     if (!preg_match('/<h2\b[^>]*>\s*Edytor postaci\s*<\/h2>/u', $html)) return $html;
-    $label = ke_language() === 'en' ? 'Character editor' : 'Edytor postaci';
-    $button = '<p><a class="klan-button" href="'.esc_url(add_query_arg('ke_app', 'postaci', get_permalink())).'">'.esc_html($label).'</a></p>';
-    $position = strrpos($html, '</div>');
-    return $position === false ? $html : substr_replace($html, $button, $position, 0);
+    $url = esc_url(add_query_arg('ke_app', 'postaci', get_permalink()));
+    return preg_replace_callback('/(<h2\b[^>]*>)(\s*Edytor postaci\s*)(<\/h2>)/u', function ($match) use ($url) {
+        return $match[1].'<a class="ke-module-entry" href="'.$url.'">'.$match[2].'</a>'.$match[3];
+    }, $html, 1);
 }, 10, 2);
 add_filter('the_content', function ($content) {
     if (!ke_is_page() || !ke_requested() || !ke_can_access() || !in_the_loop() || !is_main_query()) return $content;

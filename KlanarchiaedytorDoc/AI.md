@@ -1401,3 +1401,11 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 ## 2026-11-11 — Cienie miniatur w arkuszu
 - Podgląd eksportu dziedziczył box-shadow klasy kt-thumbnail. Wyłączono cień i limity wymiarów miniatur wyłącznie w arkuszu eksportu.
+
+## 2026-11-11 — Uprawnienie twórcy i WTF Edytor Ról
+- ke_can_access dopuszcza administratora lub klanarchia_editor_creator. Własny lekki panel w wtf_www: Użytkownicy → WTF Edytor Ról, natywne uprawnienia indywidualne. URE wyłączony. Bez zmian uprawnień rzeczywistych kont.
+- PHP lint poprawny. Test przeglądarkowy tymczasowego subskrybenta: brak dostępu → nadanie → dostęp do biblioteki → odebranie → brak dostępu; rola zachowana, zapis bez nonce i zapis przez subskrybenta odrzucone 403. Konto QA usunięte. Poprawiono skrypt testowy, aby wymuszał nawigację zamiast przejścia do tego samego hasha.
+
+## 2026-11-11 — Cały boks wejścia do edytora
+- Na stronie /klanarchia/edytor/ tytuł Edytor postaci jest natywnym odnośnikiem rozciągniętym na cały boks; usunięto dodatkowy przycisk. Tylko administrator i klanarchia_editor_creator. Hover/focus w klanarchia-header.css motywu WTF.
+- PHP lint poprawny; przeglądarka: konto z uprawnieniem klika dolny narożnik boksu i wchodzi na ekran powitalny; brak dodatkowego przycisku, odebranie uprawnienia blokuje dostęp. Test poprawiony o cookies/przewijanie i oczekiwanie strony powitalnej zamiast biblioteki. Konto QA usunięte.
