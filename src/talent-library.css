@@ -212,3 +212,16 @@
 #klanarchia-editor .ke-library-actions-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:190px;padding:6px;background:#25281f;border:1px solid #c3a65e66;border-radius:4px;box-shadow:0 8px 24px #0006;display:grid;gap:4px}
 #klanarchia-editor .ke-library-actions-panel button{text-align:left;white-space:nowrap}
 #klanarchia-editor .ke-library-actions-panel button[aria-pressed=true]{background:#c3a65e22;border-color:#d4b66e}
+
+#klanarchia-editor .ke-selection-checkbox{width:18px;height:18px;flex:none;accent-color:#c3a65e;cursor:pointer;margin:4px 8px 4px 0}
+#klanarchia-editor .ke-selection-tree-talents{padding-left:48px}
+#klanarchia-editor .ke-selection-tree-talent{display:flex;align-items:center;gap:4px;border-radius:3px}
+#klanarchia-editor .ke-selection-tree-talent .ke-library-name{font-size:12px;overflow-wrap:anywhere;min-width:0}
+#klanarchia-editor .ke-selection-tree-talent[data-selected=true]{background:#c3a65e18}
+#klanarchia-editor .ke-talent-list article[data-selected=true]{background:#c3a65e0d}
+#klanarchia-editor .ke-talent-list.is-tiles article{position:relative}
+#klanarchia-editor .ke-talent-list.is-tiles article>.ke-selection-checkbox{position:absolute;top:7px;left:7px;z-index:3;margin:0;box-shadow:0 0 0 4px #25281f;border-radius:2px}
+#klanarchia-editor .ke-library-selection{position:sticky;bottom:0;background:#25281f;padding:8px;z-index:4}
+
+/* Large touch target for tile selection, outside the card opening button. */
+#klanarchia-editor .ke-talent-list.is-tiles article>.ke-selection-checkbox{width:32px;height:32px;top:8px;left:8px;margin:0;box-shadow:0 0 0 2px #25281f;cursor:pointer}

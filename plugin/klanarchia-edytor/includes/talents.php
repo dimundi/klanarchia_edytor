@@ -87,3 +87,11 @@ function ke_talent_history($r){
 }
 add_action('rest_api_init',function(){foreach([['/talents','GET','ke_talents_list'],['/talents','POST','ke_talent_put'],['/talents/(?P<code>'.KE_TALENT_CODE_PATTERN.')','GET','ke_talent_get'],['/talents/(?P<code>'.KE_TALENT_CODE_PATTERN.')','PUT','ke_talent_put'],['/talents/(?P<code>'.KE_TALENT_CODE_PATTERN.')/history','GET','ke_talent_history']] as [$path,$method,$callback])register_rest_route('klanarchia-editor/v1',$path,['methods'=>$method,'permission_callback'=>'ke_can_access','callback'=>function($r)use($callback){return ke_api_run($callback,$r);}]);});
 if(defined('WP_CLI')&&WP_CLI)WP_CLI::add_command('ke talents-init',function(){if(!ke_can_access())WP_CLI::error('Administrator required');try{ke_migrate_talents();ke_migrate_talent_codes();ke_migrate_talent_status();ke_migrate_live_talent_templates();ke_migrate_talent_order();WP_CLI::success('Talent schema ready.');}catch(Throwable $e){WP_CLI::error($e->getMessage());}});
+
+// Lightweight catalogue for selection; no card documents or rendering payloads.
+function ke_talent_selection_index($r){
+ global $wpdb;ke_talents_ready();$lang=ke_api_language($r);
+ $rows=$wpdb->get_results($wpdb->prepare("SELECT t.code AS id,c.uuid AS categoryId,COALESCE(x.name,pl.name,'') AS name,t.sort_order AS position FROM ".ke_table('talents').' t JOIN '.ke_table('talent_categories').' c ON c.id=t.category_id JOIN '.ke_table('talent_versions').' v ON v.id=t.current_version_id LEFT JOIN '.ke_table('talent_texts').' x ON x.talent_version_id=v.id AND x.language=%s LEFT JOIN '.ke_table('talent_texts')." pl ON pl.talent_version_id=v.id AND pl.language='pl' WHERE t.archived_at IS NULL AND c.archived_at IS NULL ORDER BY t.category_id,t.sort_order,t.id",$lang),ARRAY_A);
+ if($wpdb->last_error)throw new RuntimeException('Selection index failed');return ['items'=>$rows];
+}
+add_action('rest_api_init',function(){register_rest_route('klanarchia-editor/v1','/talents/selection-index',['methods'=>'GET','permission_callback'=>'ke_can_access','callback'=>function($r){return ke_api_run('ke_talent_selection_index',$r);}]);});

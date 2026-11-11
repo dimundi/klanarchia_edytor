@@ -41,3 +41,7 @@ Są to ustawienia wyniku eksportu, nie polecenie zmiany zapisanych talentów lu
 - Czy drukowany identyfikator oznacza kod stały, czy pełny kod z oznaczeniem wersji.
 
 Model bazy dla SET-ów pozostaje do zaprojektowania. Lista wdrożenia jest utrzymywana wyłącznie w [TODO](TODO.md).
+
+## Stan lokalny — 2026-11-11
+
+Działa tryb zaznaczania: grupy, podgrupy, talenty, wspólne checkboxy drzewa/listy/kafelków/wyszukiwania, stany częściowe oraz licznik unikalnych talentów. Podgrupy można rozwijać do talentów. Wyłączenie trybu zachowuje wybór podczas pracy w module; odświeżenie strony nie zastępuje przyszłego zapisu SET-u. Eksportuj pozostaje dostępnym przyciskiem zapowiadającym panel. Zapis SET-ów, ustawianie ich kolejności i eksport zbiorczy nie są jeszcze wdrożone.

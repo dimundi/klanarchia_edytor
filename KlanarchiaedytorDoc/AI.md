@@ -1355,3 +1355,18 @@ Plik dla asystenta: zapis wykonanych zmian, wyników weryfikacji i kontekstu pot
 
 ## 2026-11-11 — Krótszy nagłówek
 - Nagłówek lewego panelu Grupy talentów skrócony do Talenty (EN: Talents). TS/Vite poprawne.
+
+## 2026-11-11 — Zaznaczanie pojedynczych talentów
+- Wspólny zbiór kodów talentów dla drzewa, listy, kafelków i wyników wyszukiwania/raportu nazw. Checkboxy grup/podgrup operują na talentach, częściowe zaznaczenie indeterminate; licznik talentów, bez duplikatów. Wyłączenie trybu chowa kontrolki, zachowując wybór w sesji modułu.
+- Podgrupy rozwijane do talentów w trybie zaznaczania, według kolejności podgrupy. Kliknięcie checkboxa nie otwiera edytora; tytuł nadal otwiera.
+- Chroniony endpoint GET talents/selection-index zwraca tylko kod, podgrupę, nazwę i pozycję, bez dokumentów kart. Ładowanie/błąd blokują zaznaczanie, dostępna ponowna próba. Odświeżenie indeksu usuwa nieistniejące kody z wyboru. Bez tabel i zapisu SET-ów; kolejność SET-u pozostaje osobnym etapem.
+- Weryfikacja: TS/Vite, PHP lint poprawne. Playwright: grupa 28, odznaczenie jednego 27 i stany częściowe obu przodków, synchronizacja lista/drzewo/kafelki/wyszukiwanie, zachowanie po wyłączeniu trybu, wyczyszczenie i brak otwierania talentu po checkboxie; brak błędów JS. Bez zmian bazy.
+
+## 2026-11-11 — Lżejsze zaznaczenie talentu
+- Usunięto ramkę zaznaczenia talentów; pozostają checkbox i delikatne podświetlenie tła. TS/Vite poprawne.
+
+## 2026-11-11 — Większe checkboxy kafelków
+- Checkbox kafelka powiększony z 18 do 32 px (również rzeczywiste pole kliknięcia), z ciemnym podkładem odróżniającym go od grafiki. Lista i drzewo bez zmian. TS/Vite poprawne.
+
+## 2026-11-11 — Cieńsza obwódka checkboxa
+- Ciemna obwódka checkboxa kafelka zmniejszona z 6 do 2 px; pole kliku nadal 32 px.

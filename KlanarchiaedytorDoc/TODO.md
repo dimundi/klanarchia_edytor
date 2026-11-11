@@ -29,7 +29,7 @@ Zapisane raporty błędów talentów i oznaczenia na liście: [Błędy talentó
 
 - [ ] T-01 Działa ekran Narzędzia po wejściu w Talenty, bez automatycznego wyboru grupy, oraz raport identycznych/podobnych nazw. Doprecyzować pozostałe narzędzia i miejsce Utwórz talent; obecne umiejscowienie pozostaje do poprawy.
 - [ ] T-02 Działają kafelki w sekcjach według podgrup oraz otwieranie całym kafelkiem. Kafelki renderowane leniwie, z pamięcią podglądów. Działa osobne narzędzie wyszukiwania po tytule/kodzie i opcjonalnie treści, z filtrami grup/podgrup i paginacją. Doprecyzować pozostałe przeglądanie dużej liczby talentów: zbiorcze liczniki, filtrowanie po statusach/kodach błędów i sortowanie. Nie przywracać Całej biblioteki bez ustalenia jej roli.
-- [ ] T-03 Wdrożyć checkboxy grup, podgrup i talentów; eksport wymaga zaznaczenia. Ustalenia: [Eksport talentów](Eksport%20talentów.md).
+- [x] T-03 Checkboxy grup, podgrup i talentów w trybie zaznaczania; wspólny wybór w drzewie, liście, kafelkach i wyszukiwaniu, stany częściowe i licznik. Zapis SET-ów oraz eksport nadal w A-01/A-03. [Eksport talentów](Eksport%20talentów.md).
 - [ ] T-04 Zaprojektować porównywanie i weryfikację talentów oraz wygodne przechodzenie między edycjami z zachowaniem kontekstu biblioteki.
 - [x] T-05 Symbol kosztu w mechanice: [ikona-kosztu: koszt], przycisk wstawiania, pojedynczy element składu, lista/kafelki/PDF i walidacja. Odświeżono raporty trzech importowanych talentów bez zmiany treści.
 - [ ] T-07 Wydzielić archiwum talentów o statusie delete: ukrycie w zwykłej bibliotece, przegląd wycofanych i przywracanie; statusy i historia zmian już działają.
